@@ -1,0 +1,107 @@
+# ──────────────────────────────────────────────────────────────────────────
+# Go
+# ──────────────────────────────────────────────────────────────────────────
+# Compiled binaries and build output
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+/bin/
+/build/
+/dist/
+**/cmd/**/main          # compiled NF entrypoints (keep main.go, ignore the binary)
+
+# Go workspace / module noise
+go.work.sum
+vendor/
+
+# Test & coverage artifacts
+*.cover
+coverage.txt
+coverage.html
+coverage.out
+profile.out
+
+# ──────────────────────────────────────────────────────────────────────────
+# Configuration & secrets — never commit real keys/subscriber data
+# ──────────────────────────────────────────────────────────────────────────
+.env
+.env.*
+*.local.yaml
+*.local.yml
+config/*.local.yaml
+secrets/
+*.pem
+*.key
+*.crt
+# Keep example/template configs:
+!*.example.yaml
+!*.example.yml
+
+# ──────────────────────────────────────────────────────────────────────────
+# Containers / deployment
+# ──────────────────────────────────────────────────────────────────────────
+docker-compose.override.yml
+*.tfstate
+*.tfstate.*
+.terraform/
+kubeconfig
+*.kubeconfig
+
+# ──────────────────────────────────────────────────────────────────────────
+# Observability / runtime data
+# ──────────────────────────────────────────────────────────────────────────
+data/
+mongodb-data/
+prometheus-data/
+grafana-data/
+*.db
+
+# ──────────────────────────────────────────────────────────────────────────
+# Logs, captures & temp files
+# ──────────────────────────────────────────────────────────────────────────
+*.log
+logs/
+*.pcap
+*.pcapng
+*.tmp
+*.bak
+*.swp
+tmp/
+
+# ──────────────────────────────────────────────────────────────────────────
+# OS files
+# ──────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ──────────────────────────────────────────────────────────────────────────
+# IDE / editor
+# ──────────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.iml
+*.suo
+*.user
+*~
+
+# ──────────────────────────────────────────────────────────────────────────
+# AI assistant / agent files — ignored
+# ──────────────────────────────────────────────────────────────────────────
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+.cursor/
+.cursorrules
+.aider*
+.continue/
+.github/copilot-instructions.md
+.codeium/
+.windsurf/
+*.ai.md
+.mcp.json
