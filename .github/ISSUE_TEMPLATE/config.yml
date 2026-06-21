@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📚 Documentation & roadmap
+    url: https://github.com/m2l33k/Mikoto/blob/main/docs/README.md
+    about: Read the engineering docs before filing — the backlog lives in docs/17.
+  - name: 🗂️ Backlog (epics → stories)
+    url: https://github.com/m2l33k/Mikoto/blob/main/docs/17-deliverables-and-backlog.md
+    about: Stable Epic/Story IDs to reference when filing issues.

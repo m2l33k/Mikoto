@@ -31,6 +31,16 @@ Read the documents in order. Each builds on the previous one.
 | 11 | [Deployment & Observability](11-deployment-observability.md) | Docker, Kubernetes, Prometheus, Grafana |
 | 12 | [Glossary](12-glossary.md) | Every acronym, defined |
 | 13 | [Resources & References](13-resources.md) | 3GPP specs, libraries, learning material |
+| 14 | [Zero-Trust Security](14-security-zero-trust.md) | mTLS, OAuth2/JWT, network policy, Vault, CSFLE |
+| 15 | [Anomaly Detection Engine](15-anomaly-detection.md) | Threat models + rule-based/statistical/ML detection |
+| 16 | [Conformance Test Framework](16-conformance-test-framework.md) | YAML scenarios, TS 23.502 cases, CI gate |
+| 17 | [Deliverables & GitHub Backlog](17-deliverables-and-backlog.md) | D1–D7, epics→stories, risk register |
+
+> **Chapters 00–13** define the *Minimal Viable Core* (the educational baseline).
+> **Chapters 14–17** add the three differentiating layers from the project proposal —
+> **Zero-Trust security, anomaly detection, and an automated conformance test suite** — that
+> turn the prototype into an engineering platform. Start with the MVP, layer security and
+> testing in from M1 onward (not at the end).
 
 ---
 

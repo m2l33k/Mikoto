@@ -1,0 +1,33 @@
+name: "🔧 Task"
+description: A concrete technical task under a story (implementation, chore, spike).
+title: "[TASK] <short title>"
+labels: ["type:task"]
+body:
+  - type: input
+    id: parent-story
+    attributes:
+      label: Parent story
+      placeholder: "#34 (S2.3)"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What needs doing
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options: [implementation, test, chore, spike, docs]
+    validations:
+      required: true
+  - type: textarea
+    id: done
+    attributes:
+      label: Done when
+      value: |
+        - [ ] Implemented
+        - [ ] Unit-tested
+        - [ ] Reviewed / merged to main

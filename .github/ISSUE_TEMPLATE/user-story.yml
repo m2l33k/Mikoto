@@ -1,0 +1,59 @@
+name: "📝 User Story"
+description: A single, demonstrable increment of value under an epic.
+title: "[STORY] <short title>"
+labels: ["type:story"]
+body:
+  - type: input
+    id: story-id
+    attributes:
+      label: Story ID
+      description: Stable ID from docs/17-deliverables-and-backlog.md
+      placeholder: S2.3
+    validations:
+      required: true
+  - type: input
+    id: parent-epic
+    attributes:
+      label: Parent epic
+      placeholder: "#12 (EPIC-2)"
+    validations:
+      required: true
+  - type: textarea
+    id: story
+    attributes:
+      label: User story
+      description: As a <role>, I want <capability>, so that <benefit>.
+      placeholder: As a security engineer, I want mTLS enforced on all SBI calls, so that no uncertified NF can talk to another.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Testable conditions. Reference TC-/SEC-/PERF- IDs where they exist.
+      value: |
+        - [ ] Given ... when ... then ...
+        - [ ] Verified by test case: TC-/SEC-/PERF-
+    validations:
+      required: true
+  - type: dropdown
+    id: milestone
+    attributes:
+      label: Milestone
+      options: [M0, M1, M2, M3, M4, M5, M6, M7]
+    validations:
+      required: true
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options: ["priority:high", "priority:medium", "priority:low"]
+    validations:
+      required: true
+  - type: checkboxes
+    id: flags
+    attributes:
+      label: Flags
+      options:
+        - label: Security-related (add `security` label)
+        - label: Stretch goal (add `stretch` label)

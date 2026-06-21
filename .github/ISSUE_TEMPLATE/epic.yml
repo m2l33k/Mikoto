@@ -1,0 +1,57 @@
+name: "📦 Epic"
+description: A large body of work that maps to a deliverable and spans multiple stories.
+title: "[EPIC] <short title>"
+labels: ["type:epic"]
+body:
+  - type: input
+    id: epic-id
+    attributes:
+      label: Epic ID
+      description: Stable ID from docs/17-deliverables-and-backlog.md
+      placeholder: EPIC-2
+    validations:
+      required: true
+  - type: dropdown
+    id: deliverable
+    attributes:
+      label: Deliverable
+      options: [D1, D2, D3, D4, D5, D6, D7]
+    validations:
+      required: true
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Phase
+      options: [P1, P2, P3, P4, P5, P6]
+    validations:
+      required: true
+  - type: dropdown
+    id: milestone
+    attributes:
+      label: Milestone
+      options: [M0, M1, M2, M3, M4, M5, M6, M7]
+    validations:
+      required: true
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What this epic delivers and why it matters.
+    validations:
+      required: true
+  - type: textarea
+    id: stories
+    attributes:
+      label: Stories
+      description: Checklist of child story issues.
+      value: |
+        - [ ] #
+        - [ ] #
+  - type: textarea
+    id: dod
+    attributes:
+      label: Definition of Done
+      value: |
+        - [ ] All child stories closed
+        - [ ] Conformance/security tests for this area pass
+        - [ ] Docs updated

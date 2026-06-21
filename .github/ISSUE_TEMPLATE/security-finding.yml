@@ -1,0 +1,41 @@
+name: "🛡️ Security finding / threat"
+description: A security gap, threat-model entry, or anomaly-detection case to address.
+title: "[SEC] <short title>"
+labels: ["type:story", "security"]
+body:
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - mTLS / PKI
+        - OAuth2 / token authz
+        - Network policy
+        - Secrets / data-at-rest (CSFLE)
+        - Anomaly detection / threat model
+    validations:
+      required: true
+  - type: textarea
+    id: threat
+    attributes:
+      label: Threat / gap
+      description: What is the risk and the observable signal?
+    validations:
+      required: true
+  - type: input
+    id: test-case
+    attributes:
+      label: Validating test case
+      placeholder: SEC-01 / SEC-02 / SEC-03
+  - type: input
+    id: spec
+    attributes:
+      label: Spec reference
+      placeholder: "3GPP TS 33.501 §13"
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      value: |
+        - [ ] Mitigation implemented
+        - [ ] Validated by the referenced SEC- test case
