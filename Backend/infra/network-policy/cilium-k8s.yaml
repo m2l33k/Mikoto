@@ -1,0 +1,17 @@
+# Kubernetes stretch: Cilium L7 policy restricting NF-to-NF SBI calls.
+# One CiliumNetworkPolicy per NF; example for the AMF below.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: amf-sbi
+spec:
+  endpointSelector:
+    matchLabels: { nf: amf }
+  egress:
+    - toEndpoints:
+        - matchLabels: { nf: ausf }
+        - matchLabels: { nf: udm }
+        - matchLabels: { nf: smf }
+        - matchLabels: { nf: nrf }
+      toPorts:
+        - ports: [{ port: "8000", protocol: TCP }]

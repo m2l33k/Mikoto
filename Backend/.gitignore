@@ -1,0 +1,21 @@
+# Go
+bin/
+*.test
+*.out
+go.work.sum
+
+# Build / runtime artifacts
+/tmp/
+**/data/
+certs/
+vault/init.json
+
+# ML pipeline
+training/data/
+*.joblib
+services/anomaly-detector/models/*.onnx
+
+# Local config
+config.yaml
+.env
+*.local.yaml

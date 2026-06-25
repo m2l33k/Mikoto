@@ -1,0 +1,17 @@
+# Certificate CR template per NF (substitute __NF_NAME__).
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: __NF_NAME__-tls
+spec:
+  secretName: __NF_NAME__-tls
+  duration: 2160h
+  renewBefore: 360h
+  commonName: __NF_NAME__
+  dnsNames:
+    - __NF_NAME__
+    - __NF_NAME__.5gc.local
+  usages: ["server auth", "client auth"]
+  issuerRef:
+    name: securecode5g-vault
+    kind: ClusterIssuer

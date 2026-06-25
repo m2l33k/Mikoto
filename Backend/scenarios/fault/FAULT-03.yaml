@@ -1,0 +1,13 @@
+id: FAULT-03
+name: Expired NF Certificate
+category: fault
+description: An NF presenting an expired cert is rejected at the Envoy mTLS layer.
+steps:
+  - name: present-expired-cert
+    action: sbi-call
+    params: { nf: amf, cert: expired }
+    assertions:
+      - type: http-status
+        target: sbi
+        operator: eq
+        expected: "495"   # TLS client cert error

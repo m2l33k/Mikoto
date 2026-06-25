@@ -1,0 +1,7 @@
+info:
+  version: 1.0.3
+  description: UDM configuration
+configuration:
+  sbi: { scheme: http, registerIPv4: udm, bindingIPv4: 0.0.0.0, port: 8080 }
+  nrfUri: http://nrf:8080
+  # SUCI -> SUPI deconcealment keys are fetched from Vault (imsi-keys policy).

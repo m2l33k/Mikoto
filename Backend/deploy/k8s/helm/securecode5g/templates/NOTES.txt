@@ -1,0 +1,2 @@
+# Helm templates go here (Deployments, Services, ConfigMaps, NetworkPolicies).
+# Rendered from values.yaml. Stretch goal — not required for the docker-compose target.

@@ -1,0 +1,9 @@
+# Shared Envoy settings included by each NF sidecar config.
+# TLS material is mounted from the shared `certs` volume at /certs/{nf-name}/.
+admin:
+  address:
+    socket_address: { address: 0.0.0.0, port_value: 9901 }
+
+# Common access-log format (referenced by per-NF listeners).
+# format: "[%START_TIME%] %REQ(:METHOD)% %REQ(X-ENVOY-ORIGINAL-PATH?:PATH)%
+#          %PROTOCOL% %RESPONSE_CODE% %DURATION% CN=%DOWNSTREAM_PEER_SUBJECT%"

@@ -1,0 +1,17 @@
+id: PERF-02
+name: PDU Session Scale
+category: performance
+description: Establish many concurrent PDU sessions; assert success rate and latency.
+steps:
+  - name: scale-pdu
+    action: pdu-load
+    params: { sessions: "200", rampUp: "30s" }
+    assertions:
+      - type: metric
+        target: smf_pdu_session_establish_success_ratio
+        operator: gt
+        expected: "0.99"
+      - type: metric
+        target: smf_pdu_session_setup_p95_ms
+        operator: lt
+        expected: "300"

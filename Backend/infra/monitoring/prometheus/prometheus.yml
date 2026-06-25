@@ -1,0 +1,16 @@
+global:
+  scrape_interval: 5s
+  evaluation_interval: 15s
+
+rule_files:
+  - /etc/prometheus/rules/5g-core.yml
+  - /etc/prometheus/rules/security.yml
+
+scrape_configs:
+  - job_name: free5gc-nfs
+    static_configs:
+      - targets: [amf:9091, smf:9091, upf:9091, ausf:9091, udm:9091, udr:9091, nrf:9091]
+
+  - job_name: securecode5g-services
+    static_configs:
+      - targets: [nrf-oauth2:8090, anomaly-detector:8091, test-runner:8092, dashboard-api:8093]

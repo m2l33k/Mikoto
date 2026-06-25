@@ -1,0 +1,10 @@
+go 1.22
+
+use (
+	./services/nrf-oauth2
+	./services/anomaly-detector
+	./services/test-runner
+	./services/dashboard-api
+	./pkg/jwt-middleware
+	./pkg/5g-types
+)

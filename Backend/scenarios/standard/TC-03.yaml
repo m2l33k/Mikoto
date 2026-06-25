@@ -1,0 +1,13 @@
+id: TC-03
+name: UE Deregistration
+category: standard
+description: UE-initiated deregistration; AMF releases context (TS 23.502 §4.2.2.3).
+steps:
+  - name: deregister-ue
+    action: deregister-ue
+    params: { supi: "imsi-208930000000001" }
+    assertions:
+      - type: nas-message
+        target: deregistration-accept
+        operator: contains
+        expected: "5GMM-DEREGISTERED"

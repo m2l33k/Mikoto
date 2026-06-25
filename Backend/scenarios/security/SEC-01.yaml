@@ -1,0 +1,15 @@
+id: SEC-01
+name: IMSI Enumeration Detection
+category: security
+description: >
+  Sequential SUCI probes without AKA completion must be flagged by the
+  anomaly-detector (rule + statistical signal) within the alert window.
+steps:
+  - name: probe-suci-range
+    action: suci-probe
+    params: { count: "100", aka: "false" }
+    assertions:
+      - type: alert
+        target: imsi_enum
+        operator: eq
+        expected: "raised"

@@ -1,0 +1,14 @@
+id: TC-04
+name: Service Request
+category: standard
+description: Idle UE issues a Service Request and resumes user-plane (TS 23.502 §4.2.3).
+steps:
+  - name: service-request
+    action: service-request
+    params: { supi: "imsi-208930000000001" }
+    timing: { maxDuration: 5s }
+    assertions:
+      - type: nas-message
+        target: service-accept
+        operator: contains
+        expected: "SERVICE-ACCEPT"

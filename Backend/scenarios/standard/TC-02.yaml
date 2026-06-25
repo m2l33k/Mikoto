@@ -1,0 +1,14 @@
+id: TC-02
+name: PDU Session Establishment
+category: standard
+description: UE establishes a PDU session to the 'internet' DNN (TS 23.502 §4.3.2).
+steps:
+  - name: establish-pdu
+    action: establish-pdu-session
+    params: { dnn: internet, snssai: "1-010203" }
+    timing: { maxDuration: 5s }
+    assertions:
+      - type: metric
+        target: smf_pdu_session_active
+        operator: gt
+        expected: "0"

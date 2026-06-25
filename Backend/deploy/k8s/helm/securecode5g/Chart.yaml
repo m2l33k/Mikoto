@@ -1,0 +1,6 @@
+apiVersion: v2
+name: securecode5g
+description: SecureCore5G security-hardened 5G core (Kubernetes stretch deployment)
+type: application
+version: 0.1.0
+appVersion: "0.1.0"

@@ -1,0 +1,22 @@
+groups:
+  - name: 5g-core-kpi
+    rules:
+      - alert: HighRegistrationRate
+        expr: rate(amf_registration_total[1m]) > 50
+        for: 30s
+        labels: { severity: warning }
+        annotations:
+          summary: "AMF registration rate above 50/s"
+
+      - alert: PDUSessionDrop
+        expr: delta(smf_pdu_session_active[5m]) < -20
+        for: 1m
+        labels: { severity: warning }
+        annotations:
+          summary: "Sharp drop in active PDU sessions"
+
+      - alert: NRFHeartbeatMiss
+        expr: increase(nrf_nf_heartbeat_miss_total[2m]) > 0
+        labels: { severity: critical }
+        annotations:
+          summary: "NF heartbeat missed at the NRF"

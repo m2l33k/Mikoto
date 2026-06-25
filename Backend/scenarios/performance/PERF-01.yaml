@@ -1,0 +1,13 @@
+id: PERF-01
+name: Registration Throughput
+category: performance
+description: Sustained registrations; assert p95 registration latency under budget.
+steps:
+  - name: sustained-register
+    action: register-load
+    params: { rate: "20/s", duration: "60s" }
+    assertions:
+      - type: metric
+        target: amf_registration_latency_p95_ms
+        operator: lt
+        expected: "200"

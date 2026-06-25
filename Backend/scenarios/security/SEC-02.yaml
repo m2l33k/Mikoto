@@ -1,0 +1,13 @@
+id: SEC-02
+name: Registration Flood Detection
+category: security
+description: A burst of registrations from one TA must raise a reg_flood alert.
+steps:
+  - name: flood-register
+    action: register-burst
+    params: { count: "500", window: "10s" }
+    assertions:
+      - type: alert
+        target: reg_flood
+        operator: eq
+        expected: "raised"

@@ -1,0 +1,20 @@
+groups:
+  - name: security-phase1
+    rules:
+      - alert: RegistrationFlood
+        expr: rate(amf_registration_total[10s]) > 50
+        labels: { severity: critical, signal: rule }
+        annotations:
+          summary: "Possible registration flood (>50 reg/s)"
+
+      - alert: AuthFailureSpike
+        expr: rate(ausf_authentication_failure_total[1m]) > 10
+        labels: { severity: warning, signal: rule }
+        annotations:
+          summary: "Authentication failure spike"
+
+      - alert: SUCIProbeBurst
+        expr: rate(udm_suci_deconceal_total[1m]) > 30
+        labels: { severity: warning, signal: rule }
+        annotations:
+          summary: "Possible IMSI enumeration via SUCI probes"

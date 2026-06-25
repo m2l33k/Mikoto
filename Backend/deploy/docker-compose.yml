@@ -1,0 +1,168 @@
+# SecureCore5G — full stack (primary deployment target).
+# Paths are relative to the repo root; run with:  docker compose -f deploy/docker-compose.yml up -d
+name: securecode5g
+
+x-free5gc-image: &free5gc-tag "v3.4.2"
+
+services:
+  # ── Infrastructure ──────────────────────────────────────────────────────────
+  mongodb:
+    image: mongo:7
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_USER:-root}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD:-root}
+    volumes: [mongo-data:/data/db]
+
+  redis:
+    image: redis:7-alpine
+
+  cfssl:
+    build: ../infra/pki/cfssl
+    volumes: [certs:/certs]
+
+  vault:
+    image: hashicorp/vault:1.16
+    cap_add: [IPC_LOCK]
+    volumes:
+      - ../infra/vault/config.hcl:/vault/config/config.hcl:ro
+      - vault-data:/vault/data
+    command: server
+    depends_on: [cfssl]
+
+  casdoor:
+    image: casbin/casdoor:latest
+    depends_on: [mongodb]
+    ports: ["8000:8000"]
+
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    volumes: [../infra/monitoring/prometheus:/etc/prometheus:ro]
+    ports: ["9090:9090"]
+
+  loki:
+    image: grafana/loki:3.0.0
+
+  grafana:
+    image: grafana/grafana:10.4.0
+    depends_on: [prometheus, loki, casdoor]
+    volumes:
+      - ../infra/monitoring/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/ds.yaml:ro
+    environment:
+      GF_AUTH_GENERIC_OAUTH_ENABLED: "true"
+      GF_AUTH_GENERIC_OAUTH_NAME: Casdoor
+      GF_AUTH_GENERIC_OAUTH_CLIENT_ID: grafana
+    ports: ["3000:3000"]
+
+  # ── free5GC NFs (+ Envoy sidecars) ──────────────────────────────────────────
+  nrf:
+    image: free5gc/nrf:v3.4.2
+    volumes:
+      - ../free5gc/config/nrfcfg.yaml:/free5GC/config/nrfcfg.yaml:ro
+      - certs:/certs
+    depends_on: [mongodb]
+  envoy-nrf:
+    image: envoyproxy/envoy:v1.30.0
+    volumes:
+      - ../infra/envoy/nf-configs/nrf.yaml:/etc/envoy/envoy.yaml:ro
+      - certs:/certs
+    depends_on: [nrf, cfssl]
+
+  amf:
+    image: free5gc/amf:v3.4.2
+    volumes:
+      - ../free5gc/config/amfcfg.yaml:/free5GC/config/amfcfg.yaml:ro
+      - certs:/certs
+    depends_on: [nrf]
+  envoy-amf:
+    image: envoyproxy/envoy:v1.30.0
+    volumes:
+      - ../infra/envoy/nf-configs/amf.yaml:/etc/envoy/envoy.yaml:ro
+      - certs:/certs
+    depends_on: [amf, nrf-oauth2]
+
+  smf:
+    image: free5gc/smf:v3.4.2
+    volumes:
+      - ../free5gc/config/smfcfg.yaml:/free5GC/config/smfcfg.yaml:ro
+      - certs:/certs
+    depends_on: [nrf]
+  upf:
+    image: free5gc/upf:v3.4.2
+    cap_add: [NET_ADMIN]
+    volumes:
+      - ../free5gc/config/upfcfg.yaml:/free5GC/config/upfcfg.yaml:ro
+    depends_on: [smf]
+  ausf:
+    image: free5gc/ausf:v3.4.2
+    volumes:
+      - ../free5gc/config/ausfcfg.yaml:/free5GC/config/ausfcfg.yaml:ro
+      - certs:/certs
+    depends_on: [nrf]
+  udm:
+    image: free5gc/udm:v3.4.2
+    volumes:
+      - ../free5gc/config/udmcfg.yaml:/free5GC/config/udmcfg.yaml:ro
+      - certs:/certs
+    depends_on: [nrf]
+  udr:
+    image: free5gc/udr:v3.4.2
+    volumes:
+      - ../free5gc/config/udrcfg.yaml:/free5GC/config/udrcfg.yaml:ro
+      - certs:/certs
+    depends_on: [nrf, mongodb]
+
+  # ── Custom services ─────────────────────────────────────────────────────────
+  nrf-oauth2:
+    build: ../services/nrf-oauth2
+    environment:
+      VAULT_ADDR: http://vault:8200
+      NRF_URL: http://nrf:8080
+      MONGO_URI: mongodb://${MONGO_USER:-root}:${MONGO_PASSWORD:-root}@mongodb:27017
+    depends_on: [vault, mongodb, nrf, cfssl]
+    ports: ["8090:8090"]
+
+  anomaly-detector:
+    build: ../services/anomaly-detector
+    environment:
+      PROMETHEUS_URL: http://prometheus:9090
+      LOKI_URL: http://loki:3100
+      REDIS_URL: redis://redis:6379
+    depends_on: [prometheus, loki, redis]
+    ports: ["8091:8091"]
+    volumes: [../services/anomaly-detector/models:/models:ro]
+
+  test-runner:
+    build: ../services/test-runner
+    environment:
+      FREE5GC_NRF_URL: http://nrf:8080
+      ANOMALY_DETECTOR_URL: http://anomaly-detector:8091
+    depends_on: [amf, smf, upf, anomaly-detector]
+    ports: ["8092:8092"]
+    volumes:
+      - ../scenarios:/scenarios:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  dashboard-api:
+    build: ../services/dashboard-api
+    environment:
+      CASDOOR_ENDPOINT: http://casdoor:8000
+      ANOMALY_URL: http://anomaly-detector:8091
+      PROMETHEUS_URL: http://prometheus:9090
+      TEST_RUNNER_URL: http://test-runner:8092
+    depends_on: [casdoor, anomaly-detector, prometheus, test-runner]
+    ports: ["8093:8093"]
+
+  # ── RAN simulator ───────────────────────────────────────────────────────────
+  ueransim-gnb:
+    image: towards5gs/ueransim:v3.2.6
+    command: nr-gnb -c /config/gnb.yaml
+    depends_on: [amf, upf]
+  ueransim-ue:
+    image: towards5gs/ueransim:v3.2.6
+    command: nr-ue -c /config/ue.yaml
+    depends_on: [ueransim-gnb]
+
+volumes:
+  certs:
+  mongo-data:
+  vault-data:

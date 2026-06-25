@@ -1,0 +1,36 @@
+# Security plane only — PKI, secrets, identity, custom security services.
+# Useful for iterating on the control/management plane without the full 5GC.
+#   docker compose -f deploy/docker-compose.security.yml up
+name: securecode5g-sec
+
+services:
+  mongodb:    { image: mongo:7 }
+  redis:      { image: redis:7-alpine }
+  cfssl:      { build: ../infra/pki/cfssl, volumes: [certs:/certs] }
+  vault:
+    image: hashicorp/vault:1.16
+    cap_add: [IPC_LOCK]
+    volumes: [../infra/vault/config.hcl:/vault/config/config.hcl:ro]
+    command: server
+    depends_on: [cfssl]
+  casdoor:    { image: casbin/casdoor:latest, depends_on: [mongodb], ports: ["8000:8000"] }
+  prometheus: { image: prom/prometheus:v2.51.0, volumes: [../infra/monitoring/prometheus:/etc/prometheus:ro] }
+
+  nrf-oauth2:
+    build: ../services/nrf-oauth2
+    environment: { VAULT_ADDR: http://vault:8200, MONGO_URI: mongodb://mongodb:27017 }
+    depends_on: [vault, mongodb, cfssl]
+    ports: ["8090:8090"]
+  anomaly-detector:
+    build: ../services/anomaly-detector
+    environment: { PROMETHEUS_URL: http://prometheus:9090, REDIS_URL: redis://redis:6379 }
+    depends_on: [prometheus, redis]
+    ports: ["8091:8091"]
+  dashboard-api:
+    build: ../services/dashboard-api
+    environment: { CASDOOR_ENDPOINT: http://casdoor:8000, ANOMALY_URL: http://anomaly-detector:8091 }
+    depends_on: [casdoor, anomaly-detector]
+    ports: ["8093:8093"]
+
+volumes:
+  certs:

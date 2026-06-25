@@ -1,0 +1,28 @@
+{
+  "applications": [
+    {
+      "name": "dashboard",
+      "displayName": "SecureCore5G Dashboard",
+      "clientId": "dashboard",
+      "redirectUris": ["http://localhost:8093/auth/callback"],
+      "grantTypes": ["authorization_code"],
+      "scopes": ["openid", "profile", "email"]
+    },
+    {
+      "name": "grafana",
+      "displayName": "Grafana",
+      "clientId": "grafana",
+      "redirectUris": ["http://localhost:3000/login/generic_oauth"],
+      "grantTypes": ["authorization_code"],
+      "scopes": ["openid", "profile", "email"]
+    },
+    {
+      "name": "testrunner",
+      "displayName": "Test Runner UI",
+      "clientId": "testrunner",
+      "redirectUris": ["http://localhost:8092/auth/callback"],
+      "grantTypes": ["authorization_code"],
+      "scopes": ["openid", "profile", "email"]
+    }
+  ]
+}

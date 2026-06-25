@@ -1,0 +1,14 @@
+{
+  "organization": {
+    "name": "securecode5g",
+    "displayName": "SecureCore5G"
+  },
+  "roles": [
+    { "name": "admin",   "description": "Full management-plane access" },
+    { "name": "analyst", "description": "Read alerts, run conformance tests" },
+    { "name": "viewer",  "description": "Read-only dashboard access" }
+  ],
+  "users": [
+    { "name": "admin", "roles": ["admin"], "email": "admin@securecode5g.local" }
+  ]
+}

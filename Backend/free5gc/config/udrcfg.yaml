@@ -1,0 +1,9 @@
+info:
+  version: 1.0.3
+  description: UDR configuration
+configuration:
+  sbi: { scheme: http, registerIPv4: udr, bindingIPv4: 0.0.0.0, port: 8080 }
+  nrfUri: http://nrf:8080
+  mongodb:
+    name: free5gc
+    url: mongodb://mongodb:27017

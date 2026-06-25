@@ -1,0 +1,13 @@
+id: FAULT-02
+name: UPF Restart Mid-Session
+category: fault
+description: UPF restarts during an active PDU session; SMF re-establishes N4.
+steps:
+  - name: restart-upf
+    action: restart-nf
+    params: { nf: upf }
+    assertions:
+      - type: metric
+        target: smf_pfcp_association_total
+        operator: gt
+        expected: "0"

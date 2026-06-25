@@ -1,0 +1,11 @@
+{
+  "title": "5G NF KPIs",
+  "uid": "nf-kpi",
+  "schemaVersion": 39,
+  "panels": [
+    { "type": "timeseries", "title": "Registration rate",
+      "targets": [{ "expr": "rate(amf_registration_total[1m])" }] },
+    { "type": "timeseries", "title": "Active PDU sessions",
+      "targets": [{ "expr": "smf_pdu_session_active" }] }
+  ]
+}

@@ -1,0 +1,8 @@
+# nrf-oauth2 configuration (example)
+listenAddr: ":8090"
+vaultAddr: "http://vault:8200"
+nrfUrl: "http://nrf:8000"
+mongoUri: "mongodb://mongodb:27017"
+signingKeyPath: "secret/data/nrf-oauth2/signing"  # Vault KV v2 path
+tokenTtl: "1h"
+issuer: "https://nrf-oauth2:8090"

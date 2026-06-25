@@ -1,0 +1,6 @@
+scikit-learn>=1.4
+onnx>=1.16
+skl2onnx>=1.16
+prometheus-api-client>=0.5
+numpy>=1.26
+pandas>=2.2

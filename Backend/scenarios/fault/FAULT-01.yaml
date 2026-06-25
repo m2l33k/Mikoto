@@ -1,0 +1,19 @@
+id: FAULT-01
+name: NRF Outage Resilience
+category: fault
+description: With the NRF down, dependent NFs degrade gracefully and recover.
+steps:
+  - name: kill-nrf
+    action: stop-nf
+    params: { nf: nrf }
+  - name: attempt-register
+    action: register-ue
+    params: { supi: "imsi-208930000000002" }
+    assertions:
+      - type: alert
+        target: heartbeat_miss
+        operator: eq
+        expected: "raised"
+  - name: restart-nrf
+    action: start-nf
+    params: { nf: nrf }

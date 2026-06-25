@@ -1,0 +1,13 @@
+id: FAULT-04
+name: MongoDB Failover
+category: fault
+description: NRF/UDR survive a MongoDB restart and reconcile state.
+steps:
+  - name: restart-mongo
+    action: restart-nf
+    params: { nf: mongodb }
+    assertions:
+      - type: health
+        target: nrf
+        operator: eq
+        expected: "healthy"

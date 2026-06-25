@@ -1,0 +1,12 @@
+version: 1.0.3
+description: UPF configuration
+pfcp:
+  addr: upf
+gtpu:
+  forwarder: gtp5g
+  ifList:
+    - addr: upf
+      type: N3
+dnnList:
+  - dnn: internet
+    cidr: 10.60.0.0/16

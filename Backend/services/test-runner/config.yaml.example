@@ -1,0 +1,6 @@
+# test-runner configuration (example)
+listenAddr: ":8092"
+scenariosDir: "/scenarios"
+free5gcNrfUrl: "http://nrf:8000"
+anomalyDetectorUrl: "http://anomaly-detector:8091"
+pcapDir: "/var/lib/test-runner/pcap"

@@ -1,0 +1,28 @@
+# Default values for the SecureCore5G Helm chart (stretch goal).
+global:
+  imageRegistry: ""
+  plmn: { mcc: "208", mnc: "93" }
+
+free5gc:
+  version: v3.4.2
+  nfs: [nrf, amf, smf, upf, ausf, udm, udr]
+
+services:
+  nrfOauth2:       { image: securecode5g/nrf-oauth2:latest,       port: 8090 }
+  anomalyDetector: { image: securecode5g/anomaly-detector:latest, port: 8091 }
+  testRunner:      { image: securecode5g/test-runner:latest,      port: 8092 }
+  dashboardApi:    { image: securecode5g/dashboard-api:latest,     port: 8093 }
+
+infra:
+  vault:   { enabled: true }
+  casdoor: { enabled: true }
+  certManager:
+    enabled: true
+    issuer: securecode5g-vault   # see infra/pki/cert-manager/issuer.yaml
+  cilium:
+    networkPolicies: true         # see infra/network-policy/cilium-k8s.yaml
+
+monitoring:
+  prometheus: { enabled: true }
+  grafana:    { enabled: true }
+  loki:       { enabled: true }

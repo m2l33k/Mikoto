@@ -1,0 +1,7 @@
+# anomaly-detector configuration (example)
+listenAddr: ":8091"
+prometheusUrl: "http://prometheus:9090"
+lokiUrl: "http://loki:3100"
+redisUrl: "redis://redis:6379"
+modelPath: "/models/isolation_forest.onnx"
+pollInterval: "5s"

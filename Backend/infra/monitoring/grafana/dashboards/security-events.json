@@ -1,0 +1,13 @@
+{
+  "title": "Security Events",
+  "uid": "security-events",
+  "schemaVersion": 39,
+  "panels": [
+    { "type": "stat", "title": "Active alerts",
+      "targets": [{ "expr": "sum(securecode5g_alerts_active)" }] },
+    { "type": "timeseries", "title": "Anomaly count by signal",
+      "targets": [{ "expr": "sum by (signal) (securecode5g_alerts_total)" }] },
+    { "type": "table", "title": "NF cert expiry (days)",
+      "targets": [{ "expr": "securecode5g_cert_days_left" }] }
+  ]
+}

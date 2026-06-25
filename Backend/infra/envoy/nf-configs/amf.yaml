@@ -1,0 +1,5 @@
+# AMF sidecar. Mirrors nrf.yaml; differences:
+#   - SBI listener on :8000, NGAP passthrough on :38412
+#   - tls_certificates -> /certs/amf/tls.{crt,key}
+#   - cluster amf_local -> 127.0.0.1:8080
+# See infra/envoy/nf-configs/nrf.yaml for the full filter chain to copy.

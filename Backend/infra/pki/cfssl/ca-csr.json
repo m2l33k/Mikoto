@@ -1,0 +1,8 @@
+{
+  "CN": "SecureCore5G Root CA",
+  "key": { "algo": "ecdsa", "size": 384 },
+  "names": [
+    { "C": "TN", "O": "SecureCore5G", "OU": "PKI" }
+  ],
+  "ca": { "expiry": "87600h" }
+}

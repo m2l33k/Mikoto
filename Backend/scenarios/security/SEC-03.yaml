@@ -1,0 +1,15 @@
+id: SEC-03
+name: Unauthorized NF Token Request
+category: security
+description: >
+  nrf-oauth2 must reject a token request from an NF instance that is not
+  registered in the NRF (TS 33.501 §13.3).
+steps:
+  - name: request-token-unregistered
+    action: oauth2-token
+    params: { nfInstanceId: "00000000-0000-0000-0000-deadbeef", target: "udm" }
+    assertions:
+      - type: http-status
+        target: /oauth2/token
+        operator: eq
+        expected: "403"
