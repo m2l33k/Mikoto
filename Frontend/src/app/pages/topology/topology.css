@@ -1,0 +1,129 @@
+:host {
+  display: block;
+}
+
+.topo-layout {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 16px;
+}
+
+.topo-svg-wrap {
+  width: 100%;
+  overflow-x: auto;
+  background: var(--bg-base);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+}
+.topo-svg {
+  width: 100%;
+  min-width: 640px;
+  height: auto;
+  display: block;
+}
+
+/* edges */
+.edge {
+  stroke-width: 1.5;
+}
+.edge--sbi {
+  stroke: var(--brand-success);
+  stroke-opacity: 0.55;
+}
+.edge--data {
+  stroke: var(--brand-warning);
+  stroke-opacity: 0.7;
+  stroke-dasharray: 5 4;
+}
+.edge--radio {
+  stroke: var(--brand-primary);
+  stroke-opacity: 0.6;
+  stroke-dasharray: 2 3;
+}
+.edge-lock {
+  fill: var(--bg-surface);
+  stroke: var(--brand-success);
+  stroke-width: 1.2;
+}
+
+/* nodes */
+.node-g {
+  cursor: pointer;
+}
+.node {
+  fill: var(--bg-surface);
+  stroke: var(--border-strong);
+  stroke-width: 1.2;
+  transition: fill 0.12s ease;
+}
+.node-g:hover .node {
+  fill: var(--bg-surface-hover);
+}
+.node--selected {
+  stroke: var(--brand-primary);
+  stroke-width: 2;
+}
+.node--control {
+  stroke: color-mix(in srgb, var(--brand-primary) 55%, var(--border-strong));
+}
+.node--user {
+  stroke: color-mix(in srgb, var(--brand-warning) 55%, var(--border-strong));
+}
+.node--access {
+  stroke: var(--border-strong);
+}
+.node__label {
+  fill: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  text-anchor: middle;
+}
+.node__sub {
+  fill: var(--text-faint);
+  font-family: var(--font-sans);
+  font-size: 9px;
+  text-anchor: middle;
+}
+
+.topo-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 14px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.topo-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.lg {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
+}
+.lg--control {
+  border: 1.5px solid var(--brand-primary);
+}
+.lg--user {
+  border: 1.5px solid var(--brand-warning);
+}
+.lg--access {
+  border: 1.5px solid var(--border-strong);
+}
+.lg--sbi {
+  background: var(--brand-success);
+}
+.lg--data {
+  background: var(--brand-warning);
+}
+
+@media (max-width: 1000px) {
+  .topo-layout {
+    grid-template-columns: 1fr;
+  }
+}

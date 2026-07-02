@@ -1,0 +1,44 @@
+<div class="ztn-stage">
+  <form class="recover-card" (submit)="verify($event)">
+    <div class="recover-card__head">
+      <span class="alert-badge">!</span>
+      <div>
+        <h1 class="section-header">Key Restoration</h1>
+        <p class="metatag">Security Node Cryptographic Reset</p>
+      </div>
+    </div>
+
+    <div class="recover-card__notice">
+      Identity recovery procedures require a valid PGP signature verified against
+      pre-installed cluster anchors.
+    </div>
+
+    <div class="ztn-field">
+      <label class="ztn-label">Administrative Identification</label>
+      <input
+        class="ztn-input"
+        type="email"
+        name="identity"
+        [(ngModel)]="identity"
+      />
+    </div>
+
+    <div class="ztn-field">
+      <label class="ztn-label">Verification PGP Public Signature</label>
+      <textarea
+        class="ztn-textarea"
+        name="signature"
+        rows="7"
+        [(ngModel)]="signature"
+      ></textarea>
+    </div>
+
+    <button class="ztn-btn ztn-btn--warning ztn-btn--block" type="submit">
+      Verify Signature Sequence
+    </button>
+
+    <a class="recover-card__back" routerLink="/login">
+      &larr; Abort &amp; Return to Portal
+    </a>
+  </form>
+</div>

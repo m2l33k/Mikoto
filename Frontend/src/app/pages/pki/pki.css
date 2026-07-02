@@ -1,0 +1,48 @@
+:host {
+  display: block;
+}
+.load-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.exp-meter {
+  width: 90px;
+}
+
+.ca-chain {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ca-node {
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+}
+.ca-node--leaf {
+  border-color: color-mix(in srgb, var(--brand-primary) 40%, var(--border-default));
+}
+.ca-node__role {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-faint);
+}
+.ca-node .mono {
+  font-size: 14px;
+  font-weight: 600;
+}
+.ca-arrow {
+  align-self: center;
+  color: var(--text-faint);
+  font-size: 18px;
+}

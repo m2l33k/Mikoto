@@ -1,0 +1,109 @@
+<section class="ztn-page">
+  <div class="ztn-page__head">
+    <div>
+      <h1 class="display-title">Network Slicing</h1>
+      <p class="metatag">NSSF · S-NSSAI Selection · Per-Slice SLA</p>
+    </div>
+    <div class="head-badges">
+      <span class="ztn-badge ztn-badge--success">3 Slices Active</span>
+      <span class="ztn-badge ztn-badge--warning">1 SLA at Risk</span>
+    </div>
+  </div>
+
+  <!-- Slice SLA cards -->
+  <div class="ztn-grid kpi-row">
+    <div class="ztn-card slice-card">
+      <div>
+        <div class="ztn-card__title">eMBB · 01-000001</div>
+        <div class="ztn-kpi__value">1,042</div>
+        <div class="ztn-kpi__sub">sessions · SLA ≤ 20ms</div>
+      </div>
+      <ui-gauge [percent]="71" [size]="84" color="var(--brand-primary)" />
+    </div>
+    <div class="ztn-card slice-card">
+      <div>
+        <div class="ztn-card__title">URLLC · 02-000002</div>
+        <div class="ztn-kpi__value">188</div>
+        <div class="ztn-kpi__sub">sessions · SLA ≤ 5ms</div>
+      </div>
+      <ui-gauge [percent]="88" [size]="84" color="var(--brand-warning)" />
+    </div>
+    <div class="ztn-card slice-card">
+      <div>
+        <div class="ztn-card__title">mMTC · 03-000003</div>
+        <div class="ztn-kpi__value">54</div>
+        <div class="ztn-kpi__sub">sessions · SLA ≤ 100ms</div>
+      </div>
+      <ui-gauge [percent]="23" [size]="84" color="var(--brand-success)" />
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="slice-charts">
+    <div class="ztn-card">
+      <h2 class="ztn-card__title"><ui-icon name="grid" [size]="14" /> Traffic Share by Slice (last 4h)</h2>
+      <ui-stacked-bar [categories]="times" [series]="trafficSeries" unit="%" />
+    </div>
+    <div class="ztn-card">
+      <h2 class="ztn-card__title"><ui-icon name="bar-chart" [size]="14" /> Throughput by Slice</h2>
+      <ui-hbar [items]="throughput" />
+    </div>
+  </div>
+
+  <!-- Slice table -->
+  <div class="ztn-card">
+    <h2 class="ztn-card__title"><ui-icon name="layers" [size]="14" /> Slice Instances</h2>
+    <div class="ztn-table-wrap">
+      <table class="ztn-table">
+        <thead>
+          <tr>
+            <th>S-NSSAI</th>
+            <th>Slice Type (SST)</th>
+            <th>DNN</th>
+            <th>Sessions</th>
+            <th>Latency SLA</th>
+            <th>Utilisation</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (s of slices(); track s.snssai) {
+            <tr>
+              <td class="mono">{{ s.snssai }}</td>
+              <td>{{ s.type }}</td>
+              <td class="mono dim">{{ s.dnn }}</td>
+              <td class="mono">{{ s.sessions }}</td>
+              <td class="mono dim">{{ s.slaLatency }}</td>
+              <td>
+                <div class="load-cell">
+                  <div class="ztn-meter umeter">
+                    <div
+                      class="ztn-meter__fill"
+                      [class.ztn-meter__fill--warning]="s.utilisation >= 85"
+                      [style.width.%]="s.utilisation"
+                    ></div>
+                  </div>
+                  <span class="mono">{{ s.utilisation }}%</span>
+                </div>
+              </td>
+              <td>
+                <span
+                  class="ztn-badge"
+                  [class.ztn-badge--success]="s.status === 'active'"
+                  [class.ztn-badge--warning]="s.status === 'degraded'"
+                  [class.ztn-badge--neutral]="s.status === 'disabled'"
+                >{{ s.status }}</span>
+              </td>
+              <td>
+                <button class="ztn-btn ztn-btn--ghost btn-sm" type="button" (click)="toggle(s)">
+                  {{ s.status === 'disabled' ? 'Enable' : 'Disable' }}
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,33 @@
+.err-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 680px;
+  text-align: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  padding: 36px 32px;
+}
+.err-banner {
+  margin-bottom: 16px;
+}
+.err-lead {
+  color: var(--text-muted);
+  margin: 12px 0 24px;
+}
+.err-loglabel {
+  display: block;
+  text-align: left;
+  margin-bottom: 6px;
+}
+.ztn-terminal {
+  text-align: left;
+}
+.err-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}

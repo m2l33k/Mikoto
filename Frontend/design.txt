@@ -1,0 +1,687 @@
+# UI/UX Design System, Interface Specifications & Slide Deck Blueprint
+
+---
+
+## Section 1: UI/UX Architectural Framework & Design System
+
+The visual design system is structured to provide a professional, low-distraction, and highly legible environment for network administrators, security engineers, and compliance auditors. It prioritizes data density, real-time status readability, and visual consistency across the 5G Core (5GC) management interface.
+
+### 1.1 Color Palette & Design Tokens
+
+To achieve a classic and professional corporate network utility aesthetic, the design utilizes a dark-mode-first core palette, complemented by a clean, light-mode administrative fallback.
+
+```
+DARK THEME TOKENS:
++-------------------+-----------------------------------------------------------------+
+| Token Type        | Value & Semantic Assignment                                     |
++-------------------+-----------------------------------------------------------------+
+| bg-base           | #090D16 (Deep Space Black) - Main window background              |
+| bg-surface        | #111827 (Slate Grey 900) - Card containers, sidebar, widgets    |
+| bg-surface-hover  | #1F2937 (Slate Grey 800) - Highlighted rows, hovered elements    |
+| border-default    | #374151 (Slate Grey 700) - Component outlines, subtle dividers   |
+| brand-primary     | #0EA5E9 (Sky Blue 500) - Focus indicators, system links, tags    |
+| brand-success     | #10B981 (Emerald Green 500) - Passed tests, healthy mTLS paths  |
+| brand-warning     | #F59E0B (Amber Gold 500) - Expiring certs, rate limit warnings  |
+| brand-danger      | #EF4444 (Crimson Red 500) - Blocked requests, active anomalies  |
++-------------------+-----------------------------------------------------------------+
+
+LIGHT THEME TOKENS:
++-------------------+-----------------------------------------------------------------+
+| Token Type        | Value & Semantic Assignment                                     |
++-------------------+-----------------------------------------------------------------+
+| bg-base           | #F8FAFC (Slate White 50) - Main window background               |
+| bg-surface        | #FFFFFF (Pure White) - Card containers, sidebar, widgets        |
+| bg-surface-hover  | #F1F5F9 (Slate White 100) - Hover states, selected table rows   |
+| border-default    | #E2E8F0 (Slate Grey 200) - Component outlines, subtle dividers  |
+| brand-primary     | #0284C7 (Sky Blue 600) - Focus indicators, primary actions       |
+| brand-success     | #059669 (Emerald Green 600) - Healthy interfaces, passed flows  |
+| brand-warning     | #D97706 (Amber Gold 600) - Warnings, elevated status levels     |
+| brand-danger      | #DC2626 (Crimson Red 600) - Network failures, security alerts   |
++-------------------+-----------------------------------------------------------------+
+```
+
+### 1.2 Typography & Iconography System
+
+*   **System Typography:**
+    *   *Sans-Serif Font Family:* `Inter`, `system-ui`, `-apple-system`, sans-serif. Used for standard labels, general body copy, action titles, and navigation options.
+    *   *Monospace Font Family:* `JetBrains Mono`, `Fira Code`, monospace. Used for protocol IDs, IMSIs, IP endpoints, security tokens, cryptographic keys, and raw log outputs.
+*   **Hierarchical Scaling:**
+    *   *Display Title:* 24px (Bold, tracking-tight, reserved for main system views)
+    *   *Section Header:* 18px (Semi-bold, used for major configuration cards)
+    *   *Data/Body Text:* 14px (Regular/Medium, primary readable text)
+    *   *System Metatags:* 11px (Monospace, semi-bold, uppercase, tracking-wider, used for telemetry tags)
+*   **Iconography:** Linear, single-stroke vector icons (configured to a uniform 1.5px stroke weight). Highly structured, utilizing colors matching the state boundaries (e.g., green for positive verification, red for active threat intercepts).
+
+### 1.3 Persistent Layout Architecture
+
+The application layout uses a three-tier grid layout designed for widescreen NOC monitors.
+
+```
++-----------------------------------------------------------------------------------------+
+| [5G LOGO] Zero-Trust  | Target: [ 5G-LAB-PROD-SOUTH ] [v]   mTLS Status: [ SECURE ] [u] |
++-----------------------+-----------------------------------------------------------------+
+| (x) SecOps Console    |                                                                 |
+|                       |  DYNAMIC SCROLLABLE WORKSPACE PORT                              |
+| ( ) NetOps Core       |                                                                 |
+|                       |  This viewport scrolls independently while the surrounding       |
+| ( ) Audit Vault       |  scaffolding (sidebar and top console bar) remains strictly    |
+|                       |  anchored in place.                                             |
+| ( ) Key Rotation      |                                                                 |
+|                       |                                                                 |
+|-----------------------|                                                                 |
+| User Session:         |                                                                 |
+| [ Malek Aziz H. ]     |                                                                 |
++-----------------------------------------------------------------------------------------+
+```
+
+*   **Fixed Sidebar Navigation (Width: 240px, Position: Left, Sticky):**
+    *   Contains the product logomark, target network selector dropdown, core operational views, platform configuration, and an integrated active session status indicator.
+    *   *UX Behavior:* Remains anchored during vertical page scrolling. Sidebar links transition with dynamic state styling when active.
+*   **Horizontal Platform Header (Height: 64px, Position: Top, Sticky):**
+    *   Tracks system-wide properties: current environment scope, NRF service registration count, active global mTLS status, and active user profile options.
+*   **Dynamic Scrollable Viewport (Main Content, Auto-overflow):**
+    *   Adjusts to fit screen resolutions above 1024px. Containers adapt fluidly using flex layouts to present dense, structured data matrices without vertical truncations.
+
+---
+
+## Section 2: Detailed Administrative & Portal Layouts
+
+These standalone views are designed to maintain a consistent visual style, even outside the persistent dashboard layout.
+
+### 2.1 Interface 1: Secure Portal Login Screen
+
+This screen serves as the secure entry point to the 5G Core control plane, emphasizing multi-tenant environments and network credentials.
+
+```
++----------------------------------------------------------------------------+
+|                                  [GRID ART]                                |
+|                                                                            |
+|                     +----------------------------------+                   |
+|                     | [5G LOGO] SECURE CONTROL PLANE   |                   |
+|                     | Service-Based Architecture Admin |                   |
+|                     +----------------------------------+                   |
+|                     | Target Environment Operator      |                   |
+|                     | [ 5G-LAB-PROD-SOUTH          [v] ]                   |
+|                     |                                  |                   |
+|                     | Administrative Domain Identity   |                   |
+|                     | [ admin-secops@telecom.node    ] |                   |
+|                     |                                  |                   |
+|                     | Dynamic Signature Passphrase     |                   |
+|                     | [ ****************************** ]                   |
+|                     |                                  |                   |
+|                     | [x] Enforce Client Certificate   |                   |
+|                     |                                  |                   |
+|                     | [   INITIATE SECURE CONTEXT   ]  |                   |
+|                     |                                  |                   |
+|                     | Recover Credentials | Renew Token|                   |
+|                     +----------------------------------+                   |
+|                                                                            |
++----------------------------------------------------------------------------+
+```
+
+*   **Layout Structure:** Centered login container against a dark background with subtle grid lines.
+*   **Visual Hierarchy:**
+    *   The center card features an explicit top border colored with the primary brand accent (Sky Blue 500).
+    *   The central brand badge features an illuminated "5G" and the subtext "Service-Based Architecture Access Control."
+*   **Interactive Controls & Inputs:**
+    *   *Target Environment Dropdown:* Allows selection of the target operator context (e.g., `5G-LAB-PROD-SOUTH`, `5G-LAB-DEV-NORTH`).
+    *   *Administrative Identity:* Text box configured to use monospace fonts.
+    *   *Dynamic Signature Passphrase:* Text-masked credentials entry field.
+    *   *mTLS Multi-Factor Checkbox:* Custom interactive toggle styled to read "Enforce Mutual TLS Client Certificate Verification."
+*   **Action Elements:**
+    *   *Primary Login Action:* A full-width button styled with deep-sky-blue background transitions, presenting the label "INITIATE SECURE CONTEXT."
+    *   *Auxiliary Navigation Links:* "Recover Cryptographic Keys" and "Renew Expired Authentication Token" aligned at the bottom margin.
+
+### 2.2 Interface 2: Cryptographic Access Reset / Forgot Password
+
+A secure workflow for verifying administrative identity when resetting keys.
+
+```
++----------------------------------------------------------------------------+
+|                                                                            |
+|                     +----------------------------------+                   |
+|                     | [ALERT BADGE] KEY RESTORATION    |                   |
+|                     | Security Node Cryptographic Reset|                   |
+|                     +----------------------------------+                   |
+|                     | Administrative Identification    |                   |
+|                     | [ admin-secops@telecom.node    ] |                   |
+|                     |                                  |                   |
+|                     | Verification PGP Public Signature|                   |
+|                     | +------------------------------+ |                   |
+|                     | | -----BEGIN PGP SIGNATURE---- | |                   |
+|                     | | Hash: SHA512                 | |                   |
+|                     | | ...                          | |                   |
+|                     | +------------------------------+ |                   |
+|                     |                                  |                   |
+|                     | [   VERIFY SIGNATURE SEQUENCE  ] |                   |
+|                     |                                  |                   |
+|                     | <- Abort & Return to Portal      |                   |
+|                     +----------------------------------+                   |
+|                                                                            |
++----------------------------------------------------------------------------+
+```
+
+*   **Layout Structure:** A layout styled with warning accents to indicate high-privilege operations.
+*   **Visual Hierarchy:**
+    *   Features an amber border on the card container to highlight the cryptographic recovery state.
+    *   A prominent alert box reminds the user: *"Identity recovery procedures require a valid PGP signature verified against pre-installed cluster anchors."*
+*   **Interactive Controls & Inputs:**
+    *   *Administration ID Input:* Text input box matching the login screen's style.
+    *   *Verification Signature Input:* A scrollable, border-enclosed textarea utilizing monospace typography, pre-populated with placeholder text for a PGP payload structure.
+*   **Action Elements:**
+    *   *Validation Submit Action:* Full-width button with warning hover transitions: "VERIFY SIGNATURE SEQUENCE."
+    *   *Return Mechanism:* A simple back chevron positioned at the bottom left, linking to the main login portal.
+
+### 2.3 Interface 3: Active Session & Credential Renewal
+
+An interface for rotating active certificates, updating JWT credentials, and refreshing database encryption variables.
+
+```
++----------------------------------------------------------------------------+
+|                         CREDENTIAL ROTATION ENGINE                         |
++----------------------------------------------------------------------------+
+|  Operational Target Scope                                                  |
+|  [ Service-Based Interface (SBI)                                      [v] ] |
+|                                                                            |
+|  Microservice Instance Anchor                                              |
+|  [ SBI-PROD-AMF-NODE-01                                               [v] ] |
+|                                                                            |
+|  Cryptographic Parameters                                                  |
+|  Keyspace Selection: (•) RSA-4096   ( ) ECDSA-P384                         |
+|  Rotation Lifetime (Hours): [ 168 ] (7 Days Default)                       |
+|                                                                            |
+|  +-- DYNAMIC STATUS TELEMETRY ------------------------------------------+  |
+|  | Current certificate valid for: 32 Hours                              |  |
+|  | [############################................] 64% Expired            |  |
+|  +----------------------------------------------------------------------+  |
+|                                                                            |
+|  [ EXECUTE KEY RE-GENERATION ]         [ RETRACT CURRENT CERTIFICATES ]    |
++----------------------------------------------------------------------------+
+```
+
+*   **Layout Structure:** Standard layout nested inside the fixed-sidebar container frame.
+*   **Visual Hierarchy:**
+    *   Split-column system configuration area.
+    *   The left column holds key parameter inputs.
+    *   The right column displays telemetry meters, including a countdown tracking certificate expiration.
+*   **Interactive Controls & Inputs:**
+    *   *Target Selector Dropdown:* Selections include `Service-Based Interface (SBI)`, `MongoDB Client Field Encryption (CSFLE)`, or `SCTP Transport Channels`.
+    *   *Node Instance Dropdown:* Dynamically populated list matching active network instances (e.g., `SBI-PROD-AMF-NODE-01`).
+    *   *Keyspace Choice Radio Group:* Segmented controls for `RSA-4096 Keyspace` or `ECDSA-P384 Elliptic Keyspace`.
+    *   *Validity Window Input:* Numeric adjustment box specifying hours of token validity.
+*   **Action Elements:**
+    *   *Initiate Rotation Button:* Indigo primary action button: "EXECUTE KEY RE-GENERATION."
+    *   *Emergency Evacuation Action:* Border-only red secondary button: "RETRACT CURRENT CERTIFICATES."
+
+### 2.4 Interface 4: 404 Route Unbound Screen
+
+A diagnostic view that frames route failures as system routing errors rather than a broken page.
+
+```
++----------------------------------------------------------------------------+
+|                               [404 SCHEMATIC]                              |
+|                                                                            |
+|                       STATE UNMAPPED: ROUTE NOT FOUND                      |
+|                                                                            |
+|  The requested network interface path could not be resolved by NRF.        |
+|                                                                            |
+|  Target Route:                                                             |
+|  /api/v1/sbi/namf-comm/v2/ue-contexts/imsi-208950000000001                 |
+|                                                                            |
+|  Diagnostic Code:                                                          |
+|  ERR_SBA_ENDPOINT_NOT_REGISTERED (0x404)                                   |
+|                                                                            |
+|  [ SYSTEM ROUTING TREE MAP ]         [ RE-POLL NRF SERVICE REGISTRY ]      |
++----------------------------------------------------------------------------+
+```
+
+*   **Layout Structure:** A full-height, centered viewport containing an interactive diagram of an unmapped route.
+*   **Visual Hierarchy:**
+    *   An illustrated microservice routing path showing an unmapped edge node connection with a dotted line and an amber failure indicator.
+    *   The targeted URL is displayed inside a terminal-styled text block.
+*   **Action Elements:**
+    *   *Primary Diagnostic Action:* Button styled with a grey slate border: "SYSTEM ROUTING TREE MAP."
+    *   *Secondary Remediation Action:* Active button: "RE-POLL NRF SERVICE REGISTRY."
+
+### 2.5 Interface 5: 500 Infrastructure Exception Screen
+
+A diagnostic panel for system failures, showing system status and debugging logs.
+
+```
++----------------------------------------------------------------------------+
+|                             [CRITICAL OUTAGE]                              |
+|                                                                            |
+|                       SBA CLUSTER DEGRADATION DETECTED                     |
+|                                                                            |
+|  An unexpected internal exception has disrupted the service mesh core.     |
+|                                                                            |
+|  +-- PANIC LOG DUMP (SBI-PROD-AMF-NODE-01) -----------------------------+  |
+|  | panic: runtime error: invalid memory address or nil pointer dereference |  |
+|  | [signal SIGSEGV: segmentation violation code=0x1 addr=0x0 pc=0x83e2]   |  |
+|  | goroutine 198 [running]:                                             |  |
+|  | github.com/malekaziz/5gc/amf/nas/handler.HandleRegistration(...)     |  |
+|  +----------------------------------------------------------------------+  |
+|                                                                            |
+|  [ DOWNLOAD DIAGNOSTIC PCAP ]           [ FORCE POD CONTAINER REBOOT ]     |
++----------------------------------------------------------------------------+
+```
+
+*   **Layout Structure:** Centered layout using a high-contrast dark palette with red alert accents.
+*   **Visual Hierarchy:**
+    *   Features a red alert banner showing the affected microservice node (e.g., `SBI-COMM-CONN-REFUSED`).
+    *   A monospace log console displaying a mock Go-panic trace with line-number references.
+*   **Action Elements:**
+    *   *Diagnostic Retrieval Action:* Primary green action button: "DOWNLOAD DIAGNOSTIC PCAP TRACE."
+    *   *Recovery Control:* High-visibility red button: "FORCE POD CONTAINER REBOOT."
+
+---
+
+## Section 3: Persona-Specific Dashboards & AI Generator Prompts
+
+These layouts provide tailored workspaces for three core roles: Security Administrator, Network Engineer, and Compliance Auditor.
+
+---
+
+### 3.1 User Persona A: SecOps Administrator
+
+Focuses on monitoring mutual TLS validation, credential status, and security alerts.
+
+```
++----------------------------------------------------------------------------+
+| SECOPS DASHBOARD | Threat Index: [ ELEVATED ]     Vault Status: [ SYNCED ] |
++----------------------------------------------------------------------------+
+|                                                                            |
+|  +-- MTLS INTEGRITY CARD ---------------+ +-- VAULT AUDIT CARD ----------+ |
+|  | Total NFs Linked: 12                 | | Keys Protected: 48           | |
+|  | Handshake Success Rate: 100%         | | Auto-Rotation: Enforced      | |
+|  | Revoked Certs: 0                     | | Storage Encrypted: True      | |
+|  +--------------------------------------+ +------------------------------+ |
+|                                                                            |
+|  +-- ACTIVE ZERO-TRUST CILIUM NETWORK POLICIES -------------------------+  |
+|  | Source NF     Target NF     Protocol/Port    Enforcement Mode        |  |
+|  | AMF-Node-01   SMF-Node-01   HTTP/2 (SBI)     eBPF Layer-7 Ruleset    |  |
+|  | AMF-Node-01   UPF-Node-01   GTP-U/SCTP       Blocked by Default      |  |
+|  +----------------------------------------------------------------------+  |
+|                                                                            |
+|  +-- DETECTED SIGNALING ANOMALIES --------------------------------------+  |
+|  | Time       Source IP      Type                      Remediation       |  |
+|  | 14:02 UTC  192.168.12.9   IMSI Catcher Emulator     [ MITIGATE ]      |  |
+|  +----------------------------------------------------------------------+  |
++----------------------------------------------------------------------------+
+```
+
+#### Detailed Layout Description
+*   **Header Section:** Displays the environment scope, the current security threat status, and HashiCorp Vault integration health.
+*   **Key Metrics Row (Cards):**
+    *   *mTLS Status:* Displays active network function identities, encryption configurations, and dynamic handshake success graphs.
+    *   *Secrets Metrics:* Displays secret counts, last rotation dates, and encryption key rotation schedules.
+*   **Cilium eBPF Security Map:** A table showing security policies applied between core network functions.
+*   **Security Incident Log:** A priority list displaying security logs flagged by the machine learning engine, with quick-action remediation buttons.
+
+#### AI Prompt for Generating Angular Component Code
+```text
+Create a modern, clean Angular component styled with Tailwind CSS for a 5G Core Security Operations (SecOps) Dashboard. 
+
+Design constraints & Layout rules:
+- Avoid generic web dashboard elements; frame the design strictly around telco infrastructure and security engineering.
+- Implement a professional dark-mode UI with a deep navy/slate background (#090D16) and clean container boxes (#111827) bordered with subtle slate outlines (#1F2937).
+- Use two distinct font styles: 'Inter' for UI labels and 'JetBrains Mono' (or generic monospace) for technical network variables like node names, security scopes, and IMSIs.
+
+Key UI Sections to build in a single view:
+1. Header Bar: Displays the title "Zero-Trust SecOps Console", environment badge "5G-PROD-SOUTH", and status badges for "Vault Master: Sealed" (green) and "mTLS: Strict-Enforce" (green).
+2. KPI Cards Row:
+   - Card A: "Cryptographic Handshakes" showing "100% Success Rate" and a mini inline status bar.
+   - Card B: "Active Certificates" showing "12 Issued / 0 Revoked" and "Next Auto-Rotation: 48h".
+   - Card C: "Threat Index Indicator" showing a status label of "ELEVATED" (yellow warning style).
+3. Cilium Network Policies Table: Columns for "Source Microservice", "Target Microservice", "Enforcement Engine" (e.g., eBPF Layer 7), and "Traffic Rule State" (displaying labels for Enforced/Blocked).
+4. Machine Learning Signalling Alerts Panel: Render interactive warning cards with red borders for severe incidents (e.g., "IMSI Catcher Emulator Found at Cell Tower 09") containing a clean primary action button labelled "MITIGATE ATTACK STREAM".
+
+Provide only the fully functional, clean, and styled Angular template, SCSS style sheets, and TypeScript component definitions with realistic mockup datasets.
+```
+
+---
+
+### 3.2 User Persona B: NetOps Engineer
+
+Focuses on monitoring network performance, standards conformance, and signaling call flows.
+
+```
++----------------------------------------------------------------------------+
+| NETOPS CORE PANEL | Core Status: [ RUNNING ]     RAN Simulation: [ ACTIVE ]|
++----------------------------------------------------------------------------+
+|                                                                            |
+|  +-- LATENCY METRICS CARD --------------+ +-- ACTIVE SUBSCRIBERS --------+ |
+|  | p95 Registration: 110ms              | | Registered UEs: 2            | |
+|  | PDU Session Setup: 145ms             | | Active Sessions: 2           | |
+|  +--------------------------------------+ +------------------------------+ |
+|                                                                            |
+|  +-- 3GPP CONFORMANCE VALIDATOR (TS 23.502) ----------------------------+  |
+|  | ID       Core Test Scenario       Procedure    Latency    Status     |  |
+|  | TC-01    Initial Registration     4.2.2.2      210ms      [ PASSED ] |  |
+|  | TC-02    5G-AKA Authentication    4.6.2        145ms      [ PASSED ] |  |
+|  | TC-03    Session Setup            4.3.2        188ms      [ PASSED ] |  |
+|  +----------------------------------------------------------------------+  |
+|                                                                            |
+|  +-- RECENT SYSTEM LOG MONITOR -----------------------------------------+  |
+|  | 14:02:11.201 [SMF] Sending PFCP Session Establishment Request to UPF     |  |
+|  | 14:02:11.215 [UPF] Received PFCP Request - GTP-U Tunnel Allocated       |  |
+|  +----------------------------------------------------------------------+  |
++----------------------------------------------------------------------------+
+```
+
+#### Detailed Layout Description
+*   **Header Section:** Displays simulation parameters, active RAN connections, and registration status.
+*   **Key Metrics Row (Cards):**
+    *   *Signaling Latency:* Displays connection latency profiles (such as registration and setup times).
+    *   *Subscriber Status:* Displays active subscriber counts, PDU session counts, and throughput metrics.
+*   **3GPP Conformance Table:** Displays test metrics with corresponding 3GPP document references, execution times, and status flags.
+*   **System Event Log Console:** Displays system signaling logs with component-specific tags.
+
+#### AI Prompt for Generating Angular Component Code
+```text
+Generate a modern Angular component styled with Tailwind CSS for a 5G Core Network Operations (NetOps) Dashboard.
+
+Design constraints & Layout rules:
+- The design should match a classic dark theme network dashboard. Use dark charcoal (#0A0F1D) and deep indigo backgrounds (#141A2E).
+- Use monospace fonts for IP addresses, GTP-U tunnel IDs, IMSIs, and specific 3GPP reference sections.
+
+Key UI Sections to build in a single view:
+1. Page Header: Title "NetOps Control Room", simulator controller status "UERANSIM Emulator Bound" (green badge), and target environment details.
+2. Analytics Metrics Cards:
+   - Card A: "Mean Signaling Latency" showing "114ms" with a subtitle "Registration p95".
+   - Card B: "GTP-U Tunnel Capacity" showing "14 Gbps" with a custom network traffic status bar.
+   - Card C: "Subscriber Registrations" showing "2 Active UEs" and "2 Est. PDU Sessions".
+3. 3GPP Conformance Test Suite Monitor: A telemetry grid displaying "Test Identification", "3GPP TS Specification Clause" (e.g., TS 23.502 Clause 4.2.2.2), "Execution Latency Value", and "Pass/Fail State Indicator" (using green badges for Passed, red for Failed).
+4. Core Signaling Trace Logger: A terminal component resembling a code editor console. Display 5-6 rows of live-updating mock core-network execution statements (such as "[SMF] PFCP Session Context Created on UPF Tunnel 0x9a8").
+
+Provide only the fully completed, structured Angular component, styles, and TypeScript component class with mock telemetry event simulation logic.
+```
+
+---
+
+### 3.3 User Persona C: External Compliance / Auditor
+
+Focuses on non-repudiation logging, service authorizations, and zero-trust configuration auditing.
+
+```
++----------------------------------------------------------------------------+
+| COMPLIANCE AUDIT COCKPIT | Security Schema: [ TS 33.501 ]                  |
++----------------------------------------------------------------------------+
+|                                                                            |
+|  +-- ACCESS TOKEN CARD -----------------+ +-- SECURITY COMPLIANCE -------+ |
+|  | Scopes Checked: namf-comm            | | Security Version: R15        | |
+|  | Token Validations: 1,420             | | Zero-Trust Rating: A         | |
+|  +--------------------------------------+ +------------------------------+ |
+|                                                                            |
+|  +-- NON-REPUDIATION ACCESS TOKEN VERIFICATION AUDIT LOG ---------------+  |
+|  | Timestamp     Consumer NF    Provider NF    Scope          Status     |  |
+|  | 14:02:11 UTC  AMF-Node-01    UDM-Node-01    nudm-sdm       [ VALID ]  |  |
+|  | 14:01:55 UTC  SMF-Node-02    UDM-Node-01    nudm-uecm      [ VALID ]  |  |
+|  +----------------------------------------------------------------------+  |
+|                                                                            |
+|  +-- CLIENT-SIDE FIELD LEVEL ENCRYPTION (CSFLE) STATUS -----------------+  |
+|  | Mongo Database Scope       Data Key ID         Encryption Algorithm   |  |
+|  | subscriber_db.profiles     key-id-091a-f       AEAD_AES_256_CBC       |  |
+|  +----------------------------------------------------------------------+  |
++----------------------------------------------------------------------------+
+```
+
+#### Detailed Layout Description
+*   **Header Section:** Displays zero-trust compliance standards (such as 3GPP TS 33.501), current software versions, and security ratings.
+*   **Key Metrics Row (Cards):**
+    *   *Access Verification Status:* Displays validation counts, security scope metrics, and access statistics.
+    *   *System Configuration:* Displays active software versions and overall security status.
+*   **Access Token Audit Log:** An append-only audit trail logging authorization requests, requesting nodes, and validation statuses.
+*   **Database Encryption Card:** Shows the encryption status of database fields (such as subscriber IMSIs and authentication vectors) utilizing Client-Side Field Level Encryption.
+
+#### AI Prompt for Generating Angular Component Code
+```text
+Generate a modern Angular component styled with Tailwind CSS for a "Zero-Trust Compliance & Audit Vault Dashboard" designed for telecom auditors.
+
+Design constraints & Layout rules:
+- Prioritize a structured compliance layout over rapid-movement telemetry charts.
+- Use a high-contrast dark theme (slate and grey palette with gold highlights).
+- Display cryptographic indicators, token validation chains, and key-management audits.
+
+Key UI Sections to build in a single view:
+1. Header Area: Displays the title "TS 33.501 Compliance Auditor Desk" alongside dynamic security standard indicator badges.
+2. Audit Overview Metrics:
+   - Card A: "Validated Token Operations" showing "1,421 Success Cases" and a checked badge.
+   - Card B: "Client Database Encryption Status" showing "MongoDB CSFLE Enabled" (green badge).
+   - Card C: "Crypto Key Strength" showing "AES-256-CBC-HMAC" and a security status indicator.
+3. Access Token Audit Log: A data grid with columns for "System Time", "Inbound Request Node", "Target Registry Node", "Requested Security Scope Key" (e.g., nudm-sdm), and "Cryptographic Verification State" (green labels for Approved, red for Token Revoked/Refused).
+4. MongoDB Encrypted Field Index Matrix: Displays database schema mappings showing which database fields are masked (e.g., "subscriber_db.profiles.imsi" marked as "AES-256 Encrypted", "subscriber_db.profiles.k_key" marked as "AES-256 Encrypted").
+
+Provide only the completed Angular component code structure, SCSS layouts, and corresponding TypeScript controller class.
+```
+
+---
+
+## Section 4: Slide Deck Presentation Blueprint
+
+---
+
+### Slide 1: Cover / Title Slide
+*   **Title:** Design, Security & Validation of a Cloud-Native 5G Core Network
+*   **Subtitle:** Implementing Zero-Trust Security architectures & Intelligent Anomaly Detection on Service-Based Architectures (SBA)
+*   **Visual Layout:**
+    *   Left Column: Title block utilizing clean typography, with the candidate's name, email, institution, and department.
+    *   Right Column: Abstract network schematic illustrating network microservice clusters connected to an orchestrator core.
+*   **Key Content:**
+    *   Candidate: Malek Aziz Hassayoun
+    *   Institution: ESPRIT – Private School of Engineering
+    *   Focus Areas: Cloud-Native Microservices, Zero-Trust Architecture, 3GPP Standards Compliance, Telemetry and Observability.
+*   **Speaker Script Outline:**
+    *   Introduce yourself and state the purpose of the presentation.
+    *   Briefly explain the goal of the project: creating a security-hardened, cloud-native 5G Core prototype.
+    *   Mention the shift in 5G towards microservices, and how this project aims to address the security gaps created by that transition.
+
+---
+
+### Slide 2: Context & Motivation
+*   **Title:** Evolution of the 5G Service-Based Architecture
+*   **Visual Layout:**
+    *   A comparative diagram mapping the structural shift from traditional, hardware-bound 4G LTE architectures (MME, SGW, PGW) to the modular, HTTP/2-based microservice network functions of 5G (AMF, SMF, UPF).
+*   **Key Content:**
+    *   *Monolithic to Modular:* The transition from hardware-bound network functions to software-based APIs.
+    *   *Service-Based Interface (SBI):* Network functions communicating over HTTP/2 with JSON payloads.
+    *   *Cloud-Native Design:* Containerized components managed by orchestrators, bringing web-scale engineering to telecommunications networks.
+*   **Speaker Script Outline:**
+    *   Explain how 3GPP Release 15 redefined the mobile core by adopting a Service-Based Architecture.
+    *   Highlight that this shift makes 5G cores look like cloud application clusters, which opens up new opportunities for containerization and security.
+    *   Point out that while standard protocols offer flexibility, they also introduce security challenges that require a zero-trust model.
+
+---
+
+### Slide 3: The Security Gap in Open-Source Core Networks
+*   **Title:** Analyzing Security Vulnerabilities in Current Solutions
+*   **Visual Layout:**
+    *   A structural matrix comparing popular open-source 5G projects (such as Open5GS, Free5GC, and OAI) against production security standards.
+*   **Key Content:**
+    *   *The Security Gap:* Existing open-source implementations often skip security features, utilizing unencrypted HTTP/2 connections and lacking authentication.
+    *   *Missing Security Policies:* Lack of network policies between internal containers, leaving networks vulnerable to lateral movement if one component is compromised.
+    *   *Unsecured Subscriber Storage:* Subscriber credentials and identifiers are often stored in plain text, making them vulnerable to access database exploits.
+*   **Speaker Script Outline:**
+    *   Acknowledge the value of existing open-source 5G platforms for learning and basic testing.
+    *   Highlight their main limitation: they are typically designed for open laboratory environments, leaving security components like mutual TLS, access tokens, and encryption for operators to implement themselves.
+    *   Explain how this project addresses these gaps by building a secure, zero-trust 5G core prototype from the ground up.
+
+---
+
+### Slide 4: Project Objectives & Core Contributions
+*   **Title:** Key Objectives of the Project
+*   **Visual Layout:**
+    *   Three columns highlighting the project's core objectives: Zero-Trust Security, Machine Learning Anomaly Detection, and Automated Compliance Testing.
+*   **Key Content:**
+    *   *Zero-Trust Security:* Implementing certificate-based authentication, token authorizations, and automated key rotation.
+    *   *Intelligent Anomaly Detection:* Building a real-time analytics engine to identify threats like IMSI catchers and signaling floods.
+    *   *Automated Conformance Testing:* Implementing a test suite to validate core behaviors against 3GPP specifications.
+*   **Speaker Script Outline:**
+    *   Explain that this project is focused on addressing these specific security gaps.
+    *   Present the three main pillars: zero-trust network policies, real-time threat detection, and an automated testing framework to validate compliance.
+    *   Emphasize that these components are built directly into the system architecture rather than being added as secondary features.
+
+---
+
+### Slide 5: Zero-Trust Security Architecture
+*   **Title:** Implementing Zero-Trust Network Principles (3GPP TS 33.501)
+*   **Visual Layout:**
+    *   A detailed diagram illustrating the secure Service-Based Interface flow: AMF, NRF, and UDM authenticated via mutual TLS, with authorization verified through OAuth2 tokens and network policies enforced by Cilium.
+*   **Key Content:**
+    *   *Mutual TLS (mTLS):* Encrypted communication channels between network functions, utilizing dynamic certificate rotation managed by HashiCorp Vault.
+    *   *OAuth2 Access Tokens:* The NRF acts as an authorization server, issuing short-lived access tokens to secure microservice endpoints.
+    *   *Cilium Network Policies:* Enforcing network-level communication rules, ensuring components can only communicate with authorized peers.
+*   **Speaker Script Outline:**
+    *   Explain the practical application of zero-trust within the core: assuming no internal connection is secure by default.
+    *   Describe the mutual authentication process between core components, the role of OAuth2 tokens, and how Cilium enforces communication policies.
+    *   Explain how this architecture prevents unauthorized lateral movement within the network.
+
+---
+
+### Slide 6: Protecting Subscriber Data At Rest
+*   **Title:** Database Security via Client-Side Field Level Encryption
+*   **Visual Layout:**
+    *   A database schema diagram showing the database structure, with sensitive subscriber fields (IMSI, K-key, OPc-key) encrypted before storage, while non-sensitive fields remain readable.
+*   **Key Content:**
+    *   *The Security Gap:* Avoid storing sensitive subscriber credentials in plain text in backend databases like MongoDB.
+    *   *Client-Side Encryption:* Utilizing MongoDB CSFLE to encrypt subscriber identifiers on the client side before writing to disk.
+    *   *Key Management:* Cryptographic keys are secured in HashiCorp Vault, ensuring DB administrators cannot view subscriber details in plain text.
+*   **Speaker Script Outline:**
+    *   Discuss a common security vulnerability: plaintext storage of subscriber identities in the database.
+    *   Explain the implementation of Client-Side Field Level Encryption (CSFLE), which ensures sensitive subscriber data is encrypted before it reaches the database.
+    *   Highlight how this approach ensures data security even in the event of a database breach.
+
+---
+
+### Slide 7: Intelligent Anomaly Detection Engine
+*   **Title:** Real-Time Signaling Threat Detection
+*   **Visual Layout:**
+    *   An architecture block diagram of the telemetry pipeline: network functions push metrics to Prometheus, which are then analyzed by the anomaly detection engine to trigger alerts or automated remediations.
+*   **Key Content:**
+    *   *Threat Models:* Detecting attacks such as IMSI enumeration, signaling floods, and rogue base stations.
+    *   *Detection Methods:* Combining rule-based alerts with statistical threshold checks (Z-score tracking) to identify anomalies.
+    *   *Mitigation Loops:* Automatically triggering network policy changes to isolate compromised or rogue nodes.
+*   **Speaker Script Outline:**
+    *   Explain the role of the anomaly detection engine as the system's monitor.
+    *   Describe the threat models it addresses, such as IMSI capture attempts or signaling-level denial of service attacks.
+    *   Outline the multi-tier detection pipeline, showing how real-time metrics are analyzed to identify anomalous behaviors and trigger automated mitigations.
+
+---
+
+### Slide 8: Automated Conformance Testing Framework
+*   **Title:** Continuous Integration & Standards Validation
+*   **Visual Layout:**
+    *   A continuous integration (CI/CD) pipeline diagram showing code changes triggering a test suite that deploys the network core and run-simulators to validate performance and security.
+*   **Key Content:**
+    *   *Scenario-Driven Testing:* Storing test cases in standardized YAML definitions to validate behaviors against 3GPP specifications.
+    *   *Test Execution:* Deploying the core network alongside simulated network elements to run automated validation tests.
+    *   *Security Verification:* Running automated attack simulations (e.g., expired certificates, missing tokens) to verify the core's security posture.
+*   **Speaker Script Outline:**
+    *   Explain the importance of automated validation in modern network environments.
+    *   Describe the Go-based test runner, which uses structured YAML test scenarios to validate core behaviors.
+    *   Highlight how the test suite verifies both standard network operations and security responses under simulated attack conditions.
+
+---
+
+### Slide 9: Interface Architecture & Portal Design
+*   **Title:** Classic and Professional Interface Architecture
+*   **Visual Layout:**
+    *   A wireframe design displaying the unified design system, featuring the fixed left navigation bar, persistent top status panel, and center content workspace.
+*   **Key Content:**
+    *   *Unified Design System:* Clean dark theme designed for prolonged monitoring in operations centers.
+    *   *Responsive Grid:* Layout that scales fluidly to support complex tables, logs, and network diagrams.
+    *   *Dynamic Status Tracking:* Constant visibility of key health metrics like mTLS status and certificate lifespans.
+*   **Speaker Script Outline:**
+    *   Present the UI/UX design philosophy, emphasizing clean layouts, high readability, and dark-mode-first interfaces.
+    *   Describe the persistent screen layout, which ensures navigation and status trackers remain visible at all times.
+    *   Explain how the workspace adjusts to support the dense data requirements of network operators.
+
+---
+
+### Slide 10: Administrative View: Portal Login & Security Key Recovery
+*   **Title:** Securing Platform Access Points
+*   **Visual Layout:**
+    *   A side-by-side mockup of the primary platform access views: the login portal on the left, and the credential recovery panel on the right.
+*   **Key Content:**
+    *   *Multi-Tenant Login:* Access portals requiring tenant domain selection, credential entry, and client certificate verification.
+    *   *Cryptographic Recovery:* Replacing standard email resets with a signature-based recovery process requiring digital signatures.
+    *   *Design Features:* Focused, high-contrast layouts designed to prevent entry errors.
+*   **Speaker Script Outline:**
+    *   Describe the entry points to the management console, starting with the secure multi-tenant login screen.
+    *   Explain the key recovery process, which replaces traditional email resets with cryptographic signature verification.
+    *   Highlight how these design elements reinforce the overall zero-trust security model of the platform.
+
+---
+
+### Slide 11: SecOps Administrator Console
+*   **Title:** The Security Management Interface
+*   **Visual Layout:**
+    *   A mockup of the SecOps view, highlighting mTLS health trackers, Cilium security policy lists, and active security threat alerts.
+*   **Key Content:**
+    *   *Zero-Trust Monitor:* Live tracking of certificate lifespans, validation rates, and token statistics.
+    *   *Policy Controls:* Real-time visibility and configuration of active eBPF communication policies.
+    *   *Alert Panel:* Interactive security log showing flagged anomalies and quick-action mitigation controls.
+*   **Speaker Script Outline:**
+    *   Introduce the SecOps Administrator dashboard, the central control room for security operations.
+    *   Show how it provides high-level visibility into security metrics while allowing administrators to drill down into specific network policies.
+    *   Explain how the interface highlights security anomalies, enabling administrators to quickly respond and isolate threats.
+
+---
+
+### Slide 12: NetOps Engineering Console
+*   **Title:** Network Performance & Standards Validation
+*   **Visual Layout:**
+    *   A mockup of the NetOps view, displaying connection latencies, subscriber lists, and 3GPP conformance test results.
+*   **Key Content:**
+    *   *Conformance Tracking:* Real-time tracking of test results mapped to specific 3GPP specifications.
+    *   *Telemetry Monitoring:* Detailed performance metrics, including registration latencies and user plane throughput.
+    *   *Event Logs:* Live-updating terminal log component for debugging signaling flows.
+*   **Speaker Script Outline:**
+    *   Present the NetOps dashboard, designed for network performance monitoring and troubleshooting.
+    *   Explain how the interface tracks compliance with 3GPP standards, showing the status of registration and session setup tests.
+    *   Show how the integrated logging console helps engineers debug signaling flows without switching tools.
+
+---
+
+### Slide 13: Technical Architecture & Environment
+*   **Title:** System Implementation Stack
+*   **Visual Layout:**
+    *   An architecture stack diagram displaying the technical environment: Go for core components, Cilium and Vault for security, Prometheus and Grafana for monitoring, and Docker for deployment.
+*   **Key Content:**
+    *   *Development Stack:* High-performance network functions built in Go, with UPF data path utilities in C.
+    *   *Security & Database:* HashiCorp Vault for key management, Cilium for network policies, and MongoDB with CSFLE for storage.
+    *   *Monitoring & Deployment:* Prometheus and Grafana for metrics and visualization, packaged in Docker environments.
+*   **Speaker Script Outline:**
+    *   Detail the development and runtime technologies used to build and deploy the platform.
+    *   Explain why Go was chosen for the core network functions, and how tools like Cilium and HashiCorp Vault are integrated.
+    *   Emphasize that the entire stack is containerized, ensuring reproducible deployments across development and staging environments.
+
+---
+
+### Slide 14: Project Plan, Milestones & Feasibility
+*   **Title:** Project Roadmap and Risk Management
+*   **Visual Layout:**
+    *   A Gantt chart outlining the project's phases over a 24-week period, paired with a risk mitigation matrix.
+*   **Key Content:**
+    *   *Phase Timeline:* Covering design, development, security integration, testing, and final deployment.
+    *   *Core Goals:* Delivering a working MVP core before expanding into advanced security and telemetry features.
+    *   *Risk Mitigation:* Practical fallbacks for key technical challenges, such as protocol complexities or deployment overhead.
+*   **Speaker Script Outline:**
+    *   Walk through the structured, phase-driven roadmap for the 24-week project timeline.
+    *   Highlight the importance of delivering a working MVP core early in the timeline to establish a stable foundation for security features.
+    *   Address the primary technical risks and explain the mitigation strategies in place to ensure successful project delivery.
+
+---
+
+### Slide 15: Conclusion & Future Outlook
+*   **Title:** Summary and Future Scope
+*   **Visual Layout:**
+    *   A final summary slide highlighting the key contributions of the project, next steps, and its relevance to cloud-native telecom architectures.
+*   **Key Content:**
+    *   *Core Achievements:* Building a secure, zero-trust 5G Core prototype with automated compliance validation.
+    *   *Future Outlook:* Potential enhancements such as advanced machine learning models and dynamic slice-isolation capabilities.
+    *   *Industry Relevance:* Demonstrating modern patterns for building secure, observable software defined telecom networks.
+*   **Speaker Script Outline:**
+    *   Summarize the main goals and architecture of the project.
+    *   Highlight how the platform addresses real-world security gaps in 5G implementations through zero-trust architectures and automated testing.
+    *   Thank the audience for their time and open the floor for any questions.

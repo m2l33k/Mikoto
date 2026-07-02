@@ -1,0 +1,103 @@
+<section class="ztn-page">
+  <div class="ztn-page__head">
+    <div>
+      <h1 class="display-title">TS 33.501 Compliance Auditor Desk</h1>
+      <p class="metatag">Non-Repudiation · Service Authorization · Zero-Trust Audit</p>
+    </div>
+    <div class="head-badges">
+      <span class="ztn-badge ztn-badge--warning">Schema: TS 33.501</span>
+      <span class="ztn-badge ztn-badge--primary">Security Version: R15</span>
+    </div>
+  </div>
+
+  <!-- KPI cards -->
+  <div class="ztn-grid kpi-row">
+    <div class="ztn-card">
+      <div class="ztn-card__title">Validated Token Operations</div>
+      <div class="ztn-kpi__value">1,421</div>
+      <div class="ztn-kpi__label">Success Cases · scope namf-comm</div>
+      <span class="ztn-badge ztn-badge--success" style="margin-top: 10px">Verified</span>
+    </div>
+
+    <div class="ztn-card">
+      <div class="ztn-card__title">Client Database Encryption</div>
+      <div class="ztn-kpi__value">MongoDB</div>
+      <div class="ztn-kpi__label">CSFLE Enabled · Keys in Vault</div>
+      <span class="ztn-badge ztn-badge--success" style="margin-top: 10px">Enabled</span>
+    </div>
+
+    <div class="ztn-card">
+      <div class="ztn-card__title">Crypto Key Strength</div>
+      <div class="ztn-kpi__value mono" style="font-size: 20px">AES-256-CBC-HMAC</div>
+      <div class="ztn-kpi__label">Zero-Trust Rating: A</div>
+    </div>
+  </div>
+
+  <!-- Token audit log -->
+  <div class="ztn-card">
+    <h2 class="ztn-card__title">
+      Non-Repudiation Access Token Verification Audit Log
+    </h2>
+    <div class="ztn-table-wrap">
+      <table class="ztn-table">
+        <thead>
+          <tr>
+            <th>System Time</th>
+            <th>Consumer NF</th>
+            <th>Provider NF</th>
+            <th>Requested Scope</th>
+            <th>Verification State</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (t of tokens; track t.timestamp + t.consumer) {
+            <tr>
+              <td class="mono">{{ t.timestamp }}</td>
+              <td class="mono">{{ t.consumer }}</td>
+              <td class="mono">{{ t.provider }}</td>
+              <td class="mono">{{ t.scope }}</td>
+              <td>
+                <span
+                  class="ztn-badge"
+                  [class.ztn-badge--success]="t.status === 'valid'"
+                  [class.ztn-badge--danger]="t.status === 'revoked'"
+                >
+                  {{ t.status === 'valid' ? 'Valid' : 'Token Revoked' }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CSFLE matrix -->
+  <div class="ztn-card">
+    <h2 class="ztn-card__title">
+      Client-Side Field Level Encryption (CSFLE) Status
+    </h2>
+    <div class="ztn-table-wrap">
+      <table class="ztn-table">
+        <thead>
+          <tr>
+            <th>Mongo Database Scope</th>
+            <th>Data Key ID</th>
+            <th>Encryption Algorithm</th>
+            <th>State</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (f of fields; track f.scope) {
+            <tr>
+              <td class="mono">{{ f.scope }}</td>
+              <td class="mono">{{ f.keyId }}</td>
+              <td class="mono">{{ f.algorithm }}</td>
+              <td><span class="ztn-badge ztn-badge--success">AES-256 Encrypted</span></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

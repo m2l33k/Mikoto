@@ -1,0 +1,146 @@
+<section class="ztn-page">
+  <div class="ztn-page__head">
+    <div>
+      <h1 class="display-title">NF Registry &amp; Discovery</h1>
+      <p class="metatag">NRF · Service Registration · Heartbeat Monitoring</p>
+    </div>
+    <div class="head-badges">
+      <span class="ztn-badge ztn-badge--success">NRF: Healthy</span>
+      <span class="ztn-badge ztn-badge--warning">1 Suspended</span>
+    </div>
+  </div>
+
+  <div class="ztn-grid kpi-row">
+    <div class="ztn-card">
+      <div class="kpi__head"><ui-icon name="server" [size]="16" /><span>Registered NF Instances</span></div>
+      <div class="ztn-kpi__value">8</div>
+      <div class="ztn-kpi__sub">7 active · 1 suspended</div>
+    </div>
+    <div class="ztn-card">
+      <div class="kpi__head"><ui-icon name="activity" [size]="16" /><span>Exposed Services</span></div>
+      <div class="ztn-kpi__value">11</div>
+      <div class="ztn-kpi__sub">discoverable via Nnrf</div>
+    </div>
+    <div class="ztn-card">
+      <div class="kpi__head"><ui-icon name="lock" [size]="16" /><span>Heartbeat SLA</span></div>
+      <div class="ztn-kpi__value">99.98%</div>
+      <div class="ztn-kpi__sub">timeout 30s · interval 10s</div>
+    </div>
+  </div>
+
+  <div class="ztn-card">
+    <h2 class="ztn-card__title">
+      <ui-icon name="server" [size]="14" /> Registered Network Functions
+      <input
+        class="ztn-input table-search"
+        type="search"
+        placeholder="Filter by type, FQDN, service…"
+        [value]="query()"
+        (input)="query.set($any($event.target).value)"
+      />
+      <button class="ztn-btn ztn-btn--ghost btn-sm" type="button" (click)="exportCsv()">
+        <ui-icon name="download" [size]="14" /> CSV
+      </button>
+    </h2>
+    <div class="ztn-table-wrap">
+      <table class="ztn-table">
+        <thead>
+          <tr>
+            <th>NF Type</th>
+            <th>Instance ID</th>
+            <th>FQDN</th>
+            <th>SBI Endpoint</th>
+            <th>Services</th>
+            <th>Load</th>
+            <th>Heartbeat</th>
+            <th>TLS</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (nf of filtered(); track nf.instanceId) {
+            <tr class="row-click" (click)="open(nf)">
+              <td><span class="nf-type mono">{{ nf.type }}</span></td>
+              <td class="mono dim">{{ nf.instanceId }}</td>
+              <td class="mono">{{ nf.fqdn }}</td>
+              <td class="mono">{{ nf.endpoint }}</td>
+              <td class="mono dim">{{ nf.services }}</td>
+              <td>
+                <div class="load-cell">
+                  <div class="ztn-meter load-meter">
+                    <div
+                      class="ztn-meter__fill"
+                      [class.ztn-meter__fill--warning]="nf.load >= 70"
+                      [style.width.%]="nf.load"
+                    ></div>
+                  </div>
+                  <span class="mono">{{ nf.load }}%</span>
+                </div>
+              </td>
+              <td class="mono dim">{{ nf.heartbeat }}</td>
+              <td>
+                @if (nf.tls) {
+                  <span class="ztn-badge ztn-badge--success">mTLS</span>
+                } @else {
+                  <span class="ztn-badge ztn-badge--danger">None</span>
+                }
+              </td>
+              <td>
+                <span
+                  class="ztn-badge"
+                  [class.ztn-badge--success]="nf.status === 'registered'"
+                  [class.ztn-badge--warning]="nf.status === 'suspended'"
+                  [class.ztn-badge--danger]="nf.status === 'deregistered'"
+                >{{ nf.status }}</span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<app-drawer
+  [open]="selected() !== null"
+  [eyebrow]="'NF Instance · ' + (selected()?.type ?? '')"
+  [title]="selected()?.fqdn ?? ''"
+  (closed)="close()"
+>
+  @if (selected(); as nf) {
+    <dl class="dl">
+      <dt>NF Type</dt><dd>{{ nf.type }}</dd>
+      <dt>Instance ID</dt><dd>{{ nf.instanceId }}</dd>
+      <dt>FQDN</dt><dd>{{ nf.fqdn }}</dd>
+      <dt>SBI Endpoint</dt><dd>{{ nf.endpoint }}</dd>
+      <dt>Services</dt><dd>{{ nf.services }}</dd>
+      <dt>Heartbeat</dt><dd>{{ nf.heartbeat }}</dd>
+      <dt>Current Load</dt><dd>{{ nf.load }}%</dd>
+      <dt>Transport</dt><dd>{{ nf.tls ? 'mTLS (TLS 1.3)' : 'plaintext' }}</dd>
+      <dt>Status</dt><dd>{{ nf.status }}</dd>
+    </dl>
+
+    <div class="drawer-section">
+      <h4 class="drawer-section__title">Discovery</h4>
+      <div class="ztn-terminal">
+        <div><span class="t-time">GET</span> /nnrf-disc/v1/nf-instances?target-nf-type={{ nf.type }}</div>
+        <div><span class="t-smf">200 OK</span> · 1 instance · ttl 30s</div>
+      </div>
+    </div>
+  }
+
+  <div drawer-actions>
+    @if (selected(); as nf) {
+      <button class="ztn-btn ztn-btn--ghost" type="button" (click)="close()">Close</button>
+      <button
+        class="ztn-btn"
+        [class.ztn-btn--outline-danger]="nf.status === 'registered'"
+        [class.ztn-btn--primary]="nf.status !== 'registered'"
+        type="button"
+        (click)="toggleStatus(nf)"
+      >
+        {{ nf.status === 'registered' ? 'Suspend NF' : 'Resume NF' }}
+      </button>
+    }
+  </div>
+</app-drawer>

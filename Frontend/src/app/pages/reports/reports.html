@@ -1,0 +1,69 @@
+<section class="ztn-page">
+  <div class="ztn-page__head">
+    <div>
+      <h1 class="display-title">Reports &amp; Export</h1>
+      <p class="metatag">Compliance · Conformance · Security · SLA</p>
+    </div>
+    <div class="head-badges">
+      <span class="ztn-badge ztn-badge--primary">PDF / CSV</span>
+    </div>
+  </div>
+
+  <!-- Templates -->
+  <div class="report-grid">
+    @for (t of templates; track t.id) {
+      <div class="ztn-card report-card">
+        <div>
+          <div class="report-card__std metatag">{{ t.standard }}</div>
+          <h3 class="report-card__name">{{ t.name }}</h3>
+          <p class="report-card__desc">{{ t.description }}</p>
+        </div>
+        <div class="report-card__actions">
+          <button class="ztn-btn ztn-btn--primary btn-sm" type="button" (click)="generate(t, 'PDF')">
+            Generate PDF
+          </button>
+          <button class="ztn-btn ztn-btn--ghost btn-sm" type="button" (click)="generate(t, 'CSV')">
+            CSV
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Generated reports -->
+  <div class="ztn-card">
+    <h2 class="ztn-card__title"><ui-icon name="file-text" [size]="14" /> Generated Reports</h2>
+    <div class="ztn-table-wrap">
+      <table class="ztn-table">
+        <thead>
+          <tr><th>Report</th><th>Type</th><th>Period</th><th>Format</th><th>Size</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody>
+          @for (r of reports(); track r.name) {
+            <tr>
+              <td class="mono">{{ r.name }}</td>
+              <td>{{ r.type }}</td>
+              <td class="mono dim">{{ r.period }}</td>
+              <td class="mono">{{ r.format }}</td>
+              <td class="mono dim">{{ r.size }}</td>
+              <td>
+                <span
+                  class="ztn-badge"
+                  [class.ztn-badge--success]="r.status === 'ready'"
+                  [class.ztn-badge--warning]="r.status === 'generating'"
+                >{{ r.status }}</span>
+              </td>
+              <td>
+                @if (r.status === 'ready') {
+                  <button class="ztn-btn ztn-btn--ghost btn-sm" type="button" (click)="download(r)">
+                    <ui-icon name="download" [size]="14" /> Download
+                  </button>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

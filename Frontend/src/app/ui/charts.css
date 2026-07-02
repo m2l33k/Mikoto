@@ -1,0 +1,150 @@
+:host {
+  display: block;
+}
+
+.chart {
+  position: relative;
+  width: 100%;
+}
+.chart__svg {
+  display: block;
+  width: 100%;
+}
+
+.grid {
+  stroke: var(--border-default);
+  stroke-opacity: 0.5;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+.axis {
+  fill: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+}
+.axis--y {
+  text-anchor: end;
+}
+.axis--x {
+  text-anchor: middle;
+}
+.crosshair {
+  stroke: var(--text-faint);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.chart__tip {
+  position: absolute;
+  transform: translateX(-50%);
+  pointer-events: none;
+  background: var(--bg-base);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  padding: 7px 9px;
+  min-width: 116px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  z-index: 5;
+}
+.chart__tip-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-faint);
+  margin-bottom: 5px;
+}
+.chart__tip-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  font-size: 12px;
+  margin-top: 2px;
+}
+.chart__tip-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+}
+.chart__tip-key i {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  display: inline-block;
+}
+.chart__tip-val {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 10px;
+  padding-left: 46px;
+}
+.legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.legend__item i {
+  width: 10px;
+  height: 3px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+/* Donut */
+.donut {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.donut__total {
+  font-family: var(--font-mono);
+  font-size: 7px;
+  font-weight: 700;
+  fill: var(--text-primary);
+}
+.donut__cap {
+  font-family: var(--font-mono);
+  font-size: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  fill: var(--text-faint);
+}
+.donut__legend {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex: 1;
+}
+.donut__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 12px;
+}
+.donut__key {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--text-muted);
+}
+.donut__key i {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  display: inline-block;
+}
+.donut__val {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text-primary);
+}

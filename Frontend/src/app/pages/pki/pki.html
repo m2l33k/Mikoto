@@ -1,0 +1,146 @@
+<section class="ztn-page">
+  <div class="ztn-page__head">
+    <div>
+      <h1 class="display-title">PKI &amp; Certificate Lifecycle</h1>
+      <p class="metatag">Internal CA · X.509 NF Identity · Automated Rotation</p>
+    </div>
+    <div class="head-badges">
+      <span class="ztn-badge ztn-badge--success">CA: Online</span>
+      <span class="ztn-badge ztn-badge--warning">1 Expiring ≤3d</span>
+    </div>
+  </div>
+
+  <div class="ztn-grid kpi-row">
+    <div class="ztn-card">
+      <div class="kpi__head"><ui-icon name="lock" [size]="16" /><span>Issued Certificates</span></div>
+      <div class="ztn-kpi__value">12<span class="kpi-split"> / 0</span></div>
+      <div class="ztn-kpi__sub">active / revoked</div>
+    </div>
+    <div class="ztn-card">
+      <div class="kpi__head"><ui-icon name="refresh" [size]="16" /><span>Rotation Policy</span></div>
+      <div class="ztn-kpi__value">168<span class="kpi-split"> h</span></div>
+      <div class="ztn-kpi__sub">auto-rotate · 7-day TTL</div>
+    </div>
+    <div class="ztn-card">
+      <div class="kpi__head"><ui-icon name="shield-check" [size]="16" /><span>Chain Validation</span></div>
+      <div class="ztn-kpi__value">Valid</div>
+      <div class="ztn-kpi__sub">Root → Intermediate → leaf</div>
+    </div>
+  </div>
+
+  <!-- CA chain -->
+  <div class="ztn-card">
+    <h2 class="ztn-card__title"><ui-icon name="shield" [size]="14" /> Certificate Authority Chain</h2>
+    <div class="ca-chain">
+      <div class="ca-node">
+        <span class="ca-node__role">Root CA</span>
+        <span class="mono">5GC-Root-CA</span>
+        <span class="ztn-kpi__sub">RSA-4096 · self-signed · 10y</span>
+      </div>
+      <span class="ca-arrow">→</span>
+      <div class="ca-node">
+        <span class="ca-node__role">Intermediate</span>
+        <span class="mono">5GC-SBI-Issuer</span>
+        <span class="ztn-kpi__sub">RSA-4096 · Vault PKI · 1y</span>
+      </div>
+      <span class="ca-arrow">→</span>
+      <div class="ca-node ca-node--leaf">
+        <span class="ca-node__role">Leaf (per NF)</span>
+        <span class="mono">*.sbi.5gc.local</span>
+        <span class="ztn-kpi__sub">RSA / ECDSA · 7d TTL</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Certs table -->
+  <div class="ztn-card">
+    <h2 class="ztn-card__title">
+      <ui-icon name="lock" [size]="14" /> Issued NF Certificates
+      <a class="card-link" routerLink="/key-rotation">Rotate keys →</a>
+    </h2>
+    <div class="ztn-table-wrap">
+      <table class="ztn-table">
+        <thead>
+          <tr>
+            <th>NF</th>
+            <th>Subject CN</th>
+            <th>Serial</th>
+            <th>Key Algorithm</th>
+            <th>Issued</th>
+            <th>Expires</th>
+            <th>Validity Remaining</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of certs(); track c.serial) {
+            <tr class="row-click" (click)="open(c)">
+              <td class="mono">{{ c.nf }}</td>
+              <td class="mono">{{ c.cn }}</td>
+              <td class="mono dim">{{ c.serial }}</td>
+              <td class="mono">{{ c.algo }}</td>
+              <td class="mono dim">{{ c.issued }}</td>
+              <td class="mono dim">{{ c.expires }}</td>
+              <td>
+                <div class="load-cell">
+                  <div class="ztn-meter exp-meter">
+                    <div
+                      class="ztn-meter__fill"
+                      [class.ztn-meter__fill--danger]="severity(c.daysLeft) === 'danger'"
+                      [class.ztn-meter__fill--warning]="severity(c.daysLeft) === 'warning'"
+                      [class.ztn-meter__fill--success]="severity(c.daysLeft) === 'success'"
+                      [style.width.%]="(c.daysLeft / maxDays) * 100"
+                    ></div>
+                  </div>
+                  <span class="mono">{{ c.daysLeft }}d</span>
+                </div>
+              </td>
+              <td>
+                <span
+                  class="ztn-badge"
+                  [class.ztn-badge--danger]="severity(c.daysLeft) === 'danger'"
+                  [class.ztn-badge--warning]="severity(c.daysLeft) === 'warning'"
+                  [class.ztn-badge--success]="severity(c.daysLeft) === 'success'"
+                >
+                  {{ severity(c.daysLeft) === 'danger' ? 'Renew now' : severity(c.daysLeft) === 'warning' ? 'Expiring' : 'Valid' }}
+                </span>
+              </td>
+              <td>
+                <button class="ztn-btn ztn-btn--ghost btn-sm" type="button" (click)="rotate(c); $event.stopPropagation()">
+                  Rotate
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<app-drawer
+  [open]="selected() !== null"
+  [eyebrow]="'Certificate · ' + (selected()?.nf ?? '')"
+  [title]="selected()?.cn ?? ''"
+  (closed)="close()"
+>
+  @if (selected(); as c) {
+    <dl class="dl">
+      <dt>Network Function</dt><dd>{{ c.nf }}</dd>
+      <dt>Subject CN</dt><dd>{{ c.cn }}</dd>
+      <dt>Serial</dt><dd>{{ c.serial }}</dd>
+      <dt>Key Algorithm</dt><dd>{{ c.algo }}</dd>
+      <dt>Issued</dt><dd>{{ c.issued }}</dd>
+      <dt>Expires</dt><dd>{{ c.expires }}</dd>
+      <dt>Remaining</dt><dd>{{ c.daysLeft }} days</dd>
+      <dt>Issuer</dt><dd>5GC-SBI-Issuer</dd>
+    </dl>
+  }
+  <div drawer-actions>
+    @if (selected(); as c) {
+      <button class="ztn-btn ztn-btn--ghost" type="button" (click)="close()">Close</button>
+      <button class="ztn-btn ztn-btn--primary" type="button" (click)="rotate(c)">Rotate Certificate</button>
+    }
+  </div>
+</app-drawer>

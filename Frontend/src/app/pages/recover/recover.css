@@ -1,0 +1,46 @@
+.recover-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 460px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  padding: 28px;
+}
+
+.recover-card__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+.alert-badge {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  background: var(--warning-soft);
+  color: var(--brand-warning);
+  border: 1px solid color-mix(in srgb, var(--brand-warning) 50%, transparent);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.recover-card__notice {
+  background: var(--warning-soft);
+  border: 1px solid var(--brand-warning);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 12.5px;
+  color: var(--text-primary);
+  margin-bottom: 22px;
+}
+
+.recover-card__back {
+  display: inline-block;
+  margin-top: 18px;
+  font-size: 13px;
+  color: var(--text-muted);
+}

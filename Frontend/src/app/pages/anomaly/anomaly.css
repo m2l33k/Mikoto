@@ -1,0 +1,42 @@
+:host {
+  display: block;
+}
+.threat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.threat {
+  background: var(--bg-base);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+}
+.threat--hot {
+  border-color: color-mix(in srgb, var(--brand-danger) 45%, var(--border-default));
+}
+.threat__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.threat__name {
+  font-size: 13px;
+  font-weight: 600;
+}
+.threat__row {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-primary);
+  margin-top: 6px;
+}
+.threat__row .metatag {
+  min-width: 62px;
+}
+@media (max-width: 760px) {
+  .threat-grid {
+    grid-template-columns: 1fr;
+  }
+}

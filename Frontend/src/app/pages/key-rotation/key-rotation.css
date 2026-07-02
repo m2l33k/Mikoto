@@ -1,0 +1,49 @@
+.rotation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.radio-group {
+  display: flex;
+  gap: 24px;
+}
+
+.rotation__telemetry {
+  display: flex;
+  flex-direction: column;
+}
+.meter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0 24px;
+}
+.meter-row .ztn-meter {
+  flex: 1;
+}
+
+.rotation__meta {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-default);
+}
+.rotation__meta .mono {
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.rotation__actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 760px) {
+  .rotation {
+    grid-template-columns: 1fr;
+  }
+}

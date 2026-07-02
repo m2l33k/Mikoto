@@ -1,0 +1,132 @@
+<section class="ztn-page">
+  <div class="ztn-page__head">
+    <div>
+      <h1 class="display-title">Service Topology</h1>
+      <p class="metatag">Service-Based Architecture · Inter-NF Connectivity Map</p>
+    </div>
+    <div class="head-badges">
+      <span class="ztn-badge ztn-badge--success">mTLS on all SBI</span>
+      <span class="ztn-badge ztn-badge--primary">14 Interfaces</span>
+    </div>
+  </div>
+
+  <div class="topo-layout">
+    <!-- Map -->
+    <div class="ztn-card topo-map">
+      <h2 class="ztn-card__title"><ui-icon name="topology" [size]="14" /> SBA Mesh</h2>
+      <div class="topo-svg-wrap">
+        <svg viewBox="0 0 812 380" class="topo-svg">
+          <!-- edges -->
+          @for (e of resolved; track e.a + e.b) {
+            <line
+              [attr.x1]="e.x1"
+              [attr.y1]="e.y1"
+              [attr.x2]="e.x2"
+              [attr.y2]="e.y2"
+              [attr.class]="'edge edge--' + e.kind"
+            />
+            @if (e.kind === 'sbi') {
+              <rect
+                [attr.x]="e.mx - 5"
+                [attr.y]="e.my - 5"
+                width="10"
+                height="10"
+                rx="2"
+                class="edge-lock"
+              />
+            }
+          }
+
+          <!-- nodes -->
+          @for (n of nodes; track n.id) {
+            <g
+              class="node-g"
+              [attr.transform]="'translate(' + n.x + ',' + n.y + ')'"
+              (click)="select(n)"
+            >
+              <rect
+                [attr.width]="nodeW"
+                [attr.height]="nodeH"
+                rx="4"
+                [attr.class]="'node node--' + n.plane"
+                [class.node--selected]="selected()?.id === n.id"
+              />
+              <text [attr.x]="nodeW / 2" y="20" class="node__label">{{ n.label }}</text>
+              <text [attr.x]="nodeW / 2" y="34" class="node__sub">{{ n.sub }}</text>
+            </g>
+          }
+        </svg>
+      </div>
+
+      <div class="topo-legend">
+        <span><i class="lg lg--control"></i> Control plane</span>
+        <span><i class="lg lg--user"></i> User plane</span>
+        <span><i class="lg lg--access"></i> Access</span>
+        <span><i class="lg lg--sbi"></i> SBI (mTLS)</span>
+        <span><i class="lg lg--data"></i> GTP-U data</span>
+      </div>
+    </div>
+
+    <!-- Interface table -->
+    <div class="ztn-card topo-side">
+      <h2 class="ztn-card__title"><ui-icon name="lock" [size]="14" /> Secured SBI Links</h2>
+      <div class="ztn-table-wrap">
+        <table class="ztn-table">
+          <thead>
+            <tr><th>Source</th><th>Target</th><th>Reference Point</th><th>State</th></tr>
+          </thead>
+          <tbody>
+            @for (e of sbiEdges; track e.a + e.b) {
+              <tr>
+                <td class="mono">{{ e.a }}</td>
+                <td class="mono">{{ e.b }}</td>
+                <td class="mono">{{ e.ref }}</td>
+                <td><span class="ztn-badge ztn-badge--success">mTLS</span></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<app-drawer
+  [open]="selected() !== null"
+  [eyebrow]="'Network Function · ' + (selected()?.plane ?? '') + ' plane'"
+  [title]="selected()?.label ?? ''"
+  (closed)="close()"
+>
+  @if (selected(); as n) {
+    <dl class="dl">
+      <dt>NF</dt><dd>{{ n.label }}</dd>
+      <dt>Role</dt><dd>{{ n.sub }}</dd>
+      <dt>Plane</dt><dd>{{ n.plane }}</dd>
+      <dt>Interfaces</dt><dd>{{ nodeEdges().length }}</dd>
+    </dl>
+    <div class="drawer-section">
+      <h4 class="drawer-section__title">Connected Interfaces</h4>
+      <table class="ztn-table">
+        <thead><tr><th>Peer</th><th>Reference</th><th>Secured</th></tr></thead>
+        <tbody>
+          @for (e of nodeEdges(); track e.a + e.b) {
+            <tr>
+              <td class="mono">{{ peer(e) }}</td>
+              <td class="mono dim">{{ e.ref }}</td>
+              <td>
+                @if (e.kind === 'sbi') {
+                  <span class="ztn-badge ztn-badge--success">mTLS</span>
+                } @else {
+                  <span class="ztn-badge ztn-badge--neutral">{{ e.kind }}</span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  <div drawer-actions>
+    <button class="ztn-btn ztn-btn--ghost" type="button" (click)="close()">Close</button>
+  </div>
+</app-drawer>

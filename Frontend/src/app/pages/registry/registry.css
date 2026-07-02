@@ -1,0 +1,24 @@
+:host {
+  display: block;
+}
+.nf-type {
+  display: inline-block;
+  padding: 1px 7px;
+  border-radius: var(--radius-sm);
+  background: var(--primary-soft);
+  color: var(--brand-primary);
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid color-mix(in srgb, var(--brand-primary) 35%, transparent);
+}
+.dim {
+  color: var(--text-muted);
+}
+.load-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.load-meter {
+  width: 60px;
+}

@@ -1,0 +1,85 @@
+<div class="ztn-stage">
+  <form class="auth-card" (submit)="initiate($event)">
+    <div class="auth-card__head">
+      <span class="logo">5G</span>
+      <div>
+        <h1 class="section-header">Secure Control Plane</h1>
+        <p class="metatag">Service-Based Architecture Access Control</p>
+      </div>
+      <button
+        class="ztn-icon-btn auth-card__theme"
+        type="button"
+        (click)="toggleTheme()"
+        [title]="theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
+      >
+        <ui-icon [name]="theme() === 'dark' ? 'sun' : 'moon'" [size]="15" />
+      </button>
+    </div>
+
+    <div class="ztn-field">
+      <label class="ztn-label">Target Environment Operator</label>
+      <select class="ztn-select" [(ngModel)]="env" name="env">
+        @for (e of environments; track e) {
+          <option [value]="e">{{ e }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="ztn-field">
+      <label class="ztn-label">Administrative Domain Identity</label>
+      <input
+        class="ztn-input"
+        type="email"
+        name="identity"
+        [(ngModel)]="identity"
+        placeholder="admin-secops@telecom.node"
+      />
+    </div>
+
+    <div class="ztn-field">
+      <label class="ztn-label">Dynamic Signature Passphrase</label>
+      <input
+        class="ztn-input"
+        type="password"
+        name="passphrase"
+        [(ngModel)]="passphrase"
+        placeholder="••••••••••••••••••••••••"
+      />
+    </div>
+
+    <label class="ztn-check auth-card__mtls">
+      <input
+        type="checkbox"
+        [checked]="enforceMtls()"
+        (change)="enforceMtls.set($any($event.target).checked)"
+      />
+      Enforce Mutual TLS Client Certificate Verification
+    </label>
+
+    @if (error()) {
+      <div class="auth-card__error">{{ error() }}</div>
+    }
+
+    <button
+      class="ztn-btn ztn-btn--primary ztn-btn--block"
+      type="submit"
+      [disabled]="busy()"
+    >
+      {{ busy() ? 'Establishing Secure Context…' : 'Initiate Secure Context' }}
+    </button>
+
+    <div class="auth-card__alt">
+      <button class="ztn-btn ztn-btn--ghost ztn-btn--sm" type="button" (click)="fillDemo()">
+        <ui-icon name="key" [size]="14" /> Use Demo Credentials
+      </button>
+      <button class="ztn-btn ztn-btn--soft-accent ztn-btn--sm" type="button" (click)="fillDemo()">
+        <ui-icon name="lock" [size]="14" /> Client Certificate
+      </button>
+    </div>
+
+    <div class="auth-card__links">
+      <a routerLink="/recover">Recover Cryptographic Keys</a>
+      <a routerLink="/key-rotation">Renew Authentication Token</a>
+    </div>
+  </form>
+</div>

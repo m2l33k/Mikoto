@@ -1,0 +1,137 @@
+:host {
+  display: block;
+}
+
+/* ---- Heatmap ---- */
+.hm {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.hm__row {
+  display: grid;
+  gap: 4px;
+  align-items: center;
+}
+.hm__row--head {
+  margin-bottom: 2px;
+}
+.hm__clabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-faint);
+  text-align: center;
+}
+.hm__rlabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hm__cell {
+  height: 26px;
+  border-radius: 2px;
+  border: 1px solid var(--border-default);
+  cursor: default;
+}
+
+/* ---- Stacked bar ---- */
+.sb {
+  width: 100%;
+}
+.sb__plot {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  height: 180px;
+  padding-bottom: 22px;
+  position: relative;
+}
+.sb__col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+}
+.sb__track {
+  width: 70%;
+  max-width: 46px;
+  height: 100%;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-start;
+  border-radius: 2px 2px 0 0;
+  overflow: hidden;
+}
+.sb__seg {
+  width: 100%;
+  display: block;
+}
+.sb__xlabel {
+  position: absolute;
+  bottom: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-faint);
+}
+.legend2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 12px;
+}
+.legend2__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.legend2__item i {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+/* ---- Horizontal bars ---- */
+.hb {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.hb__row {
+  display: grid;
+  grid-template-columns: 130px 1fr 64px;
+  align-items: center;
+  gap: 12px;
+}
+.hb__label {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hb__track {
+  height: 10px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-default);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.hb__fill {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+}
+.hb__val {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: right;
+}

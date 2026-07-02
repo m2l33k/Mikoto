@@ -1,0 +1,53 @@
+.err-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  padding: 40px 32px;
+}
+.err-code {
+  font-family: var(--font-mono);
+  font-size: 56px;
+  font-weight: 600;
+  color: var(--text-faint);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.err-lead {
+  color: var(--text-muted);
+  margin: 12px 0 28px;
+}
+.err-field {
+  text-align: left;
+  margin-bottom: 18px;
+}
+.err-field .metatag {
+  display: block;
+  margin-bottom: 6px;
+}
+.err-route {
+  display: block;
+  font-size: 12.5px;
+  color: var(--brand-primary);
+}
+.err-diag {
+  display: block;
+  padding: 10px 14px;
+  background: var(--warning-soft);
+  border: 1px solid var(--brand-warning);
+  border-radius: var(--radius-sm);
+  color: var(--brand-warning);
+  font-size: 13px;
+}
+.err-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}

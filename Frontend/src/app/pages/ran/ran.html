@@ -1,0 +1,92 @@
+<section class="ztn-page">
+  <div class="ztn-page__head">
+    <div>
+      <h1 class="display-title">Radio Access Network</h1>
+      <p class="metatag">gNB · Cells · Connected UEs (UERANSIM)</p>
+    </div>
+    <div class="head-badges">
+      <span class="ztn-badge ztn-badge--success">gNB Bound</span>
+      <span class="ztn-badge ztn-badge--danger">1 Cell Down</span>
+    </div>
+  </div>
+
+  <div class="ztn-grid kpi-row">
+    <div class="ztn-card">
+      <div class="kpi__head"><ui-icon name="radio" [size]="16" /><span>Active gNBs</span></div>
+      <div class="ztn-kpi__value">1</div>
+      <div class="ztn-kpi__sub">5 cells · 4 up</div>
+    </div>
+    <div class="ztn-card">
+      <div class="kpi__head"><ui-icon name="users" [size]="16" /><span>Connected UEs</span></div>
+      <div class="ztn-kpi__value">2</div>
+      <div class="ztn-kpi__sub">RRC_CONNECTED</div>
+    </div>
+    <div class="ztn-card">
+      <div class="kpi__head"><ui-icon name="bar-chart" [size]="16" /><span>Mean PRB Utilisation</span></div>
+      <div class="ztn-kpi__value">54%</div>
+      <div class="ztn-kpi__sub">Cell-04 congested 96%</div>
+    </div>
+  </div>
+
+  <div class="ztn-card">
+    <h2 class="ztn-card__title"><ui-icon name="grid" [size]="14" /> PRB Utilisation by Cell (last 4h)</h2>
+    <ui-heatmap [rows]="prbHeat" [columns]="hours" color="var(--brand-warning)" unit="%" />
+  </div>
+
+  <div class="ztn-card">
+    <h2 class="ztn-card__title"><ui-icon name="radio" [size]="14" /> Cells</h2>
+    <div class="ztn-table-wrap">
+      <table class="ztn-table">
+        <thead>
+          <tr>
+            <th>Cell</th><th>PCI</th><th>TAC</th><th>Band</th>
+            <th>UEs</th><th>PRB</th><th>RSRP (dBm)</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (c of cells; track c.cell) {
+            <tr>
+              <td class="mono">{{ c.cell }}</td>
+              <td class="mono dim">{{ c.pci }}</td>
+              <td class="mono dim">{{ c.tac }}</td>
+              <td class="mono">{{ c.band }}</td>
+              <td class="mono">{{ c.ues }}</td>
+              <td class="mono">{{ c.prb }}%</td>
+              <td class="mono dim">{{ c.rsrp }}</td>
+              <td>
+                <span
+                  class="ztn-badge"
+                  [class.ztn-badge--success]="c.status === 'up'"
+                  [class.ztn-badge--warning]="c.status === 'congested'"
+                  [class.ztn-badge--danger]="c.status === 'down'"
+                >{{ c.status }}</span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="ztn-card">
+    <h2 class="ztn-card__title"><ui-icon name="users" [size]="14" /> Connected UEs</h2>
+    <div class="ztn-table-wrap">
+      <table class="ztn-table">
+        <thead>
+          <tr><th>SUPI</th><th>Serving Cell</th><th>RSRP (dBm)</th><th>CQI</th><th>RRC State</th></tr>
+        </thead>
+        <tbody>
+          @for (u of ues; track u.supi) {
+            <tr>
+              <td class="mono">{{ u.supi }}</td>
+              <td class="mono">{{ u.cell }}</td>
+              <td class="mono dim">{{ u.rsrp }}</td>
+              <td class="mono">{{ u.cqi }}</td>
+              <td><span class="ztn-badge ztn-badge--success">{{ u.state }}</span></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

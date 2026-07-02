@@ -1,0 +1,94 @@
+<section class="ztn-page">
+  <div class="ztn-page__head">
+    <div>
+      <h1 class="display-title">NetOps Control Room</h1>
+      <p class="metatag">Core Performance · 3GPP Conformance · Signaling Trace</p>
+    </div>
+    <div class="head-badges">
+      <span class="ztn-badge ztn-badge--success">Core: Running</span>
+      <span class="ztn-badge ztn-badge--success">UERANSIM Emulator Bound</span>
+    </div>
+  </div>
+
+  <!-- KPI cards -->
+  <div class="ztn-grid kpi-row">
+    <div class="ztn-card">
+      <div class="ztn-card__title">Mean Signaling Latency</div>
+      <div class="ztn-kpi__value">114ms</div>
+      <div class="ztn-kpi__label">Registration p95 · Setup 145ms</div>
+    </div>
+
+    <div class="ztn-card">
+      <div class="ztn-card__title">GTP-U Tunnel Capacity</div>
+      <div class="ztn-kpi__value">14 <span class="kpi-split">Gbps</span></div>
+      <div class="ztn-kpi__label">User-plane throughput</div>
+      <div class="ztn-meter" style="margin-top: 14px">
+        <div class="ztn-meter__fill" style="width: 58%"></div>
+      </div>
+    </div>
+
+    <div class="ztn-card">
+      <div class="ztn-card__title">Subscriber Registrations</div>
+      <div class="ztn-kpi__value">2</div>
+      <div class="ztn-kpi__label">Active UEs · 2 Est. PDU Sessions</div>
+    </div>
+  </div>
+
+  <!-- 3GPP conformance -->
+  <div class="ztn-card">
+    <h2 class="ztn-card__title">3GPP Conformance Validator (TS 23.502)</h2>
+    <div class="ztn-table-wrap">
+      <table class="ztn-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Core Test Scenario</th>
+            <th>TS Specification Clause</th>
+            <th>Execution Latency</th>
+            <th>State</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (t of tests; track t.id) {
+            <tr>
+              <td class="mono">{{ t.id }}</td>
+              <td>{{ t.scenario }}</td>
+              <td class="mono">{{ t.clause }}</td>
+              <td class="mono">{{ t.latency }}</td>
+              <td>
+                <span
+                  class="ztn-badge"
+                  [class.ztn-badge--success]="t.status === 'passed'"
+                  [class.ztn-badge--danger]="t.status === 'failed'"
+                >
+                  {{ t.status === 'passed' ? 'Passed' : 'Failed' }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Signaling trace logger -->
+  <div class="ztn-card">
+    <h2 class="ztn-card__title">Core Signaling Trace Logger</h2>
+    <div class="ztn-terminal">
+      @for (l of logs; track l.time) {
+        <div>
+          <span class="t-time">{{ l.time }}</span>
+          <span
+            [class.t-amf]="l.tag === 'AMF'"
+            [class.t-smf]="l.tag === 'SMF'"
+            [class.t-upf]="l.tag === 'UPF'"
+            [class.t-err]="l.tag === 'ERR'"
+          >
+            [{{ l.tag }}]</span
+          >
+          {{ l.message }}
+        </div>
+      }
+    </div>
+  </div>
+</section>

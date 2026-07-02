@@ -1,0 +1,30 @@
+<div class="ztn-stage">
+  <div class="err-card">
+    <div class="err-code mono">404</div>
+    <h1 class="display-title">State Unmapped: Route Not Found</h1>
+    <p class="err-lead">
+      The requested network interface path could not be resolved by the NRF.
+    </p>
+
+    <div class="err-field">
+      <span class="metatag">Target Route</span>
+      <code class="ztn-terminal err-route"
+        >/api/v1/sbi/namf-comm/v2/ue-contexts/imsi-208950000000001</code
+      >
+    </div>
+
+    <div class="err-field">
+      <span class="metatag">Diagnostic Code</span>
+      <code class="err-diag mono">ERR_SBA_ENDPOINT_NOT_REGISTERED (0x404)</code>
+    </div>
+
+    <div class="err-actions">
+      <button class="ztn-btn ztn-btn--ghost" type="button" (click)="routingMap()">
+        System Routing Tree Map
+      </button>
+      <button class="ztn-btn ztn-btn--primary" type="button" (click)="repoll()">
+        Re-Poll NRF Service Registry
+      </button>
+    </div>
+  </div>
+</div>

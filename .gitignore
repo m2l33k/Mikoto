@@ -20,10 +20,36 @@ go.work.sum
 certs/
 vault/init.json
 
-# ─── ML pipeline ─────────────────────────────────────────────────────────────────
+# ─── Go / Backend core ───────────────────────────────────────────────────────────
+Backend/**/bin/
+Backend/**/*.test
+Backend/**/*.out
+vendor/
+
+# ─── ML pipeline / AI models ─────────────────────────────────────────────────────
 training/data/
+Backend/training/data/
 *.joblib
 *.onnx
+*.pt
+*.pth
+*.pb
+*.h5
+*.hdf5
+*.pkl
+*.pickle
+*.ckpt
+*.safetensors
+*.gguf
+*.ggml
+*.bin
+*.tflite
+*.mlmodel
+*.model
+*.weights
+*.npz
+models/
+checkpoints/
 
 # ─── Python ──────────────────────────────────────────────────────────────────────
 __pycache__/
@@ -34,17 +60,41 @@ env/
 *.egg-info/
 .pytest_cache/
 
-# ─── Node / Frontend ─────────────────────────────────────────────────────────────
+# ─── Node / Frontend core ────────────────────────────────────────────────────────
 node_modules/
 dist/
 build/
 .next/
+out-tsc/
 coverage/
+.angular/
+.angular/cache/
+.sass-cache/
+Frontend/serve.log
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+
+# ─── AI assistants (Claude / Cursor / Copilot / etc.) ────────────────────────────
+.claude/
+**/.claude/
+.claude*
+CLAUDE.md
+**/CLAUDE.md
+.cursor/
+.cursorrules
+.cursorignore
+.aider*
+.github/copilot-instructions.md
+.continue/
+.windsurf/
+.windsurfrules
+.codeium/
+.aider.chat.history.md
+.anthropic/
+.mcp.json
 
 # ─── Local config / secrets ──────────────────────────────────────────────────────
 config.yaml

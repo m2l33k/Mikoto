@@ -1,0 +1,84 @@
+<section class="ztn-page">
+  <div class="ztn-page__head">
+    <div>
+      <h1 class="display-title">Logs Explorer</h1>
+      <p class="metatag">Centralized NF Signalling &amp; Security Logs</p>
+    </div>
+    <div class="head-badges">
+      <span class="ztn-badge ztn-badge--danger">{{ errorCount() }} errors</span>
+      <span class="ztn-badge ztn-badge--warning">{{ warnCount() }} warn</span>
+      <span
+        class="ztn-badge"
+        [class.ztn-badge--success]="live()"
+        [class.ztn-badge--neutral]="!live()"
+      >{{ live() ? 'Live' : 'Paused' }}</span>
+    </div>
+  </div>
+
+  <!-- Filter bar -->
+  <div class="ztn-card">
+    <div class="filterbar">
+      <div class="filterbar__field">
+        <label class="ztn-label">Network Function</label>
+        <select class="ztn-select" [value]="nfFilter()" (change)="nfFilter.set($any($event.target).value)">
+          <option value="ALL">All NFs</option>
+          @for (nf of nfs; track nf) {
+            <option [value]="nf">{{ nf }}</option>
+          }
+        </select>
+      </div>
+      <div class="filterbar__field">
+        <label class="ztn-label">Severity</label>
+        <select class="ztn-select" [value]="sevFilter()" (change)="sevFilter.set($any($event.target).value)">
+          <option value="ALL">All levels</option>
+          <option value="error">error</option>
+          <option value="warn">warn</option>
+          <option value="info">info</option>
+          <option value="debug">debug</option>
+        </select>
+      </div>
+      <div class="filterbar__field filterbar__field--grow">
+        <label class="ztn-label">Search</label>
+        <input
+          class="ztn-input"
+          type="search"
+          placeholder="grep log message…"
+          [value]="query()"
+          (input)="query.set($any($event.target).value)"
+        />
+      </div>
+      <div class="filterbar__actions">
+        <button class="ztn-btn ztn-btn--ghost" type="button" (click)="toggleLive()">
+          {{ live() ? '⏸ Pause' : '▷ Resume' }}
+        </button>
+        <button class="ztn-btn ztn-btn--ghost" type="button" (click)="clear()">Clear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Log stream -->
+  <div class="ztn-card">
+    <h2 class="ztn-card__title">
+      <ui-icon name="search" [size]="14" /> Stream
+      <span class="card-link">{{ filtered().length }} lines</span>
+    </h2>
+    <div class="ztn-terminal logstream">
+      @for (l of filtered(); track $index) {
+        <div class="logline">
+          <span class="t-time">{{ l.ts }}</span>
+          <span
+            class="logline__sev"
+            [class.sev--error]="l.sev === 'error'"
+            [class.sev--warn]="l.sev === 'warn'"
+            [class.sev--info]="l.sev === 'info'"
+            [class.sev--debug]="l.sev === 'debug'"
+          >{{ l.sev }}</span>
+          <span class="logline__nf">[{{ l.nf }}]</span>
+          <span class="logline__msg">{{ l.msg }}</span>
+        </div>
+      } @empty {
+        <div class="dim">No log lines match the current filters.</div>
+      }
+    </div>
+  </div>
+</section>

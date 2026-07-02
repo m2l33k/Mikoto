@@ -1,0 +1,39 @@
+@if (open()) {
+  <div class="cmdk-overlay" (click)="close()">
+    <div class="cmdk" (click)="$event.stopPropagation()">
+      <div class="cmdk__search">
+        <ui-icon name="search" [size]="16" />
+        <input
+          #input
+          class="cmdk__input"
+          type="text"
+          [value]="query()"
+          (input)="onInput($event)"
+          placeholder="Jump to a page or run a command…"
+        />
+        <kbd class="cmdk__kbd">esc</kbd>
+      </div>
+      <div class="cmdk__list">
+        @for (c of filtered(); track c.label; let i = $index) {
+          <button
+            class="cmdk__item"
+            [class.cmdk__item--active]="i === active()"
+            (mouseenter)="active.set(i)"
+            (click)="run(c)"
+          >
+            <ui-icon [name]="c.icon" [size]="16" />
+            <span class="cmdk__label">{{ c.label }}</span>
+            <span class="cmdk__hint">{{ c.hint }}</span>
+          </button>
+        } @empty {
+          <div class="cmdk__empty">No matching commands.</div>
+        }
+      </div>
+      <div class="cmdk__foot">
+        <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+        <span><kbd>⏎</kbd> select</span>
+        <span><kbd>⌘</kbd><kbd>K</kbd> toggle</span>
+      </div>
+    </div>
+  </div>
+}

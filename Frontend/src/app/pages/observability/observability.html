@@ -1,0 +1,130 @@
+<section class="ztn-page">
+  <div class="ztn-page__head">
+    <div>
+      <h1 class="display-title">Observability</h1>
+      <p class="metatag">Prometheus Metrics · Grafana Panels · Per-NF Telemetry</p>
+    </div>
+    <div class="head-badges">
+      <span class="ztn-badge ztn-badge--success">Prometheus: Up</span>
+      <span class="ztn-badge ztn-badge--warning">1 Target Down</span>
+    </div>
+  </div>
+
+  <ui-toolbar (refresh)="load($event)" />
+
+  <div class="ztn-grid kpi-strip">
+    <div class="ztn-card kpi">
+      <div class="kpi__head"><ui-icon name="activity" [size]="16" /><span>SBI Request Rate</span></div>
+      <div class="ztn-kpi__value">2,318<span class="kpi-split"> /s</span></div>
+    </div>
+    <div class="ztn-card kpi">
+      <div class="kpi__head"><ui-icon name="bar-chart" [size]="16" /><span>p95 Latency</span></div>
+      <div class="ztn-kpi__value">114<span class="kpi-split"> ms</span></div>
+    </div>
+    <div class="ztn-card kpi">
+      <div class="kpi__head"><ui-icon name="alert" [size]="16" /><span>Error Rate</span></div>
+      <div class="ztn-kpi__value">0.04%</div>
+    </div>
+    <div class="ztn-card kpi">
+      <div class="kpi__head"><ui-icon name="cpu" [size]="16" /><span>Cluster CPU</span></div>
+      <div class="ztn-kpi__value">33%</div>
+    </div>
+    <div class="ztn-card kpi">
+      <div class="kpi__head"><ui-icon name="server" [size]="16" /><span>Scrape Targets</span></div>
+      <div class="ztn-kpi__value">5<span class="kpi-split">/6</span></div>
+    </div>
+  </div>
+
+  <!-- Primary panels -->
+  <div class="ztn-grid panels-top">
+    <div class="ztn-card">
+      <h2 class="ztn-card__title">
+        <ui-icon name="activity" [size]="14" /> SBI Request Rate
+        <span class="card-link">last 4h · 5m</span>
+      </h2>
+      <ui-area-chart [series]="reqRate()" [labels]="times()" [height]="200" unit=" req/s" />
+    </div>
+    <div class="ztn-card">
+      <h2 class="ztn-card__title">
+        <ui-icon name="bar-chart" [size]="14" /> Request Latency Percentiles
+        <span class="card-link">ms</span>
+      </h2>
+      <ui-area-chart [series]="latency()" [labels]="times()" [height]="200" unit="ms" [area]="false" />
+    </div>
+  </div>
+
+  <!-- Secondary panels -->
+  <div class="ztn-grid panels-bottom">
+    <div class="ztn-card">
+      <h2 class="ztn-card__title"><ui-icon name="alert" [size]="14" /> HTTP 5xx / min</h2>
+      <ui-bar-chart
+        [values]="errBars()"
+        [labels]="times()"
+        [height]="180"
+        color="var(--brand-danger)"
+        name="5xx"
+        unit=" errors"
+      />
+    </div>
+    <div class="ztn-card">
+      <h2 class="ztn-card__title"><ui-icon name="check-square" [size]="14" /> Response Code Mix (24h)</h2>
+      <ui-donut [data]="statusMix" [size]="128" centerLabel="requests" />
+    </div>
+  </div>
+
+  <!-- Per-NF resource usage -->
+  <div class="ztn-card">
+    <h2 class="ztn-card__title"><ui-icon name="cpu" [size]="14" /> Per-NF Resource Utilisation</h2>
+    <div class="nf-load">
+      @for (n of nfLoad; track n.nf) {
+        <div class="nf-load__row">
+          <span class="nf-load__name mono">{{ n.nf }}</span>
+          <div class="nf-load__bars">
+            <div class="nf-load__bar">
+              <span class="metatag">CPU</span>
+              <div class="ztn-meter">
+                <div class="ztn-meter__fill" [class.ztn-meter__fill--warning]="n.cpu >= 70" [style.width.%]="n.cpu"></div>
+              </div>
+              <span class="mono">{{ n.cpu }}%</span>
+            </div>
+            <div class="nf-load__bar">
+              <span class="metatag">MEM</span>
+              <div class="ztn-meter">
+                <div class="ztn-meter__fill ztn-meter__fill--success" [style.width.%]="n.mem"></div>
+              </div>
+              <span class="mono">{{ n.mem }}%</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Targets -->
+  <div class="ztn-card">
+    <h2 class="ztn-card__title"><ui-icon name="server" [size]="14" /> Prometheus Scrape Targets</h2>
+    <div class="ztn-table-wrap">
+      <table class="ztn-table">
+        <thead>
+          <tr><th>Job</th><th>Instance</th><th>Last Scrape</th><th>State</th></tr>
+        </thead>
+        <tbody>
+          @for (t of targets; track t.instance) {
+            <tr>
+              <td class="mono">{{ t.job }}</td>
+              <td class="mono dim">{{ t.instance }}</td>
+              <td class="mono dim">{{ t.scrape }}</td>
+              <td>
+                <span
+                  class="ztn-badge"
+                  [class.ztn-badge--success]="t.up"
+                  [class.ztn-badge--danger]="!t.up"
+                >{{ t.up ? 'UP' : 'DOWN' }}</span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,162 @@
+<div class="shell" [class.shell--collapsed]="collapsed()">
+  <!-- ===== Sidebar ===== -->
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <span class="logo">ZT</span>
+      <div class="brand-text">
+        <strong>Zero-Trust 5GC</strong>
+        <span class="metatag">Secure Control Plane</span>
+      </div>
+      <button class="collapse-btn" type="button" (click)="toggleSidebar()" title="Collapse sidebar">
+        ‹
+      </button>
+    </div>
+
+    <div class="sidebar__selector">
+      <label class="ztn-label">Target Network</label>
+      <select
+        class="ztn-select"
+        [value]="targetEnv()"
+        (change)="onEnvChange($any($event.target).value)"
+      >
+        @for (env of environments; track env) {
+          <option [value]="env">{{ env }}</option>
+        }
+      </select>
+    </div>
+
+    <nav class="sidebar__nav">
+      @for (group of groups; track group.title) {
+        <div class="nav-group">
+          <div class="nav-group__title metatag">{{ group.title }}</div>
+          @for (item of group.items; track item.path) {
+            <a
+              class="nav-link"
+              [routerLink]="item.path"
+              routerLinkActive="nav-link--active"
+              [title]="item.label"
+            >
+              <ui-icon [name]="item.icon" [size]="16" />
+              <span class="nav-link__label">{{ item.label }}</span>
+            </a>
+          }
+        </div>
+      }
+    </nav>
+
+    <div class="sidebar__footer">
+      <a class="session" routerLink="/settings" title="Open settings">
+        <span class="session__avatar">{{ initials() }}</span>
+        <div class="session__meta">
+          <div class="session__name">{{ user() }}</div>
+          <div class="metatag session__role">admin-secops</div>
+        </div>
+        <span class="session__status" title="Session active"></span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- ===== Main column ===== -->
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar__group">
+        <button class="topbar__icon expand-btn" type="button" (click)="toggleSidebar()" title="Toggle sidebar">
+          ☰
+        </button>
+        <ui-icon name="globe" [size]="15" />
+        <span class="metatag">Target</span>
+        <span class="ztn-badge ztn-badge--primary">{{ targetEnv() }}</span>
+
+        <button class="cmdk-trigger" type="button" (click)="cmdk.toggle()">
+          <ui-icon name="search" [size]="14" />
+          <span>Search…</span>
+          <kbd>⌘K</kbd>
+        </button>
+      </div>
+
+      <div class="topbar__group">
+        <span class="metatag">NRF</span>
+        <span class="mono topbar__metric">8/8 Registered</span>
+        <span class="topbar__divider"></span>
+        <span class="metatag">mTLS</span>
+        <span class="ztn-badge ztn-badge--success">Strict-Enforce</span>
+        <span class="topbar__divider"></span>
+        <span class="mono topbar__clock">{{ clock() }}</span>
+
+        <!-- Quick theme toggle -->
+        <button
+          class="topbar__icon"
+          type="button"
+          (click)="toggleTheme()"
+          [title]="theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
+        >
+          <ui-icon [name]="theme() === 'dark' ? 'sun' : 'moon'" [size]="16" />
+        </button>
+
+        <!-- Notifications -->
+        <div class="menu-wrap">
+          <button class="topbar__icon" type="button" (click)="toggleNotify()" title="Alerts">
+            <ui-icon name="bell" [size]="17" />
+            @if (unread) {
+              <span class="topbar__count">{{ unread }}</span>
+            }
+          </button>
+          @if (notifyOpen()) {
+            <div class="dropdown dropdown--wide">
+              <div class="dropdown__head">
+                <span>Notifications</span>
+                <span class="metatag">{{ unread }} new</span>
+              </div>
+              @for (n of notices; track n.title) {
+                <div class="notice">
+                  <span
+                    class="notice__dot"
+                    [class.notice__dot--danger]="n.kind === 'danger'"
+                    [class.notice__dot--warning]="n.kind === 'warning'"
+                    [class.notice__dot--info]="n.kind === 'info'"
+                  ></span>
+                  <span class="notice__title">{{ n.title }}</span>
+                  <span class="notice__time">{{ n.time }}</span>
+                </div>
+              }
+              <a class="dropdown__foot" routerLink="/secops" (click)="closeMenus()">
+                Open SecOps Console →
+              </a>
+            </div>
+          }
+        </div>
+
+        <!-- User menu -->
+        <div class="menu-wrap">
+          <button class="topbar__user" type="button" (click)="toggleUserMenu()">
+            <span class="session__avatar session__avatar--sm">{{ initials() }}</span>
+            <span class="topbar__chev">▾</span>
+          </button>
+          @if (userMenuOpen()) {
+            <div class="dropdown">
+              <div class="dropdown__user">
+                <div class="mono">{{ user() }}</div>
+                <div class="metatag">SecOps Administrator</div>
+              </div>
+              <a class="dropdown__item" routerLink="/settings" (click)="closeMenus()">
+                <ui-icon name="cpu" [size]="15" /> Settings
+              </a>
+              <button class="dropdown__item" type="button" (click)="toggleTheme()">
+                <ui-icon name="globe" [size]="15" /> Switch to {{ theme() === 'dark' ? 'light' : 'dark' }} theme
+              </button>
+              <button class="dropdown__item dropdown__item--danger" type="button" (click)="logout()">
+                <ui-icon name="lock" [size]="15" /> Sign out
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    </header>
+
+    <main class="workspace" (click)="closeMenus()">
+      <router-outlet />
+    </main>
+  </div>
+
+  <app-command-palette #cmdk />
+</div>

@@ -1,0 +1,136 @@
+<section class="ztn-page">
+  <div class="ztn-page__head">
+    <div>
+      <h1 class="display-title">Conformance Test Framework</h1>
+      <p class="metatag">3GPP TS 23.502 / TS 33.501 · CI/CD-Gated · Fault Injection</p>
+    </div>
+    <div class="head-badges">
+      <span class="ztn-badge ztn-badge--danger">Last CI: Failed</span>
+      <span class="ztn-badge ztn-badge--primary">YAML Scenarios</span>
+      <button class="ztn-btn ztn-btn--primary btn-sm" type="button" [disabled]="running()" (click)="runSuite()">
+        {{ running() ? 'Running…' : '▷ Run Suite' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="conf-top">
+    <div class="ztn-card conf-gauge">
+      <h2 class="ztn-card__title"><ui-icon name="check-square" [size]="14" /> Pass Rate</h2>
+      <ui-gauge [percent]="83" [size]="120" color="var(--brand-warning)" />
+      <div class="ztn-kpi__sub">10 passed · 1 failed · 1 skipped</div>
+    </div>
+    <div class="ztn-grid conf-kpis">
+      <div class="ztn-card">
+        <div class="kpi__head"><ui-icon name="check-square" [size]="16" /><span>Total Test Cases</span></div>
+        <div class="ztn-kpi__value">12</div>
+        <div class="ztn-kpi__sub">TS 23.502 · TS 33.501 · KPI</div>
+      </div>
+      <div class="ztn-card">
+        <div class="kpi__head"><ui-icon name="activity" [size]="16" /><span>Suite Duration</span></div>
+        <div class="ztn-kpi__value">4<span class="kpi-split">m 12s</span></div>
+        <div class="ztn-kpi__sub">RAN sim + full core</div>
+      </div>
+      <div class="ztn-card">
+        <div class="kpi__head"><ui-icon name="file-text" [size]="16" /><span>pcap Evidence</span></div>
+        <div class="ztn-kpi__value">12</div>
+        <div class="ztn-kpi__sub">captured per scenario</div>
+      </div>
+      <div class="ztn-card">
+        <div class="kpi__head"><ui-icon name="shield-check" [size]="16" /><span>Security Tests</span></div>
+        <div class="ztn-kpi__value">3<span class="kpi-split">/3</span></div>
+        <div class="ztn-kpi__sub">SEC-01..03 passing</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Test cases -->
+  <div class="ztn-card">
+    <h2 class="ztn-card__title"><ui-icon name="check-square" [size]="14" /> Conformance Test Cases</h2>
+    <div class="ztn-table-wrap">
+      <table class="ztn-table">
+        <thead>
+          <tr><th>ID</th><th>Test Case</th><th>Procedure</th><th>Pass Criterion</th><th>Measured</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          @for (t of tests; track t.id) {
+            <tr>
+              <td class="mono">{{ t.id }}</td>
+              <td>{{ t.name }}</td>
+              <td class="mono dim">{{ t.procedure }}</td>
+              <td class="dim">{{ t.criterion }}</td>
+              <td class="mono">{{ t.latency }}</td>
+              <td>
+                <span
+                  class="ztn-badge"
+                  [class.ztn-badge--success]="t.status === 'pass'"
+                  [class.ztn-badge--danger]="t.status === 'fail'"
+                  [class.ztn-badge--neutral]="t.status === 'skip'"
+                >{{ t.status === 'pass' ? 'Passed' : t.status === 'fail' ? 'Failed' : 'Skipped' }}</span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="conf-bottom">
+    <!-- CI runs -->
+    <div class="ztn-card">
+      <h2 class="ztn-card__title"><ui-icon name="refresh" [size]="14" /> CI/CD Pipeline Runs</h2>
+      <div class="ztn-table-wrap">
+        <table class="ztn-table">
+          <thead>
+            <tr><th>Run</th><th>Commit</th><th>Trigger</th><th>P/F</th><th>Duration</th><th>Result</th></tr>
+          </thead>
+          <tbody>
+            @for (r of runs; track r.id) {
+              <tr>
+                <td class="mono">{{ r.id }}</td>
+                <td class="mono dim">{{ r.commit }}</td>
+                <td class="mono dim">{{ r.trigger }}</td>
+                <td class="mono">{{ r.passed }}/{{ r.failed }}</td>
+                <td class="mono dim">{{ r.duration }}</td>
+                <td>
+                  <span
+                    class="ztn-badge"
+                    [class.ztn-badge--success]="r.status === 'success'"
+                    [class.ztn-badge--danger]="r.status === 'failed'"
+                  >{{ r.status }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Fault injection -->
+    <div class="ztn-card">
+      <h2 class="ztn-card__title"><ui-icon name="alert" [size]="14" /> Fault Injection Scenarios</h2>
+      <div class="ztn-table-wrap">
+        <table class="ztn-table">
+          <thead>
+            <tr><th>Scenario</th><th>Injection</th><th>Expected Behaviour</th><th>Result</th></tr>
+          </thead>
+          <tbody>
+            @for (f of faults; track f.name) {
+              <tr>
+                <td>{{ f.name }}</td>
+                <td class="mono dim">{{ f.inject }}</td>
+                <td class="dim">{{ f.expected }}</td>
+                <td>
+                  <span
+                    class="ztn-badge"
+                    [class.ztn-badge--success]="f.result === 'pass'"
+                    [class.ztn-badge--danger]="f.result === 'fail'"
+                  >{{ f.result === 'pass' ? 'Passed' : 'Failed' }}</span>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>

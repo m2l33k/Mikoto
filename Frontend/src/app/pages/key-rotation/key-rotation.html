@@ -1,0 +1,106 @@
+<section class="ztn-page">
+  <div class="ztn-page__head">
+    <div>
+      <h1 class="display-title">Credential Rotation Engine</h1>
+      <p class="metatag">Rotate certificates · refresh JWTs · cycle DB encryption keys</p>
+    </div>
+    <span class="ztn-badge ztn-badge--warning">Cert Expiring</span>
+  </div>
+
+  <div class="rotation">
+    <!-- Left column: parameters -->
+    <div class="ztn-card rotation__params">
+      <div class="ztn-field">
+        <label class="ztn-label">Operational Target Scope</label>
+        <select class="ztn-select" [(ngModel)]="scope" name="scope">
+          @for (s of scopes; track s) {
+            <option [value]="s">{{ s }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="ztn-field">
+        <label class="ztn-label">Microservice Instance Anchor</label>
+        <select class="ztn-select" [(ngModel)]="node" name="node">
+          @for (n of nodes; track n) {
+            <option [value]="n">{{ n }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="ztn-field">
+        <label class="ztn-label">Keyspace Selection</label>
+        <div class="radio-group">
+          <label class="ztn-check">
+            <input
+              type="radio"
+              name="keyspace"
+              [checked]="keyspace() === 'RSA-4096'"
+              (change)="keyspace.set('RSA-4096')"
+            />
+            RSA-4096
+          </label>
+          <label class="ztn-check">
+            <input
+              type="radio"
+              name="keyspace"
+              [checked]="keyspace() === 'ECDSA-P384'"
+              (change)="keyspace.set('ECDSA-P384')"
+            />
+            ECDSA-P384
+          </label>
+        </div>
+      </div>
+
+      <div class="ztn-field">
+        <label class="ztn-label">Rotation Lifetime (Hours)</label>
+        <input
+          class="ztn-input"
+          type="number"
+          name="lifetime"
+          [(ngModel)]="lifetimeHours"
+        />
+        <span class="ztn-kpi__sub">7 Days Default</span>
+      </div>
+    </div>
+
+    <!-- Right column: telemetry -->
+    <div class="ztn-card rotation__telemetry">
+      <h2 class="ztn-card__title">Dynamic Status Telemetry</h2>
+      <div class="ztn-kpi__label">Current certificate valid for</div>
+      <div class="ztn-kpi__value mono">{{ validForHours() }}h</div>
+
+      <div class="meter-row">
+        <div class="ztn-meter">
+          <div
+            class="ztn-meter__fill"
+            [class.ztn-meter__fill--warning]="expiredPct() >= 50"
+            [class.ztn-meter__fill--success]="expiredPct() < 50"
+            [style.width.%]="expiredPct()"
+          ></div>
+        </div>
+        <span class="ztn-kpi__sub">{{ expiredPct() }}% Expired</span>
+      </div>
+
+      <div class="rotation__meta">
+        <div>
+          <span class="metatag">Keyspace</span>
+          <div class="mono">{{ keyspace() }}</div>
+        </div>
+        <div>
+          <span class="metatag">Anchor</span>
+          <div class="mono">{{ node }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rotation__actions">
+    <button class="ztn-btn ztn-btn--primary" type="button" [disabled]="busy()" (click)="execute()">
+      {{ busy() ? 'Re-generating…' : 'Execute Key Re-Generation' }}
+    </button>
+    <button class="ztn-btn ztn-btn--outline-danger" type="button" (click)="retract()">
+      Retract Current Certificates
+    </button>
+  </div>
+</section>

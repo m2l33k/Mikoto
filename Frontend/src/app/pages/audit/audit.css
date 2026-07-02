@@ -1,0 +1,4 @@
+/* Audit relies entirely on global primitives; no page-specific styles yet. */
+:host {
+  display: block;
+}

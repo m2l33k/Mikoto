@@ -1,0 +1,902 @@
+/* =====================================================================
+   Zero-Trust 5G Core — Global Design System
+   Enterprise NOC aesthetic: flat surfaces, sharp corners, dense data,
+   borders over shadows, status colour used only semantically.
+   Tokens per design.txt §1 (exact hex values preserved).
+   ===================================================================== */
+
+/* ---------------------------------------------------------------------
+   Brand system — Huawei corporate red × Tunisie Telecom blue.
+   Primary = telco red (identity: logo, nav, primary CTAs, focus).
+   Accent  = telecom blue (charts, links, secondary actions).
+   Light theme is the DEFAULT (:root); dark is opt-in via [data-theme].
+   --------------------------------------------------------------------- */
+
+/* ---- Design Tokens : Light theme (default) ------------------------- */
+:root,
+[data-theme='light'] {
+  --bg-base: #f4f6f9;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: #eef1f6;
+  --bg-inset: #f7f9fc;
+  --border-default: #e3e7ee;
+  --border-strong: #ccd3de;
+
+  --brand-primary: #c7000b;
+  --brand-primary-strong: #a10009;
+  --brand-accent: #0a63c2;
+  --brand-accent-strong: #084f9c;
+  --brand-success: #1f9d55;
+  --brand-warning: #e08600;
+  --brand-danger: #d92020;
+
+  --text-primary: #131820;
+  --text-muted: #515b6a;
+  --text-faint: #8893a2;
+  --on-brand: #ffffff;
+
+  --primary-soft: rgba(199, 0, 11, 0.07);
+  --accent-soft: rgba(10, 99, 194, 0.08);
+  --success-soft: rgba(31, 157, 85, 0.09);
+  --warning-soft: rgba(224, 134, 0, 0.1);
+  --danger-soft: rgba(217, 32, 32, 0.08);
+
+  /* Huawei-style multi-series chart palette */
+  --chart-1: #0a63c2;
+  --chart-2: #12b3c4;
+  --chart-3: #c7000b;
+  --chart-4: #e08600;
+  --chart-5: #6d5cf0;
+  --chart-6: #1f9d55;
+
+  --brand-gradient: linear-gradient(135deg, #c7000b 0%, #e2231a 100%);
+  --accent-gradient: linear-gradient(135deg, #0a63c2 0%, #1e88e5 100%);
+
+  --shadow-sm: 0 1px 2px rgba(19, 24, 32, 0.06), 0 1px 3px rgba(19, 24, 32, 0.05);
+  --shadow-md: 0 4px 12px rgba(19, 24, 32, 0.08), 0 2px 4px rgba(19, 24, 32, 0.05);
+  --shadow-pop: 0 16px 40px rgba(19, 24, 32, 0.16);
+
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+
+  --radius: 6px;
+  --radius-sm: 4px;
+  --sidebar-w: 240px;
+  --header-h: 56px;
+}
+
+/* ---- Design Tokens : Dark theme (opt-in) --------------------------- */
+[data-theme='dark'] {
+  --bg-base: #0a0e16;
+  --bg-surface: #121826;
+  --bg-surface-hover: #1b2333;
+  --bg-inset: #0d121d;
+  --border-default: #283142;
+  --border-strong: #3a4457;
+
+  --brand-primary: #ff3b47;
+  --brand-primary-strong: #ff5c66;
+  --brand-accent: #3d8bff;
+  --brand-accent-strong: #63a4ff;
+  --brand-success: #22c55e;
+  --brand-warning: #f59e0b;
+  --brand-danger: #ef4444;
+
+  --text-primary: #e6e9ef;
+  --text-muted: #9aa4b3;
+  --text-faint: #67717f;
+  --on-brand: #ffffff;
+
+  --primary-soft: rgba(255, 59, 71, 0.12);
+  --accent-soft: rgba(61, 139, 255, 0.14);
+  --success-soft: rgba(34, 197, 94, 0.12);
+  --warning-soft: rgba(245, 158, 11, 0.12);
+  --danger-soft: rgba(239, 68, 68, 0.12);
+
+  --chart-1: #4d9bff;
+  --chart-2: #2dd4d8;
+  --chart-3: #ff5c66;
+  --chart-4: #fbbf24;
+  --chart-5: #a78bfa;
+  --chart-6: #34d399;
+
+  --brand-gradient: linear-gradient(135deg, #ff3b47 0%, #ff6a4d 100%);
+  --accent-gradient: linear-gradient(135deg, #3d8bff 0%, #5aa9ff 100%);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45);
+  --shadow-pop: 0 16px 40px rgba(0, 0, 0, 0.55);
+}
+
+/* ---- Reset / base -------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-primary);
+  background-color: var(--bg-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--brand-primary);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* ---- Typography scale --------------------------------------------- */
+.display-title {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+.section-header {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+.mono {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+}
+.metatag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-faint);
+}
+
+/* ---- Card --------------------------------------------------------- */
+.ztn-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+.ztn-card--interactive {
+  cursor: pointer;
+}
+.ztn-card--interactive:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+}
+.ztn-card__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-default);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+/* ---- KPI metric --------------------------------------------------- */
+.ztn-kpi__label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.ztn-kpi__value {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 2px 0 4px;
+  font-feature-settings: 'tnum';
+}
+.ztn-kpi__sub {
+  font-size: 11px;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+}
+
+/* ---- Status tags — enterprise NOC chip: neutral label, colour lives
+   only in the small status dot (no neon tinted fills). ---------------- */
+.ztn-badge {
+  --badge-color: var(--text-faint);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border: 1px solid var(--border-default);
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.ztn-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  background: var(--badge-color);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--badge-color) 18%, transparent);
+}
+.ztn-badge--neutral {
+  --badge-color: var(--text-faint);
+}
+.ztn-badge--primary {
+  --badge-color: var(--brand-primary);
+}
+.ztn-badge--accent {
+  --badge-color: var(--brand-accent);
+}
+.ztn-badge--success {
+  --badge-color: var(--brand-success);
+}
+.ztn-badge--warning {
+  --badge-color: var(--brand-warning);
+}
+.ztn-badge--danger {
+  --badge-color: var(--brand-danger);
+}
+/* Modifiers. --tinted brings back a faint semantic wash; --solid / --outline
+   for the rare cases that need emphasis. */
+.ztn-badge--tinted {
+  border-color: color-mix(in srgb, var(--badge-color) 34%, var(--border-default));
+  background: color-mix(in srgb, var(--badge-color) 8%, var(--bg-surface));
+  color: color-mix(in srgb, var(--badge-color) 55%, var(--text-primary));
+}
+.ztn-badge--solid {
+  background: var(--badge-color);
+  border-color: var(--badge-color);
+  color: var(--on-brand);
+}
+.ztn-badge--solid::before {
+  background: var(--on-brand);
+  box-shadow: none;
+}
+.ztn-badge--outline {
+  background: transparent;
+}
+.ztn-badge--sm {
+  padding: 1px 7px;
+  font-size: 10px;
+}
+
+/* =====================================================================
+   Buttons — daisyUI component model, enterprise skin.
+   One base recipe driven by per-instance custom properties
+   (--btn-bg / --btn-fg / --btn-border), so every variant only sets
+   colours. Style modifiers: solid · soft · outline · ghost · link.
+   Sizes: xs · sm · md(default) · lg. Shapes: block · wide · square ·
+   circle · pill. States: :disabled · --active · --loading.
+   ===================================================================== */
+.ztn-btn {
+  --btn-bg: var(--bg-surface);
+  --btn-fg: var(--text-primary);
+  --btn-border: var(--border-strong);
+  --btn-shadow: var(--shadow-sm);
+  --btn-h: 2.25rem;
+  --btn-px: 0.95rem;
+  --btn-font: 13px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: var(--btn-h);
+  padding-inline: var(--btn-px);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--btn-border);
+  background-color: var(--btn-bg);
+  color: var(--btn-fg);
+  box-shadow: var(--btn-shadow);
+  font-family: var(--font-sans);
+  font-size: var(--btn-font);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background-color 0.14s ease, border-color 0.14s ease,
+    color 0.14s ease, box-shadow 0.14s ease, transform 0.05s ease;
+}
+/* Shared hover/active: darken solid surfaces uniformly (daisyUI recipe). */
+.ztn-btn:hover {
+  background-color: color-mix(in oklab, var(--btn-bg) 90%, #000);
+  border-color: color-mix(in oklab, var(--btn-border) 88%, #000);
+}
+.ztn-btn:active {
+  transform: translateY(0.5px);
+  box-shadow: none;
+}
+.ztn-btn:focus-visible {
+  outline: 2px solid var(--brand-accent);
+  outline-offset: 2px;
+}
+.ztn-btn:disabled,
+.ztn-btn[disabled],
+.ztn-btn--disabled {
+  opacity: 0.5;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+/* -- Solid colour variants -- */
+.ztn-btn--primary {
+  --btn-bg: var(--brand-primary);
+  --btn-fg: var(--on-brand);
+  --btn-border: var(--brand-primary);
+}
+.ztn-btn--accent {
+  --btn-bg: var(--brand-accent);
+  --btn-fg: var(--on-brand);
+  --btn-border: var(--brand-accent);
+}
+.ztn-btn--success {
+  --btn-bg: var(--brand-success);
+  --btn-fg: #ffffff;
+  --btn-border: var(--brand-success);
+}
+.ztn-btn--warning {
+  --btn-bg: var(--brand-warning);
+  --btn-fg: #1a1206;
+  --btn-border: var(--brand-warning);
+}
+.ztn-btn--danger {
+  --btn-bg: var(--brand-danger);
+  --btn-fg: #ffffff;
+  --btn-border: var(--brand-danger);
+}
+.ztn-btn--neutral {
+  --btn-bg: var(--text-primary);
+  --btn-fg: var(--bg-surface);
+  --btn-border: var(--text-primary);
+}
+.ztn-btn--brand {
+  --btn-fg: var(--on-brand);
+  --btn-border: transparent;
+  background-image: var(--brand-gradient);
+}
+.ztn-btn--brand:hover {
+  background-image: var(--brand-gradient);
+  filter: brightness(1.07);
+}
+
+/* -- Soft (tinted) — driven by --btn-color -- */
+.ztn-btn--soft {
+  --btn-color: var(--brand-primary);
+  --btn-bg: color-mix(in srgb, var(--btn-color) 12%, transparent);
+  --btn-fg: var(--btn-color);
+  --btn-border: color-mix(in srgb, var(--btn-color) 24%, transparent);
+  --btn-shadow: none;
+}
+.ztn-btn--soft:hover {
+  background-color: color-mix(in srgb, var(--btn-color) 20%, transparent);
+  border-color: color-mix(in srgb, var(--btn-color) 36%, transparent);
+}
+.ztn-btn--soft-accent {
+  --btn-color: var(--brand-accent);
+}
+.ztn-btn--soft-success {
+  --btn-color: var(--brand-success);
+}
+.ztn-btn--soft-warning {
+  --btn-color: var(--brand-warning);
+}
+.ztn-btn--soft-danger {
+  --btn-color: var(--brand-danger);
+}
+
+/* -- Outline — transparent, fills with colour on hover -- */
+[class*='ztn-btn--outline'] {
+  --btn-color: var(--brand-primary);
+  --btn-bg: transparent;
+  --btn-fg: var(--btn-color);
+  --btn-border: color-mix(in srgb, var(--btn-color) 50%, transparent);
+  --btn-shadow: none;
+}
+[class*='ztn-btn--outline']:hover {
+  background-color: var(--btn-color);
+  border-color: var(--btn-color);
+  color: var(--on-brand);
+}
+.ztn-btn--outline-accent {
+  --btn-color: var(--brand-accent);
+}
+.ztn-btn--outline-danger {
+  --btn-color: var(--brand-danger);
+}
+.ztn-btn--outline-danger:hover {
+  color: #ffffff;
+}
+
+/* -- Ghost — no chrome until hover (theme-correct) -- */
+.ztn-btn--ghost {
+  --btn-bg: transparent;
+  --btn-fg: var(--text-primary);
+  --btn-border: var(--border-strong);
+  --btn-shadow: none;
+}
+.ztn-btn--ghost:hover {
+  background-color: var(--bg-surface-hover);
+  border-color: var(--border-strong);
+}
+
+/* -- Link -- */
+.ztn-btn--link {
+  --btn-bg: transparent;
+  --btn-fg: var(--brand-accent);
+  --btn-border: transparent;
+  --btn-shadow: none;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.ztn-btn--link:hover {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--brand-accent-strong);
+}
+
+/* -- Sizes -- */
+.ztn-btn--xs {
+  --btn-h: 1.5rem;
+  --btn-px: 0.55rem;
+  --btn-font: 11px;
+  gap: 0.35rem;
+}
+.ztn-btn--sm,
+.btn-sm {
+  --btn-h: 1.875rem;
+  --btn-px: 0.7rem;
+  --btn-font: 12px;
+}
+.ztn-btn--lg {
+  --btn-h: 2.75rem;
+  --btn-px: 1.35rem;
+  --btn-font: 15px;
+}
+
+/* -- Shapes -- */
+.ztn-btn--block {
+  width: 100%;
+}
+.ztn-btn--wide {
+  padding-inline: 2rem;
+}
+.ztn-btn--square {
+  padding: 0;
+  width: var(--btn-h);
+}
+.ztn-btn--circle {
+  padding: 0;
+  width: var(--btn-h);
+  border-radius: 999px;
+}
+.ztn-btn--pill {
+  border-radius: 999px;
+  padding-inline: 1.1rem;
+}
+
+/* -- Loading spinner -- */
+.ztn-btn--loading {
+  pointer-events: none;
+  color: transparent;
+}
+.ztn-btn--loading {
+  position: relative;
+}
+.ztn-btn--loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1em;
+  height: 1em;
+  margin: -0.5em 0 0 -0.5em;
+  border: 2px solid color-mix(in srgb, var(--btn-fg) 40%, transparent);
+  border-top-color: var(--btn-fg);
+  border-radius: 50%;
+  animation: ztn-spin 0.6s linear infinite;
+}
+@keyframes ztn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Icon-only button (daisyUI btn-square ghost equivalent) */
+.ztn-icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease;
+}
+.ztn-icon-btn:hover {
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+.ztn-icon-btn:focus-visible {
+  outline: 2px solid var(--brand-accent);
+  outline-offset: 2px;
+}
+.ztn-icon-btn--active {
+  background: var(--primary-soft);
+  color: var(--brand-primary);
+  border-color: color-mix(in srgb, var(--brand-primary) 40%, transparent);
+}
+
+/* Joined / segmented buttons (daisyUI "join") */
+.ztn-btn-group {
+  display: inline-flex;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+.ztn-btn-group > button {
+  padding: 6px 12px;
+  background: var(--bg-surface);
+  border: none;
+  border-right: 1px solid var(--border-default);
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.ztn-btn-group > button:last-child {
+  border-right: none;
+}
+.ztn-btn-group > button:hover {
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
+}
+.ztn-btn-group > button.is-active {
+  background: var(--brand-primary);
+  color: var(--on-brand);
+}
+
+/* Action bar — right-aligned cluster of buttons in a page head */
+.ztn-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ---- Form controls ------------------------------------------------ */
+.ztn-field {
+  display: block;
+  margin-bottom: 16px;
+}
+.ztn-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+.ztn-input,
+.ztn-select,
+.ztn-textarea {
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  transition: border-color 0.14s ease, box-shadow 0.14s ease;
+}
+.ztn-input::placeholder,
+.ztn-textarea::placeholder {
+  color: var(--text-faint);
+}
+.ztn-input:hover,
+.ztn-select:hover,
+.ztn-textarea:hover {
+  border-color: color-mix(in srgb, var(--brand-accent) 40%, var(--border-strong));
+}
+.ztn-input:focus,
+.ztn-select:focus,
+.ztn-textarea:focus {
+  outline: none;
+  border-color: var(--brand-accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.ztn-input:disabled,
+.ztn-select:disabled,
+.ztn-textarea:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+/* State + size modifiers (daisyUI input variants) */
+.ztn-input--error,
+.ztn-select--error {
+  border-color: var(--brand-danger);
+}
+.ztn-input--error:focus {
+  box-shadow: 0 0 0 3px var(--danger-soft);
+}
+.ztn-input--sm {
+  padding: 5px 8px;
+  font-size: 12px;
+}
+.ztn-textarea {
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.5;
+}
+.ztn-select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, var(--text-muted) 50%),
+    linear-gradient(135deg, var(--text-muted) 50%, transparent 50%);
+  background-position: calc(100% - 16px) center, calc(100% - 11px) center;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+
+/* ---- Checkbox / radio --------------------------------------------- */
+.ztn-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+.ztn-check input {
+  accent-color: var(--brand-primary);
+  width: 15px;
+  height: 15px;
+}
+
+/* ---- Data table --------------------------------------------------- */
+.ztn-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+.ztn-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+.ztn-table thead th {
+  text-align: left;
+  padding: 8px 12px;
+  background: var(--bg-base);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-faint);
+  border-top: 1px solid var(--border-default);
+  border-bottom: 1px solid var(--border-default);
+  white-space: nowrap;
+}
+.ztn-table tbody td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border-default);
+  vertical-align: middle;
+}
+.ztn-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.ztn-table tbody tr:hover {
+  background: var(--bg-surface-hover);
+}
+.ztn-table tbody tr.row-click {
+  cursor: pointer;
+}
+.table-search {
+  margin-left: auto;
+  width: 260px;
+  max-width: 50%;
+  padding: 6px 10px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ---- Terminal / log console --------------------------------------- */
+.ztn-terminal {
+  background: var(--bg-base);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.7;
+  color: #cbd5e1;
+  overflow-x: auto;
+}
+[data-theme='light'] .ztn-terminal {
+  color: #334155;
+}
+.ztn-terminal .t-time {
+  color: var(--text-faint);
+}
+.ztn-terminal .t-amf {
+  color: var(--brand-primary);
+}
+.ztn-terminal .t-smf {
+  color: var(--brand-success);
+}
+.ztn-terminal .t-upf {
+  color: var(--brand-warning);
+}
+.ztn-terminal .t-err {
+  color: var(--brand-danger);
+}
+
+/* ---- Progress meter ----------------------------------------------- */
+.ztn-meter {
+  height: 6px;
+  width: 100%;
+  border-radius: 2px;
+  background: var(--bg-base);
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+}
+.ztn-meter__fill {
+  height: 100%;
+  background: var(--brand-primary);
+}
+.ztn-meter__fill--warning {
+  background: var(--brand-warning);
+}
+.ztn-meter__fill--danger {
+  background: var(--brand-danger);
+}
+.ztn-meter__fill--success {
+  background: var(--brand-success);
+}
+
+/* ---- Layout helpers ----------------------------------------------- */
+.ztn-grid {
+  display: grid;
+  gap: 16px;
+}
+.ztn-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.ztn-page__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.kpi-row {
+  grid-template-columns: repeat(3, 1fr);
+}
+.kpi-strip {
+  grid-template-columns: repeat(5, 1fr);
+}
+.kpi__head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.kpi__head ui-icon {
+  color: var(--text-faint);
+}
+.card-link {
+  margin-left: auto;
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--brand-primary);
+}
+@media (max-width: 1200px) {
+  .kpi-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+.head-badges {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.kpi-split {
+  color: var(--text-faint);
+  font-weight: 500;
+}
+.dim {
+  color: var(--text-muted);
+}
+.note {
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  border-left: 2px solid var(--border-strong);
+  background: var(--bg-base);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.enc-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--brand-success);
+}
+.enc-tag::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 1px;
+  background: var(--brand-success);
+}
+@media (max-width: 980px) {
+  .kpi-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Centered standalone (auth / error) viewport */
+.ztn-stage {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: var(--bg-base);
+  background-image: linear-gradient(
+      color-mix(in srgb, var(--border-default) 35%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--border-default) 35%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 40px 40px;
+  background-position: center;
+}

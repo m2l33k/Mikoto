@@ -1,0 +1,112 @@
+:host {
+  display: block;
+}
+
+.head-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+.head-col .ztn-actions {
+  justify-content: flex-end;
+}
+@media (max-width: 720px) {
+  .head-col {
+    align-items: flex-start;
+  }
+}
+
+.kpi--alert {
+  border-color: color-mix(in srgb, var(--brand-danger) 35%, var(--border-default));
+}
+
+.nf--click {
+  cursor: pointer;
+  transition: border-color 0.13s ease, box-shadow 0.13s ease, transform 0.13s ease;
+}
+.nf--click:hover {
+  border-color: var(--brand-accent);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.charts-row {
+  grid-template-columns: 1.2fr 0.8fr 1.2fr;
+}
+.chart-figure {
+  margin-bottom: 12px;
+}
+.chart-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+.chart-center .ztn-card__title {
+  width: 100%;
+}
+
+.nf-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+.nf {
+  background: var(--bg-base);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+}
+.nf--degraded {
+  border-color: color-mix(in srgb, var(--brand-warning) 40%, var(--border-default));
+}
+.nf--down {
+  border-color: color-mix(in srgb, var(--brand-danger) 40%, var(--border-default));
+}
+.nf__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.nf__name {
+  font-size: 14px;
+  font-weight: 600;
+}
+.nf__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-faint);
+}
+.nf__dot--ok {
+  background: var(--brand-success);
+}
+.nf__dot--warn {
+  background: var(--brand-warning);
+}
+.nf__dot--err {
+  background: var(--brand-danger);
+}
+.nf__role {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 2px 0 10px;
+}
+.nf__stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--text-faint);
+  margin-top: 8px;
+}
+
+@media (max-width: 1100px) {
+  .charts-row {
+    grid-template-columns: 1fr;
+  }
+  .nf-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

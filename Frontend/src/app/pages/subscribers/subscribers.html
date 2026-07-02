@@ -1,0 +1,185 @@
+<section class="ztn-page">
+  <div class="ztn-page__head">
+    <div>
+      <h1 class="display-title">Subscriber Management</h1>
+      <p class="metatag">UDM · Provisioning · Client-Side Field Level Encryption</p>
+    </div>
+    <div class="head-badges">
+      <span class="ztn-badge ztn-badge--success">CSFLE: Enabled</span>
+      <span class="ztn-badge ztn-badge--primary">MongoDB 7.x</span>
+      <button class="ztn-btn ztn-btn--primary btn-sm" type="button" (click)="addOpen.set(true)">
+        + Provision Subscriber
+      </button>
+    </div>
+  </div>
+
+  <div class="ztn-grid kpi-row">
+    <div class="ztn-card">
+      <div class="kpi__head"><ui-icon name="users" [size]="16" /><span>Provisioned Subscribers</span></div>
+      <div class="ztn-kpi__value">1,284</div>
+      <div class="ztn-kpi__sub">2 registered · 2 idle now</div>
+    </div>
+    <div class="ztn-card">
+      <div class="kpi__head"><ui-icon name="lock" [size]="16" /><span>CSFLE Field Coverage</span></div>
+      <div class="ztn-kpi__value">100%</div>
+      <div class="ztn-kpi__sub">K / OPc / SUPI encrypted at rest</div>
+    </div>
+    <div class="ztn-card">
+      <div class="kpi__head"><ui-icon name="database" [size]="16" /><span>Auth Vectors Issued</span></div>
+      <div class="ztn-kpi__value">3,910</div>
+      <div class="ztn-kpi__sub">5G-AKA + EAP-AKA′</div>
+    </div>
+  </div>
+
+  <div class="ztn-card">
+    <h2 class="ztn-card__title">
+      <ui-icon name="users" [size]="14" /> Subscriber Directory
+      <input
+        class="ztn-input table-search"
+        type="search"
+        placeholder="Filter by SUPI or MSISDN…"
+        [value]="query()"
+        (input)="query.set($any($event.target).value)"
+      />
+      <button class="ztn-btn ztn-btn--ghost btn-sm" type="button" (click)="exportCsv()">
+        <ui-icon name="download" [size]="14" /> CSV
+      </button>
+    </h2>
+    <div class="ztn-table-wrap">
+      <table class="ztn-table">
+        <thead>
+          <tr>
+            <th>SUPI (IMSI)</th>
+            <th>MSISDN</th>
+            <th>S-NSSAI (Slice)</th>
+            <th>Serving AMF</th>
+            <th>Auth Method</th>
+            <th>Credentials</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (s of filtered(); track s.supi) {
+            <tr class="row-click" (click)="open(s)">
+              <td class="mono">{{ s.supi }}</td>
+              <td class="mono dim">{{ s.msisdn }}</td>
+              <td class="mono">{{ s.slice }}</td>
+              <td class="mono dim">{{ s.servingAmf }}</td>
+              <td class="mono">{{ s.authMethod }}</td>
+              <td><span class="enc-tag">AES-256 sealed</span></td>
+              <td>
+                <span
+                  class="ztn-badge"
+                  [class.ztn-badge--success]="s.status === 'registered'"
+                  [class.ztn-badge--warning]="s.status === 'idle'"
+                  [class.ztn-badge--neutral]="s.status === 'deregistered'"
+                >{{ s.status }}</span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="ztn-card">
+    <h2 class="ztn-card__title"><ui-icon name="lock" [size]="14" /> CSFLE Encrypted Field Schema (subscriber_db.profiles)</h2>
+    <div class="ztn-table-wrap">
+      <table class="ztn-table">
+        <thead>
+          <tr><th>Field</th><th>Encryption Algorithm</th><th>Data Key ID</th><th>State</th></tr>
+        </thead>
+        <tbody>
+          @for (f of encryptedFields; track f.field) {
+            <tr>
+              <td class="mono">{{ f.field }}</td>
+              <td class="mono dim">{{ f.algo }}</td>
+              <td class="mono dim">{{ f.key }}</td>
+              <td><span class="ztn-badge ztn-badge--success">Encrypted</span></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    <p class="note">
+      Data keys are wrapped by the Customer Master Key stored in HashiCorp Vault Transit;
+      MongoDB never receives plaintext key material.
+    </p>
+  </div>
+</section>
+
+<!-- Subscriber detail -->
+<app-drawer
+  [open]="selected() !== null"
+  eyebrow="Subscriber"
+  [title]="selected()?.supi ?? ''"
+  (closed)="close()"
+>
+  @if (selected(); as s) {
+    <dl class="dl">
+      <dt>SUPI</dt><dd>{{ s.supi }}</dd>
+      <dt>MSISDN</dt><dd>{{ s.msisdn }}</dd>
+      <dt>Slice</dt><dd>{{ s.slice }}</dd>
+      <dt>Serving AMF</dt><dd>{{ s.servingAmf }}</dd>
+      <dt>Auth Method</dt><dd>{{ s.authMethod }}</dd>
+      <dt>Status</dt><dd>{{ s.status }}</dd>
+    </dl>
+    <div class="drawer-section">
+      <h4 class="drawer-section__title">Encrypted Credentials (CSFLE)</h4>
+      <dl class="dl">
+        <dt>K</dt><dd><span class="enc-tag">•••• sealed</span></dd>
+        <dt>OPc</dt><dd><span class="enc-tag">•••• sealed</span></dd>
+        <dt>SQN</dt><dd><span class="enc-tag">•••• sealed</span></dd>
+      </dl>
+    </div>
+  }
+  <div drawer-actions>
+    @if (selected(); as s) {
+      <button class="ztn-btn ztn-btn--ghost" type="button" (click)="close()">Close</button>
+      @if (s.status !== 'deregistered') {
+        <button class="ztn-btn ztn-btn--outline-danger" type="button" (click)="deregister(s)">
+          Deregister
+        </button>
+      }
+    }
+  </div>
+</app-drawer>
+
+<!-- Add subscriber -->
+<app-drawer
+  [open]="addOpen()"
+  eyebrow="UDM Provisioning"
+  title="New Subscriber"
+  (closed)="addOpen.set(false)"
+>
+  <div class="ztn-field">
+    <label class="ztn-label">IMSI</label>
+    <input class="ztn-input" [(ngModel)]="newImsi" name="imsi" />
+  </div>
+  <div class="ztn-field">
+    <label class="ztn-label">MSISDN</label>
+    <input class="ztn-input" [(ngModel)]="newMsisdn" name="msisdn" />
+  </div>
+  <div class="ztn-field">
+    <label class="ztn-label">S-NSSAI (Slice)</label>
+    <select class="ztn-select" [(ngModel)]="newSlice" name="slice">
+      <option>01-000001 (eMBB)</option>
+      <option>02-000002 (URLLC)</option>
+      <option>03-000003 (mMTC)</option>
+    </select>
+  </div>
+  <div class="ztn-field">
+    <label class="ztn-label">Authentication Method</label>
+    <select class="ztn-select" [(ngModel)]="newAuth" name="auth">
+      <option>5G-AKA</option>
+      <option>EAP-AKA′</option>
+    </select>
+  </div>
+  <p class="note">K and OPc are generated server-side and sealed with CSFLE before write.</p>
+  <div drawer-actions>
+    <button class="ztn-btn ztn-btn--ghost" type="button" (click)="addOpen.set(false)">Cancel</button>
+    <button class="ztn-btn ztn-btn--primary" type="button" (click)="addSubscriber()">
+      Provision
+    </button>
+  </div>
+</app-drawer>
