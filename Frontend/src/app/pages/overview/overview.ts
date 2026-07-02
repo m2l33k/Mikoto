@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../../ui/icon';
 import { Sparkline, Gauge, AreaChart, BarChart, Series } from '../../ui/charts';
@@ -6,6 +6,7 @@ import { Toolbar } from '../../ui/toolbar';
 import { genSeries, rangeBuckets, timeLabels, TimeRange } from '../../ui/data';
 import { ToastService } from '../../core/toast.service';
 import { ConfirmService } from '../../core/confirm.service';
+import { AuthService } from '../../core/auth.service';
 
 interface NfHealth {
   nf: string;
@@ -33,6 +34,9 @@ interface Event {
 export class Overview {
   private readonly toast = inject(ToastService);
   private readonly confirm = inject(ConfirmService);
+  private readonly auth = inject(AuthService);
+  /** Hide mutating controls from read-only operators. */
+  protected readonly canAct = computed(() => !this.auth.isReadOnly());
 
   protected readonly times = signal<string[]>([]);
   protected readonly signalSeries = signal<Series[]>([]);

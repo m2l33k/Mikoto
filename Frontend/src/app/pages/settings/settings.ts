@@ -5,6 +5,7 @@ import { AuthService } from '../../core/auth.service';
 import { PrefsService } from '../../core/prefs.service';
 import { ToastService } from '../../core/toast.service';
 import { ConfirmService } from '../../core/confirm.service';
+import { ROLES } from '../../core/roles';
 
 /** Settings & profile — preferences, security, session. */
 @Component({
@@ -27,7 +28,7 @@ export class Settings {
 
   protected readonly identity = this.auth.session()?.identity ?? 'admin-secops@telecom.node';
   protected displayName = 'Malek Aziz H.';
-  protected role = 'SecOps Administrator';
+  protected role = ROLES[this.auth.role()].label;
 
   protected readonly notifyCritical = signal(true);
   protected readonly notifyWarning = signal(true);

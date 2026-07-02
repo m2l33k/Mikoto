@@ -1,4 +1,7 @@
 import { Component } from '@angular/core';
+import { Icon } from '../../ui/icon';
+import { AreaChart, BarChart, Gauge, Series } from '../../ui/charts';
+import { timeLabels } from '../../ui/data';
 
 interface ConformanceTest {
   id: string;
@@ -17,10 +20,46 @@ interface LogLine {
 /** Persona B — NetOps Engineer Dashboard (design.txt §3.2). */
 @Component({
   selector: 'app-netops',
+  imports: [Icon, AreaChart, BarChart, Gauge],
   templateUrl: './netops.html',
   styleUrl: './netops.css',
 })
 export class Netops {
+  protected readonly times = timeLabels(24, 5); // last 2h, 5-min steps
+
+  /** Registration/setup signalling latency percentiles — the engineer's core KPI. */
+  protected readonly latencySeries: Series[] = [
+    {
+      name: 'p50',
+      color: 'var(--brand-success)',
+      data: [
+        42, 44, 41, 45, 43, 46, 44, 47, 45, 44, 46, 48, 45, 47, 44, 49, 46, 45, 44, 46, 45, 47, 44,
+        46,
+      ],
+    },
+    {
+      name: 'p95',
+      color: 'var(--brand-warning)',
+      data: [
+        98, 104, 96, 110, 102, 108, 100, 114, 106, 104, 108, 118, 110, 116, 104, 128, 118, 108, 106,
+        104, 108, 112, 104, 110,
+      ],
+    },
+    {
+      name: 'p99',
+      color: 'var(--brand-danger)',
+      data: [
+        180, 195, 176, 210, 188, 205, 192, 224, 206, 200, 208, 240, 218, 232, 200, 268, 238, 210,
+        206, 200, 208, 220, 200, 216,
+      ],
+    },
+  ];
+
+  /** GTP-U user-plane throughput (Gbps) over the same window. */
+  protected readonly throughputBars = [
+    9, 11, 10, 13, 12, 14, 13, 15, 14, 16, 15, 14, 16, 14, 15, 17, 16, 14, 15, 13, 14, 15, 14, 14,
+  ];
+
   protected readonly tests: ConformanceTest[] = [
     {
       id: 'TC-01',

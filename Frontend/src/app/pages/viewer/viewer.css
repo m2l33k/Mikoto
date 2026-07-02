@@ -1,0 +1,79 @@
+:host {
+  display: block;
+}
+
+/* Read-only advisory banner */
+.viewer-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border: 1px solid var(--border-strong);
+  border-left: 3px solid var(--brand-accent);
+  background: var(--accent-soft);
+  border-radius: var(--radius-sm);
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.viewer-note ui-icon {
+  color: var(--brand-accent);
+  flex: none;
+}
+
+/* NF health grid — non-interactive variant of the Overview grid */
+.viewer-nf-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+.viewer-nf {
+  background: var(--bg-base);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+}
+.viewer-nf--degraded {
+  border-color: color-mix(in srgb, var(--brand-warning) 40%, var(--border-default));
+}
+.viewer-nf__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 600;
+}
+.viewer-nf__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--text-faint);
+}
+.viewer-nf__dot--ok {
+  background: var(--brand-success);
+}
+.viewer-nf__dot--warn {
+  background: var(--brand-warning);
+}
+.viewer-nf__dot--err {
+  background: var(--brand-danger);
+}
+.viewer-nf__role {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin: 2px 0 8px;
+}
+.viewer-nf__cpu {
+  font-size: 11px;
+  color: var(--text-faint);
+  margin-top: 6px;
+}
+
+@media (max-width: 1100px) {
+  .viewer-nf-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .viewer-nf-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

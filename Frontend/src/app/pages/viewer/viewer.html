@@ -1,0 +1,134 @@
+<section class="ztn-page">
+  <div class="ztn-page__head">
+    <div>
+      <h1 class="display-title">Read-Only Console</h1>
+      <p class="metatag">Viewer · {{ identity }} · Observation access · no mutations</p>
+    </div>
+    <div class="head-badges">
+      <span class="ztn-badge ztn-badge--neutral">
+        <ui-icon name="lock" [size]="12" /> Read-Only
+      </span>
+      <span class="ztn-badge ztn-badge--success">Core: Running</span>
+    </div>
+  </div>
+
+  <!-- Read-only notice -->
+  <div class="viewer-note">
+    <ui-icon name="lock" [size]="15" />
+    <span>
+      You are signed in with <strong>Read-Only</strong> access. Operational controls are hidden;
+      request a role change from a SecOps Administrator to perform actions.
+    </span>
+  </div>
+
+  <!-- KPI strip -->
+  <div class="ztn-grid kpi-strip">
+    <div class="ztn-card kpi">
+      <div class="kpi__head"><ui-icon name="server" [size]="16" /><span>NFs Online</span></div>
+      <div class="ztn-kpi__value">8<span class="kpi-split">/8</span></div>
+      <div class="ztn-kpi__sub">All registered with NRF</div>
+    </div>
+    <div class="ztn-card kpi">
+      <div class="kpi__head"><ui-icon name="users" [size]="16" /><span>Subscribers</span></div>
+      <div class="ztn-kpi__value">1,284</div>
+      <div class="ztn-kpi__sub">2 registered now</div>
+    </div>
+    <div class="ztn-card kpi">
+      <div class="kpi__head"><ui-icon name="layers" [size]="16" /><span>PDU Sessions</span></div>
+      <div class="ztn-kpi__value">2</div>
+      <div class="ztn-kpi__sub">GTP-U 14 Gbps</div>
+    </div>
+    <div class="ztn-card kpi">
+      <div class="kpi__head"><ui-icon name="lock" [size]="16" /><span>mTLS Coverage</span></div>
+      <div class="ztn-kpi__value">100%</div>
+      <div class="ztn-kpi__sub">12 NF identities</div>
+    </div>
+    <div class="ztn-card kpi kpi--alert">
+      <div class="kpi__head"><ui-icon name="alert" [size]="16" /><span>Open Anomalies</span></div>
+      <div class="ztn-kpi__value">1</div>
+      <div class="ztn-kpi__sub">1 critical · 0 warning</div>
+    </div>
+  </div>
+
+  <!-- Charts row -->
+  <div class="ztn-grid charts-row">
+    <div class="ztn-card">
+      <h2 class="ztn-card__title"><ui-icon name="activity" [size]="14" /> SBI Signalling Rate</h2>
+      <ui-area-chart [series]="signalSeries" [labels]="times" [height]="180" unit=" req/s" />
+    </div>
+
+    <div class="ztn-card chart-center">
+      <h2 class="ztn-card__title"><ui-icon name="check-square" [size]="14" /> Conformance</h2>
+      <ui-gauge [percent]="83" [size]="120" color="var(--brand-warning)" />
+      <div class="ztn-kpi__sub">TS 23.502 · 10/12 passing</div>
+    </div>
+
+    <div class="ztn-card chart-center">
+      <h2 class="ztn-card__title"><ui-icon name="lock" [size]="14" /> mTLS Coverage</h2>
+      <ui-gauge [percent]="100" [size]="120" color="var(--brand-success)" />
+      <div class="ztn-kpi__sub">Strict-enforce · all SBI</div>
+    </div>
+  </div>
+
+  <!-- NF health grid (read-only, not clickable) -->
+  <div class="ztn-card">
+    <h2 class="ztn-card__title"><ui-icon name="cpu" [size]="14" /> Network Function Health</h2>
+    <div class="viewer-nf-grid">
+      @for (nf of nfs; track nf.nf) {
+        <div class="viewer-nf" [class.viewer-nf--degraded]="nf.status === 'degraded'">
+          <div class="viewer-nf__top">
+            <span class="mono">{{ nf.nf }}</span>
+            <span
+              class="viewer-nf__dot"
+              [class.viewer-nf__dot--ok]="nf.status === 'healthy'"
+              [class.viewer-nf__dot--warn]="nf.status === 'degraded'"
+              [class.viewer-nf__dot--err]="nf.status === 'down'"
+            ></span>
+          </div>
+          <div class="viewer-nf__role">{{ nf.role }}</div>
+          <ui-sparkline
+            [points]="nf.trend"
+            [height]="28"
+            [color]="nf.status === 'degraded' ? 'var(--brand-warning)' : 'var(--brand-success)'"
+          />
+          <div class="mono viewer-nf__cpu">CPU {{ nf.cpu }}%</div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Recent events (read-only) -->
+  <div class="ztn-card">
+    <h2 class="ztn-card__title"><ui-icon name="bell" [size]="14" /> Recent System Events</h2>
+    <div class="ztn-table-wrap">
+      <table class="ztn-table">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Severity</th>
+            <th>Source</th>
+            <th>Event</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (e of events; track e.time) {
+            <tr>
+              <td class="mono">{{ e.time }}</td>
+              <td>
+                <span
+                  class="ztn-badge"
+                  [class.ztn-badge--danger]="e.severity === 'critical'"
+                  [class.ztn-badge--warning]="e.severity === 'warning'"
+                  [class.ztn-badge--neutral]="e.severity === 'info'"
+                  >{{ e.severity }}</span
+                >
+              </td>
+              <td class="mono">{{ e.source }}</td>
+              <td>{{ e.message }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

@@ -2,7 +2,9 @@
   <div class="ztn-page__head">
     <div>
       <h1 class="display-title">NetOps Control Room</h1>
-      <p class="metatag">Core Performance · 3GPP Conformance · Signaling Trace</p>
+      <p class="metatag">
+        NetOps Engineer · Core Performance · 3GPP Conformance · Signalling Trace
+      </p>
     </div>
     <div class="head-badges">
       <span class="ztn-badge ztn-badge--success">Core: Running</span>
@@ -10,33 +12,75 @@
     </div>
   </div>
 
-  <!-- KPI cards -->
-  <div class="ztn-grid kpi-row">
-    <div class="ztn-card">
-      <div class="ztn-card__title">Mean Signaling Latency</div>
-      <div class="ztn-kpi__value">114ms</div>
-      <div class="ztn-kpi__label">Registration p95 · Setup 145ms</div>
+  <!-- KPI strip -->
+  <div class="ztn-grid kpi-strip">
+    <div class="ztn-card kpi">
+      <div class="kpi__head"><ui-icon name="activity" [size]="16" /><span>Mean Latency</span></div>
+      <div class="ztn-kpi__value">114<span class="kpi-split">ms</span></div>
+      <div class="ztn-kpi__sub">Registration p95 · setup 145ms</div>
     </div>
-
-    <div class="ztn-card">
-      <div class="ztn-card__title">GTP-U Tunnel Capacity</div>
-      <div class="ztn-kpi__value">14 <span class="kpi-split">Gbps</span></div>
-      <div class="ztn-kpi__label">User-plane throughput</div>
-      <div class="ztn-meter" style="margin-top: 14px">
-        <div class="ztn-meter__fill" style="width: 58%"></div>
+    <div class="ztn-card kpi">
+      <div class="kpi__head">
+        <ui-icon name="bar-chart" [size]="16" /><span>GTP-U Capacity</span>
       </div>
+      <div class="ztn-kpi__value">14<span class="kpi-split">Gbps</span></div>
+      <div class="ztn-kpi__sub">User-plane throughput · 58%</div>
+    </div>
+    <div class="ztn-card kpi">
+      <div class="kpi__head"><ui-icon name="users" [size]="16" /><span>Registrations</span></div>
+      <div class="ztn-kpi__value">2</div>
+      <div class="ztn-kpi__sub">Active UEs</div>
+    </div>
+    <div class="ztn-card kpi">
+      <div class="kpi__head"><ui-icon name="layers" [size]="16" /><span>PDU Sessions</span></div>
+      <div class="ztn-kpi__value">2</div>
+      <div class="ztn-kpi__sub">Established · GTP-U active</div>
+    </div>
+    <div class="ztn-card kpi">
+      <div class="kpi__head">
+        <ui-icon name="check-square" [size]="16" /><span>Conformance</span>
+      </div>
+      <div class="ztn-kpi__value">83%</div>
+      <div class="ztn-kpi__sub">TS 23.502 · 10/12 passing</div>
+    </div>
+  </div>
+
+  <!-- Charts row -->
+  <div class="ztn-grid charts-row">
+    <div class="ztn-card">
+      <h2 class="ztn-card__title">
+        <ui-icon name="activity" [size]="14" /> Signalling Latency (p50 · p95 · p99)
+      </h2>
+      <ui-area-chart [series]="latencySeries" [labels]="times" [height]="180" unit=" ms" />
+    </div>
+
+    <div class="ztn-card chart-center">
+      <h2 class="ztn-card__title"><ui-icon name="check-square" [size]="14" /> Conformance</h2>
+      <ui-gauge [percent]="83" [size]="120" color="var(--brand-warning)" />
+      <div class="ztn-kpi__sub">TS 23.502 · 10/12 passing</div>
     </div>
 
     <div class="ztn-card">
-      <div class="ztn-card__title">Subscriber Registrations</div>
-      <div class="ztn-kpi__value">2</div>
-      <div class="ztn-kpi__label">Active UEs · 2 Est. PDU Sessions</div>
+      <h2 class="ztn-card__title">
+        <ui-icon name="bar-chart" [size]="14" /> GTP-U Throughput
+        <span class="card-link">Gbps</span>
+      </h2>
+      <ui-bar-chart
+        [values]="throughputBars"
+        [labels]="times"
+        [height]="180"
+        color="var(--brand-warning)"
+        name="GTP-U"
+        unit=" Gbps"
+      />
     </div>
   </div>
 
   <!-- 3GPP conformance -->
   <div class="ztn-card">
-    <h2 class="ztn-card__title">3GPP Conformance Validator (TS 23.502)</h2>
+    <h2 class="ztn-card__title">
+      <ui-icon name="check-square" [size]="14" /> 3GPP Conformance Validator (TS 23.502)
+    </h2>
     <div class="ztn-table-wrap">
       <table class="ztn-table">
         <thead>
@@ -71,9 +115,11 @@
     </div>
   </div>
 
-  <!-- Signaling trace logger -->
+  <!-- Signalling trace logger -->
   <div class="ztn-card">
-    <h2 class="ztn-card__title">Core Signaling Trace Logger</h2>
+    <h2 class="ztn-card__title">
+      <ui-icon name="search" [size]="14" /> Core Signalling Trace Logger
+    </h2>
     <div class="ztn-terminal">
       @for (l of logs; track l.time) {
         <div>

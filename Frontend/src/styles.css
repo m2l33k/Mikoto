@@ -830,6 +830,51 @@ a:hover {
 .kpi-strip {
   grid-template-columns: repeat(5, 1fr);
 }
+
+/* Dashboard chart row: wide · narrow(centered figure) · wide.
+   Shared by every persona dashboard (overview, secops, netops, audit). */
+.charts-row {
+  grid-template-columns: 1.2fr 0.8fr 1.2fr;
+}
+.chart-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+.chart-center .ztn-card__title {
+  width: 100%;
+}
+.kpi--alert {
+  border-color: color-mix(in srgb, var(--brand-danger) 35%, var(--border-default));
+}
+@media (max-width: 1100px) {
+  .charts-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Definition list — NF/subscriber/audit detail pairs (drawers & cards). */
+.dl {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 10px 14px;
+}
+.dl dt {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-faint);
+  padding-top: 2px;
+}
+.dl dd {
+  margin: 0;
+  font-size: 13px;
+  font-family: var(--font-mono);
+  word-break: break-word;
+}
 .kpi__head {
   display: flex;
   align-items: center;

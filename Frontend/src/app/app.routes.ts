@@ -1,7 +1,10 @@
+import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
 
 import { authGuard } from './core/auth.guard';
+import { AuthService } from './core/auth.service';
 import { Shell } from './layout/shell';
+import { Viewer } from './pages/viewer/viewer';
 import { Login } from './pages/login/login';
 import { Recover } from './pages/recover/recover';
 import { ServerError } from './pages/server-error/server-error';
@@ -42,9 +45,11 @@ export const routes: Routes = [
     component: Shell,
     canActivate: [authGuard],
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'overview' },
+      // Land each operator on their role's home dashboard.
+      { path: '', pathMatch: 'full', redirectTo: () => inject(AuthService).home() },
 
       { path: 'overview', component: Overview, title: 'Platform Overview' },
+      { path: 'viewer', component: Viewer, title: 'Read-Only Console' },
       { path: 'topology', component: Topology, title: 'Service Topology' },
 
       { path: 'registry', component: Registry, title: 'NF Registry (NRF)' },

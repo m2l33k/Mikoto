@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { Icon } from './icon';
 import { PrefsService } from '../core/prefs.service';
 import { AuthService } from '../core/auth.service';
+import { roleCanSee } from '../core/roles';
 
 interface Command {
   label: string;
@@ -82,10 +83,17 @@ export class CommandPalette {
     },
   ];
 
+  /** Commands the active role may reach — page jumps are gated, actions are not. */
+  private readonly visible = computed(() => {
+    const role = this.auth.role();
+    return this.commands.filter((c) => !c.hint.startsWith('/') || roleCanSee(role, c.hint));
+  });
+
   protected readonly filtered = computed(() => {
     const q = this.query().toLowerCase().trim();
-    if (!q) return this.commands;
-    return this.commands.filter((c) => c.label.toLowerCase().includes(q));
+    const base = this.visible();
+    if (!q) return base;
+    return base.filter((c) => c.label.toLowerCase().includes(q));
   });
 
   constructor() {

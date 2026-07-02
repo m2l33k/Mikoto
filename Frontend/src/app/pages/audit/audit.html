@@ -2,7 +2,7 @@
   <div class="ztn-page__head">
     <div>
       <h1 class="display-title">TS 33.501 Compliance Auditor Desk</h1>
-      <p class="metatag">Non-Repudiation · Service Authorization · Zero-Trust Audit</p>
+      <p class="metatag">Compliance Auditor · Non-Repudiation · Service Authorisation Audit</p>
     </div>
     <div class="head-badges">
       <span class="ztn-badge ztn-badge--warning">Schema: TS 33.501</span>
@@ -10,45 +10,102 @@
     </div>
   </div>
 
-  <!-- KPI cards -->
-  <div class="ztn-grid kpi-row">
-    <div class="ztn-card">
-      <div class="ztn-card__title">Validated Token Operations</div>
+  <!-- KPI strip -->
+  <div class="ztn-grid kpi-strip">
+    <div class="ztn-card kpi">
+      <div class="kpi__head">
+        <ui-icon name="check-square" [size]="16" /><span>Validated Tokens</span>
+      </div>
       <div class="ztn-kpi__value">1,421</div>
-      <div class="ztn-kpi__label">Success Cases · scope namf-comm</div>
-      <span class="ztn-badge ztn-badge--success" style="margin-top: 10px">Verified</span>
+      <div class="ztn-kpi__sub">OAuth2 scope-verified operations</div>
+    </div>
+    <div class="ztn-card kpi">
+      <div class="kpi__head"><ui-icon name="lock" [size]="16" /><span>CSFLE Coverage</span></div>
+      <div class="ztn-kpi__value">100%</div>
+      <div class="ztn-kpi__sub">MongoDB · keys in Vault</div>
+    </div>
+    <div class="ztn-card kpi">
+      <div class="kpi__head">
+        <ui-icon name="shield-check" [size]="16" /><span>Crypto Rating</span>
+      </div>
+      <div class="ztn-kpi__value">A</div>
+      <div class="ztn-kpi__sub">AES-256-CBC-HMAC · RSA-4096</div>
+    </div>
+    <div class="ztn-card kpi">
+      <div class="kpi__head">
+        <ui-icon name="file-text" [size]="16" /><span>Audit Records</span>
+      </div>
+      <div class="ztn-kpi__value">18.4k</div>
+      <div class="ztn-kpi__sub">Append-only · Vault audit device</div>
+    </div>
+  </div>
+
+  <!-- Charts row -->
+  <div class="ztn-grid charts-row">
+    <div class="ztn-card chart-center">
+      <h2 class="ztn-card__title"><ui-icon name="shield-check" [size]="14" /> Compliance Score</h2>
+      <ui-gauge [percent]="94" [size]="120" color="var(--brand-success)" />
+      <div class="ztn-kpi__sub">TS 33.501 controls · 47/50 met</div>
+    </div>
+
+    <div class="ztn-card chart-center">
+      <h2 class="ztn-card__title">
+        <ui-icon name="check-square" [size]="14" /> Token Verification
+      </h2>
+      <ui-donut [data]="verificationMix()" [size]="128" centerLabel="tokens" />
     </div>
 
     <div class="ztn-card">
-      <div class="ztn-card__title">Client Database Encryption</div>
-      <div class="ztn-kpi__value">MongoDB</div>
-      <div class="ztn-kpi__label">CSFLE Enabled · Keys in Vault</div>
-      <span class="ztn-badge ztn-badge--success" style="margin-top: 10px">Enabled</span>
-    </div>
-
-    <div class="ztn-card">
-      <div class="ztn-card__title">Crypto Key Strength</div>
-      <div class="ztn-kpi__value mono" style="font-size: 20px">AES-256-CBC-HMAC</div>
-      <div class="ztn-kpi__label">Zero-Trust Rating: A</div>
+      <h2 class="ztn-card__title"><ui-icon name="lock" [size]="14" /> Encryption Posture</h2>
+      <dl class="dl">
+        <dt>Data at rest</dt>
+        <dd><span class="enc-tag">MongoDB CSFLE (AES-256)</span></dd>
+        <dt>Data in transit</dt>
+        <dd><span class="enc-tag">mTLS 1.3 · all SBI</span></dd>
+        <dt>Key custody</dt>
+        <dd><span class="enc-tag">Vault Transit CMK</span></dd>
+        <dt>Token authority</dt>
+        <dd class="mono dim">NRF OAuth2 · TS 33.501 §13</dd>
+      </dl>
     </div>
   </div>
 
   <!-- Token audit log -->
   <div class="ztn-card">
-    <h2 class="ztn-card__title">Non-Repudiation Access Token Verification Audit Log</h2>
+    <h2 class="ztn-card__title">
+      <ui-icon name="file-text" [size]="14" /> Non-Repudiation Access-Token Audit Log
+      <input
+        class="ztn-input table-search"
+        type="search"
+        placeholder="Filter by consumer, provider or scope…"
+        aria-label="Filter token audit log"
+        [value]="table.query()"
+        (input)="table.search($any($event.target).value)"
+      />
+    </h2>
     <div class="ztn-table-wrap">
       <table class="ztn-table">
         <thead>
           <tr>
-            <th>System Time</th>
-            <th>Consumer NF</th>
-            <th>Provider NF</th>
-            <th>Requested Scope</th>
-            <th>Verification State</th>
+            <th ui-sort [dir]="table.ariaSort('timestamp')" (toggled)="table.sortBy('timestamp')">
+              System Time
+            </th>
+            <th ui-sort [dir]="table.ariaSort('consumer')" (toggled)="table.sortBy('consumer')">
+              Consumer NF
+            </th>
+            <th ui-sort [dir]="table.ariaSort('provider')" (toggled)="table.sortBy('provider')">
+              Provider NF
+            </th>
+            <th ui-sort [dir]="table.ariaSort('scope')" (toggled)="table.sortBy('scope')">
+              Requested Scope
+            </th>
+            <th ui-sort [dir]="table.ariaSort('status')" (toggled)="table.sortBy('status')">
+              Verification State
+            </th>
           </tr>
         </thead>
         <tbody>
-          @for (t of tokens; track t.timestamp + t.consumer) {
+          @for (t of table.view(); track t.timestamp + t.consumer) {
             <tr>
               <td class="mono">{{ t.timestamp }}</td>
               <td class="mono">{{ t.consumer }}</td>
@@ -64,6 +121,12 @@
                 </span>
               </td>
             </tr>
+          } @empty {
+            <tr>
+              <td colspan="5">
+                <div class="ztn-empty">No token operations match the filter.</div>
+              </td>
+            </tr>
           }
         </tbody>
       </table>
@@ -72,7 +135,9 @@
 
   <!-- CSFLE matrix -->
   <div class="ztn-card">
-    <h2 class="ztn-card__title">Client-Side Field Level Encryption (CSFLE) Status</h2>
+    <h2 class="ztn-card__title">
+      <ui-icon name="database" [size]="14" /> Client-Side Field Level Encryption (CSFLE) Status
+    </h2>
     <div class="ztn-table-wrap">
       <table class="ztn-table">
         <thead>

@@ -5,6 +5,7 @@ import { Icon } from '../../ui/icon';
 import { Brand } from '../../ui/brand';
 import { AuthService } from '../../core/auth.service';
 import { PrefsService } from '../../core/prefs.service';
+import { RoleId, ROLE_LIST, ROLES } from '../../core/roles';
 
 /** Interface 1 — Secure Portal Login (design.txt §2.1). */
 @Component({
@@ -26,7 +27,9 @@ export class Login {
     '5G-LAB-STAGING-EAST',
   ];
 
+  protected readonly roles = ROLE_LIST;
   protected env = this.prefs.environment();
+  protected role: RoleId = 'secops-admin';
   protected identity = 'admin-secops@telecom.node';
   protected passphrase = '';
   protected enforceMtls = signal(true);
@@ -41,8 +44,20 @@ export class Login {
     this.prefs.toggleTheme();
   }
 
+  /** Suggest a matching demo identity when the operator picks a role. */
+  protected onRoleChange(): void {
+    const demo: Record<RoleId, string> = {
+      'secops-admin': 'admin-secops@telecom.node',
+      'netops-engineer': 'netops-eng@telecom.node',
+      'compliance-auditor': 'auditor@telecom.node',
+      'read-only': 'viewer@telecom.node',
+    };
+    this.identity = demo[this.role];
+    this.clearErrors();
+  }
+
   protected fillDemo(): void {
-    this.identity = 'admin-secops@telecom.node';
+    this.onRoleChange();
     this.passphrase = 'demo-secops-2026';
     this.enforceMtls.set(true);
     this.clearErrors();
@@ -83,9 +98,10 @@ export class Login {
     // Simulate secure-context establishment / mTLS handshake.
     setTimeout(() => {
       this.prefs.setEnvironment(this.env);
-      this.auth.login(this.identity, this.env, this.enforceMtls());
+      this.auth.login(this.identity, this.env, this.enforceMtls(), this.role);
       this.busy.set(false);
-      this.router.navigate(['/overview']);
+      // Land each operator on their role's home dashboard.
+      this.router.navigate([ROLES[this.role].home]);
     }, 700);
   }
 }

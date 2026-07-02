@@ -41,7 +41,7 @@
     </div>
 
     <nav class="sidebar__nav">
-      @for (group of groups; track group.title) {
+      @for (group of groups(); track group.title) {
         <div class="nav-group">
           <div class="nav-group__title metatag">{{ group.title }}</div>
           @for (item of group.items; track item.path) {
@@ -64,7 +64,7 @@
         <span class="session__avatar">{{ initials() }}</span>
         <div class="session__meta">
           <div class="session__name">{{ user() }}</div>
-          <div class="metatag session__role">admin-secops</div>
+          <div class="metatag session__role">{{ roleMeta().short }}</div>
         </div>
         <span class="session__status" title="Session active"></span>
       </a>
@@ -173,7 +173,7 @@
             <div class="dropdown" role="menu" aria-label="User menu">
               <div class="dropdown__user">
                 <div class="mono">{{ user() }}</div>
-                <div class="metatag">SecOps Administrator</div>
+                <div class="metatag">{{ roleMeta().label }}</div>
               </div>
               <a class="dropdown__item" routerLink="/settings" (click)="closeMenus()">
                 <ui-icon name="cpu" [size]="15" /> Settings

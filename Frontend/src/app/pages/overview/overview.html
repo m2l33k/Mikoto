@@ -10,36 +10,38 @@
         <span class="ztn-badge ztn-badge--success">Vault: Unsealed</span>
         <span class="ztn-badge ztn-badge--warning">1 Degraded NF</span>
       </div>
-      <div class="ztn-actions">
-        <button class="ztn-btn ztn-btn--ghost ztn-btn--sm" type="button" (click)="toggleLive()">
-          <ui-icon [name]="liveView() ? 'activity' : 'play'" [size]="14" />
-          {{ liveView() ? 'Live: On' : 'Go Live' }}
-        </button>
-        <button class="ztn-btn ztn-btn--ghost ztn-btn--sm" type="button" (click)="refreshAll()">
-          <ui-icon name="refresh" [size]="14" /> Refresh
-        </button>
-        <button
-          class="ztn-btn ztn-btn--soft-accent ztn-btn--sm"
-          type="button"
-          (click)="exportSnapshot()"
-        >
-          <ui-icon name="download" [size]="14" /> Export
-        </button>
-        <button
-          class="ztn-btn ztn-btn--soft ztn-btn--sm"
-          type="button"
-          (click)="acknowledgeAlerts()"
-        >
-          <ui-icon name="check" [size]="14" /> Ack Alerts
-        </button>
-        <button
-          class="ztn-btn ztn-btn--primary ztn-btn--sm"
-          type="button"
-          (click)="runDiagnostics()"
-        >
-          <ui-icon name="shield-check" [size]="14" /> Run Diagnostics
-        </button>
-      </div>
+      @if (canAct()) {
+        <div class="ztn-actions">
+          <button class="ztn-btn ztn-btn--ghost ztn-btn--sm" type="button" (click)="toggleLive()">
+            <ui-icon [name]="liveView() ? 'activity' : 'play'" [size]="14" />
+            {{ liveView() ? 'Live: On' : 'Go Live' }}
+          </button>
+          <button class="ztn-btn ztn-btn--ghost ztn-btn--sm" type="button" (click)="refreshAll()">
+            <ui-icon name="refresh" [size]="14" /> Refresh
+          </button>
+          <button
+            class="ztn-btn ztn-btn--soft-accent ztn-btn--sm"
+            type="button"
+            (click)="exportSnapshot()"
+          >
+            <ui-icon name="download" [size]="14" /> Export
+          </button>
+          <button
+            class="ztn-btn ztn-btn--soft ztn-btn--sm"
+            type="button"
+            (click)="acknowledgeAlerts()"
+          >
+            <ui-icon name="check" [size]="14" /> Ack Alerts
+          </button>
+          <button
+            class="ztn-btn ztn-btn--primary ztn-btn--sm"
+            type="button"
+            (click)="runDiagnostics()"
+          >
+            <ui-icon name="shield-check" [size]="14" /> Run Diagnostics
+          </button>
+        </div>
+      }
     </div>
   </div>
 

@@ -8,11 +8,14 @@ import { CommandPalette } from '../ui/command-palette';
 import { AuthService } from '../core/auth.service';
 import { PrefsService } from '../core/prefs.service';
 import { ToastService } from '../core/toast.service';
+import { RoleId, ROLES, roleCanSee } from '../core/roles';
 
 interface NavItem {
   label: string;
   path: string;
   icon: string;
+  /** When set, the item is shown only for this exact role. */
+  only?: RoleId;
 }
 interface NavGroup {
   title: string;
@@ -51,6 +54,9 @@ export class Shell implements OnDestroy {
     const id = this.user();
     return id.replace(/@.*/, '').slice(0, 2).toUpperCase();
   });
+  /** Active role metadata — drives the role label + nav filtering. */
+  protected readonly roleMeta = computed(() => ROLES[this.auth.role()]);
+  protected readonly isReadOnly = this.auth.isReadOnly;
 
   protected readonly clock = signal(this.now());
 
@@ -66,10 +72,11 @@ export class Shell implements OnDestroy {
   ];
   protected readonly unread = this.notices.length;
 
-  protected readonly groups: NavGroup[] = [
+  private readonly allGroups: NavGroup[] = [
     {
       title: 'Overview',
       items: [
+        { label: 'Read-Only Console', path: '/viewer', icon: 'shield', only: 'read-only' },
         { label: 'System Overview', path: '/overview', icon: 'home' },
         { label: 'Service Topology', path: '/topology', icon: 'topology' },
       ],
@@ -121,13 +128,24 @@ export class Shell implements OnDestroy {
     },
   ];
 
+  /** Nav filtered to the pages the active role may reach (empty groups dropped). */
+  protected readonly groups = computed<NavGroup[]>(() => {
+    const role = this.auth.role();
+    return this.allGroups
+      .map((g) => ({
+        title: g.title,
+        items: g.items.filter((i) => (!i.only || i.only === role) && roleCanSee(role, i.path)),
+      }))
+      .filter((g) => g.items.length > 0);
+  });
+
   /** Current URL, tracked for the breadcrumb trail. */
   private readonly currentUrl = signal(this.router.url);
 
-  /** Breadcrumb trail derived from the nav model: group → page. */
+  /** Breadcrumb trail derived from the full nav model: group → page. */
   protected readonly crumbs = computed(() => {
     const url = this.currentUrl().split('?')[0];
-    for (const group of this.groups) {
+    for (const group of this.allGroups) {
       const item = group.items.find((i) => url.startsWith(i.path));
       if (item) return [group.title, item.label];
     }

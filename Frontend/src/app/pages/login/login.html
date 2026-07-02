@@ -28,6 +28,26 @@
     </div>
 
     <div class="ztn-field">
+      <label class="ztn-label" for="login-role">Operator Role</label>
+      <select
+        id="login-role"
+        class="ztn-select"
+        [(ngModel)]="role"
+        name="role"
+        (ngModelChange)="onRoleChange()"
+      >
+        @for (r of roles; track r.id) {
+          <option [value]="r.id">{{ r.label }}</option>
+        }
+      </select>
+      @for (r of roles; track r.id) {
+        @if (r.id === role) {
+          <p class="ztn-field__hint">{{ r.scope }} · lands on {{ r.home }}</p>
+        }
+      }
+    </div>
+
+    <div class="ztn-field">
       <label class="ztn-label" for="login-identity">Administrative Domain Identity</label>
       <input
         id="login-identity"
