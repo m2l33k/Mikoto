@@ -14,7 +14,9 @@ export type TimeRange = '15m' | '1h' | '6h' | '24h';
             [class.tb__b--on]="range() === r"
             type="button"
             (click)="setRange(r)"
-          >{{ r }}</button>
+          >
+            {{ r }}
+          </button>
         }
       </div>
 

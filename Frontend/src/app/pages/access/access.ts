@@ -29,7 +29,12 @@ export class Access {
   private readonly toast = inject(ToastService);
   private readonly confirm = inject(ConfirmService);
 
-  protected readonly roleNames = ['SecOps Administrator', 'NetOps Engineer', 'Compliance Auditor', 'Read-Only'];
+  protected readonly roleNames = [
+    'SecOps Administrator',
+    'NetOps Engineer',
+    'Compliance Auditor',
+    'Read-Only',
+  ];
   protected readonly addOpen = signal(false);
 
   protected newName = '';
@@ -37,10 +42,34 @@ export class Access {
   protected newRole = this.roleNames[3];
 
   protected readonly operators = signal<Operator[]>([
-    { name: 'Malek Aziz H.', identity: 'admin-secops@telecom.node', role: 'SecOps Administrator', lastActive: 'now', status: 'active' },
-    { name: 'N. Trabelsi', identity: 'netops-eng@telecom.node', role: 'NetOps Engineer', lastActive: '12m', status: 'active' },
-    { name: 'S. Ben Ali', identity: 'auditor@telecom.node', role: 'Compliance Auditor', lastActive: '3h', status: 'active' },
-    { name: 'K. Mansour', identity: 'viewer@telecom.node', role: 'Read-Only', lastActive: '2d', status: 'disabled' },
+    {
+      name: 'Malek Aziz H.',
+      identity: 'admin-secops@telecom.node',
+      role: 'SecOps Administrator',
+      lastActive: 'now',
+      status: 'active',
+    },
+    {
+      name: 'N. Trabelsi',
+      identity: 'netops-eng@telecom.node',
+      role: 'NetOps Engineer',
+      lastActive: '12m',
+      status: 'active',
+    },
+    {
+      name: 'S. Ben Ali',
+      identity: 'auditor@telecom.node',
+      role: 'Compliance Auditor',
+      lastActive: '3h',
+      status: 'active',
+    },
+    {
+      name: 'K. Mansour',
+      identity: 'viewer@telecom.node',
+      role: 'Read-Only',
+      lastActive: '2d',
+      status: 'disabled',
+    },
   ]);
 
   protected readonly roles: Role[] = [
@@ -56,7 +85,13 @@ export class Access {
       return;
     }
     this.operators.update((list) => [
-      { name: this.newName, identity: this.newIdentity, role: this.newRole, lastActive: 'never', status: 'active' },
+      {
+        name: this.newName,
+        identity: this.newIdentity,
+        role: this.newRole,
+        lastActive: 'never',
+        status: 'active',
+      },
       ...list,
     ]);
     this.addOpen.set(false);

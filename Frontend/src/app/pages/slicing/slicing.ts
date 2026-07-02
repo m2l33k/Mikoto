@@ -42,9 +42,33 @@ export class Slicing {
   ];
 
   protected readonly slices = signal<Slice[]>([
-    { snssai: '01-000001', type: 'eMBB', dnn: 'internet', sessions: 1042, slaLatency: '≤ 20ms', utilisation: 71, status: 'active' },
-    { snssai: '02-000002', type: 'URLLC', dnn: 'ims', sessions: 188, slaLatency: '≤ 5ms', utilisation: 88, status: 'degraded' },
-    { snssai: '03-000003', type: 'mMTC', dnn: 'iot', sessions: 54, slaLatency: '≤ 100ms', utilisation: 23, status: 'active' },
+    {
+      snssai: '01-000001',
+      type: 'eMBB',
+      dnn: 'internet',
+      sessions: 1042,
+      slaLatency: '≤ 20ms',
+      utilisation: 71,
+      status: 'active',
+    },
+    {
+      snssai: '02-000002',
+      type: 'URLLC',
+      dnn: 'ims',
+      sessions: 188,
+      slaLatency: '≤ 5ms',
+      utilisation: 88,
+      status: 'degraded',
+    },
+    {
+      snssai: '03-000003',
+      type: 'mMTC',
+      dnn: 'iot',
+      sessions: 54,
+      slaLatency: '≤ 100ms',
+      utilisation: 23,
+      status: 'active',
+    },
   ]);
 
   protected async toggle(s: Slice): Promise<void> {

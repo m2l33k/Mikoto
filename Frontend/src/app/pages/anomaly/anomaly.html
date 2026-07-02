@@ -17,12 +17,16 @@
       <div class="ztn-kpi__sub">1 critical · 4 warning</div>
     </div>
     <div class="ztn-card">
-      <div class="kpi__head"><ui-icon name="check-square" [size]="16" /><span>Detection Rate</span></div>
+      <div class="kpi__head">
+        <ui-icon name="check-square" [size]="16" /><span>Detection Rate</span>
+      </div>
       <div class="ztn-kpi__value">96.4%</div>
       <div class="ztn-kpi__sub">false-positive 1.8%</div>
     </div>
     <div class="ztn-card">
-      <div class="kpi__head"><ui-icon name="activity" [size]="16" /><span>Registration Rate</span></div>
+      <div class="kpi__head">
+        <ui-icon name="activity" [size]="16" /><span>Registration Rate</span>
+      </div>
       <div class="ztn-kpi__value">9<span class="kpi-split"> /s</span></div>
       <ui-sparkline [points]="registrationTrend" [height]="34" color="var(--brand-danger)" />
     </div>
@@ -40,11 +44,16 @@
               class="ztn-badge"
               [class.ztn-badge--danger]="t.status === 'triggered'"
               [class.ztn-badge--success]="t.status === 'armed'"
-            >{{ t.status }}</span>
+              >{{ t.status }}</span
+            >
           </div>
           <div class="threat__row"><span class="metatag">Signal</span> {{ t.signal }}</div>
-          <div class="threat__row"><span class="metatag">Method</span> <span class="mono">{{ t.method }}</span></div>
-          <div class="threat__row"><span class="metatag">Hits 24h</span> <span class="mono">{{ t.hits }}</span></div>
+          <div class="threat__row">
+            <span class="metatag">Method</span> <span class="mono">{{ t.method }}</span>
+          </div>
+          <div class="threat__row">
+            <span class="metatag">Hits 24h</span> <span class="mono">{{ t.hits }}</span>
+          </div>
         </div>
       }
     </div>
@@ -71,7 +80,15 @@
     <div class="ztn-table-wrap">
       <table class="ztn-table">
         <thead>
-          <tr><th>Time</th><th>Threat</th><th>Source</th><th>Anomaly Score</th><th>Severity</th><th>State</th><th></th></tr>
+          <tr>
+            <th>Time</th>
+            <th>Threat</th>
+            <th>Source</th>
+            <th>Anomaly Score</th>
+            <th>Severity</th>
+            <th>State</th>
+            <th></th>
+          </tr>
         </thead>
         <tbody>
           @for (a of alerts(); track a.time) {
@@ -86,18 +103,24 @@
                   [class.ztn-badge--danger]="a.severity === 'critical'"
                   [class.ztn-badge--warning]="a.severity === 'warning'"
                   [class.ztn-badge--neutral]="a.severity === 'info'"
-                >{{ a.severity }}</span>
+                  >{{ a.severity }}</span
+                >
               </td>
               <td>
                 <span
                   class="ztn-badge"
                   [class.ztn-badge--danger]="a.state === 'open'"
                   [class.ztn-badge--success]="a.state === 'mitigated'"
-                >{{ a.state }}</span>
+                  >{{ a.state }}</span
+                >
               </td>
               <td>
                 @if (a.state === 'open') {
-                  <button class="ztn-btn ztn-btn--danger btn-sm" type="button" (click)="mitigate(a)">
+                  <button
+                    class="ztn-btn ztn-btn--danger btn-sm"
+                    type="button"
+                    (click)="mitigate(a)"
+                  >
                     Mitigate
                   </button>
                 } @else {

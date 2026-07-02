@@ -22,7 +22,8 @@ export class ServerError {
   protected async reboot(): Promise<void> {
     const ok = await this.confirm.ask({
       title: 'Force pod reboot?',
-      message: 'Force-restart SBI-PROD-AMF-NODE-01. In-flight signalling on this pod will be dropped and re-attempted by peers.',
+      message:
+        'Force-restart SBI-PROD-AMF-NODE-01. In-flight signalling on this pod will be dropped and re-attempted by peers.',
       confirmLabel: 'Reboot pod',
       danger: true,
     });

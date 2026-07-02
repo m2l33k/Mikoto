@@ -65,7 +65,12 @@ export class CommandPalette {
     this.nav('Access Control', '/access', 'user-check'),
     this.nav('Settings', '/settings', 'cpu'),
     { label: 'Toggle theme', hint: 'action', icon: 'globe', run: () => this.prefs.toggleTheme() },
-    { label: 'Toggle sidebar', hint: 'action', icon: 'grid', run: () => this.prefs.toggleSidebar() },
+    {
+      label: 'Toggle sidebar',
+      hint: 'action',
+      icon: 'grid',
+      run: () => this.prefs.toggleSidebar(),
+    },
     {
       label: 'Sign out',
       hint: 'action',

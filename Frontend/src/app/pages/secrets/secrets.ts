@@ -31,17 +31,62 @@ export class Secrets {
 
   protected readonly engines: Engine[] = [
     { path: 'pki/', type: 'PKI', description: '5GC-SBI-Issuer — leaf cert issuance', secrets: 12 },
-    { path: 'transit/', type: 'Transit', description: 'CSFLE customer master key wrapping', secrets: 4 },
-    { path: 'database/', type: 'Database', description: 'MongoDB dynamic credentials (UDM)', secrets: 6 },
-    { path: 'kv/5gc/', type: 'KV v2', description: 'NF static config & JWT signing keys', secrets: 26 },
+    {
+      path: 'transit/',
+      type: 'Transit',
+      description: 'CSFLE customer master key wrapping',
+      secrets: 4,
+    },
+    {
+      path: 'database/',
+      type: 'Database',
+      description: 'MongoDB dynamic credentials (UDM)',
+      secrets: 6,
+    },
+    {
+      path: 'kv/5gc/',
+      type: 'KV v2',
+      description: 'NF static config & JWT signing keys',
+      secrets: 26,
+    },
   ];
 
   protected readonly leases = signal<Lease[]>([
-    { time: '14:02:11', consumer: 'UDM-Node-01', path: 'database/creds/udm-ro', ttl: '1h', action: 'lease' },
-    { time: '13:58:02', consumer: 'AMF-Node-01', path: 'pki/issue/sbi', ttl: '168h', action: 'lease' },
-    { time: '13:40:55', consumer: 'SMF-Node-01', path: 'transit/decrypt/csfle', ttl: '—', action: 'renew' },
-    { time: '13:12:30', consumer: 'AUSF-Node-01', path: 'kv/5gc/jwt-signing', ttl: '—', action: 'lease' },
-    { time: '12:55:09', consumer: 'NSSF-Node-01', path: 'pki/issue/sbi', ttl: '0', action: 'revoke' },
+    {
+      time: '14:02:11',
+      consumer: 'UDM-Node-01',
+      path: 'database/creds/udm-ro',
+      ttl: '1h',
+      action: 'lease',
+    },
+    {
+      time: '13:58:02',
+      consumer: 'AMF-Node-01',
+      path: 'pki/issue/sbi',
+      ttl: '168h',
+      action: 'lease',
+    },
+    {
+      time: '13:40:55',
+      consumer: 'SMF-Node-01',
+      path: 'transit/decrypt/csfle',
+      ttl: '—',
+      action: 'renew',
+    },
+    {
+      time: '13:12:30',
+      consumer: 'AUSF-Node-01',
+      path: 'kv/5gc/jwt-signing',
+      ttl: '—',
+      action: 'lease',
+    },
+    {
+      time: '12:55:09',
+      consumer: 'NSSF-Node-01',
+      path: 'pki/issue/sbi',
+      ttl: '0',
+      action: 'revoke',
+    },
   ]);
 
   protected async toggleSeal(): Promise<void> {

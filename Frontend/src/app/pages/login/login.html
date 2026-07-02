@@ -60,11 +60,7 @@
       <div class="auth-card__error">{{ error() }}</div>
     }
 
-    <button
-      class="ztn-btn ztn-btn--primary ztn-btn--block"
-      type="submit"
-      [disabled]="busy()"
-    >
+    <button class="ztn-btn ztn-btn--primary ztn-btn--block" type="submit" [disabled]="busy()">
       {{ busy() ? 'Establishing Secure Context…' : 'Initiate Secure Context' }}
     </button>
 

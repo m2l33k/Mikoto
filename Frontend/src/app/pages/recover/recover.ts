@@ -25,7 +25,10 @@ iQIzBAEBCgAdFiEE... (paste verified cluster-anchor signature here)
 
   protected verify(event: Event): void {
     event.preventDefault();
-    this.toast.success('Signature verified', 'Recovery token issued — sign in with new credentials.');
+    this.toast.success(
+      'Signature verified',
+      'Recovery token issued — sign in with new credentials.',
+    );
     this.router.navigate(['/login']);
   }
 }

@@ -29,12 +29,60 @@ export class Pki {
   protected readonly selected = signal<Cert | null>(null);
 
   protected readonly certs = signal<Cert[]>([
-    { nf: 'AMF', cn: 'amf01.sbi.5gc.local', serial: '0x4F:A2:1C', algo: 'RSA-4096', issued: '2026-06-23', expires: '2026-07-02', daysLeft: 2 },
-    { nf: 'SMF', cn: 'smf01.sbi.5gc.local', serial: '0x4F:A2:1D', algo: 'RSA-4096', issued: '2026-06-25', expires: '2026-07-08', daysLeft: 8 },
-    { nf: 'UPF', cn: 'upf01.sbi.5gc.local', serial: '0x4F:A2:1E', algo: 'ECDSA-P384', issued: '2026-06-26', expires: '2026-07-10', daysLeft: 10 },
-    { nf: 'AUSF', cn: 'ausf01.sbi.5gc.local', serial: '0x4F:A2:1F', algo: 'RSA-4096', issued: '2026-06-27', expires: '2026-07-15', daysLeft: 15 },
-    { nf: 'UDM', cn: 'udm01.sbi.5gc.local', serial: '0x4F:A2:20', algo: 'RSA-4096', issued: '2026-06-27', expires: '2026-07-18', daysLeft: 18 },
-    { nf: 'NRF', cn: 'nrf01.sbi.5gc.local', serial: '0x4F:A2:21', algo: 'RSA-4096', issued: '2026-06-28', expires: '2026-07-22', daysLeft: 22 },
+    {
+      nf: 'AMF',
+      cn: 'amf01.sbi.5gc.local',
+      serial: '0x4F:A2:1C',
+      algo: 'RSA-4096',
+      issued: '2026-06-23',
+      expires: '2026-07-02',
+      daysLeft: 2,
+    },
+    {
+      nf: 'SMF',
+      cn: 'smf01.sbi.5gc.local',
+      serial: '0x4F:A2:1D',
+      algo: 'RSA-4096',
+      issued: '2026-06-25',
+      expires: '2026-07-08',
+      daysLeft: 8,
+    },
+    {
+      nf: 'UPF',
+      cn: 'upf01.sbi.5gc.local',
+      serial: '0x4F:A2:1E',
+      algo: 'ECDSA-P384',
+      issued: '2026-06-26',
+      expires: '2026-07-10',
+      daysLeft: 10,
+    },
+    {
+      nf: 'AUSF',
+      cn: 'ausf01.sbi.5gc.local',
+      serial: '0x4F:A2:1F',
+      algo: 'RSA-4096',
+      issued: '2026-06-27',
+      expires: '2026-07-15',
+      daysLeft: 15,
+    },
+    {
+      nf: 'UDM',
+      cn: 'udm01.sbi.5gc.local',
+      serial: '0x4F:A2:20',
+      algo: 'RSA-4096',
+      issued: '2026-06-27',
+      expires: '2026-07-18',
+      daysLeft: 18,
+    },
+    {
+      nf: 'NRF',
+      cn: 'nrf01.sbi.5gc.local',
+      serial: '0x4F:A2:21',
+      algo: 'RSA-4096',
+      issued: '2026-06-28',
+      expires: '2026-07-22',
+      daysLeft: 22,
+    },
   ]);
 
   protected severity(days: number): 'danger' | 'warning' | 'success' {

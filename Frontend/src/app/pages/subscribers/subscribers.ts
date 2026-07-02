@@ -37,11 +37,46 @@ export class Subscribers {
   protected newAuth = '5G-AKA';
 
   protected readonly subscribers = signal<Subscriber[]>([
-    { supi: 'imsi-208950000000001', msisdn: '+216 20 000 001', status: 'registered', slice: '01-000001 (eMBB)', servingAmf: 'AMF-Node-01', authMethod: '5G-AKA' },
-    { supi: 'imsi-208950000000002', msisdn: '+216 20 000 002', status: 'registered', slice: '01-000001 (eMBB)', servingAmf: 'AMF-Node-01', authMethod: '5G-AKA' },
-    { supi: 'imsi-208950000000003', msisdn: '+216 20 000 003', status: 'idle', slice: '02-000002 (URLLC)', servingAmf: 'AMF-Node-01', authMethod: 'EAP-AKA′' },
-    { supi: 'imsi-208950000000004', msisdn: '+216 20 000 004', status: 'idle', slice: '01-000001 (eMBB)', servingAmf: 'AMF-Node-01', authMethod: '5G-AKA' },
-    { supi: 'imsi-208950000000005', msisdn: '+216 20 000 005', status: 'deregistered', slice: '03-000003 (mMTC)', servingAmf: '—', authMethod: '5G-AKA' },
+    {
+      supi: 'imsi-208950000000001',
+      msisdn: '+216 20 000 001',
+      status: 'registered',
+      slice: '01-000001 (eMBB)',
+      servingAmf: 'AMF-Node-01',
+      authMethod: '5G-AKA',
+    },
+    {
+      supi: 'imsi-208950000000002',
+      msisdn: '+216 20 000 002',
+      status: 'registered',
+      slice: '01-000001 (eMBB)',
+      servingAmf: 'AMF-Node-01',
+      authMethod: '5G-AKA',
+    },
+    {
+      supi: 'imsi-208950000000003',
+      msisdn: '+216 20 000 003',
+      status: 'idle',
+      slice: '02-000002 (URLLC)',
+      servingAmf: 'AMF-Node-01',
+      authMethod: 'EAP-AKA′',
+    },
+    {
+      supi: 'imsi-208950000000004',
+      msisdn: '+216 20 000 004',
+      status: 'idle',
+      slice: '01-000001 (eMBB)',
+      servingAmf: 'AMF-Node-01',
+      authMethod: '5G-AKA',
+    },
+    {
+      supi: 'imsi-208950000000005',
+      msisdn: '+216 20 000 005',
+      status: 'deregistered',
+      slice: '03-000003 (mMTC)',
+      servingAmf: '—',
+      authMethod: '5G-AKA',
+    },
   ]);
 
   protected readonly encryptedFields = [
@@ -64,7 +99,14 @@ export class Subscribers {
     downloadCsv(
       'subscribers',
       ['SUPI', 'MSISDN', 'Slice', 'Serving AMF', 'Auth Method', 'Status'],
-      this.subscribers().map((s) => [s.supi, s.msisdn, s.slice, s.servingAmf, s.authMethod, s.status]),
+      this.subscribers().map((s) => [
+        s.supi,
+        s.msisdn,
+        s.slice,
+        s.servingAmf,
+        s.authMethod,
+        s.status,
+      ]),
     );
     this.toast.success('Export ready', 'subscribers.csv downloaded.');
   }

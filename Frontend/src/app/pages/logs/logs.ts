@@ -73,8 +73,10 @@ export class Logs implements OnDestroy {
   private rand(): LogLine {
     const [nf, sev, msg] = SAMPLES[Math.floor(Math.random() * SAMPLES.length)];
     const d = new Date();
-    const ts = d.toLocaleTimeString('en-GB', { hour12: false }) +
-      '.' + d.getMilliseconds().toString().padStart(3, '0');
+    const ts =
+      d.toLocaleTimeString('en-GB', { hour12: false }) +
+      '.' +
+      d.getMilliseconds().toString().padStart(3, '0');
     return { ts, nf, sev, msg };
   }
 

@@ -12,17 +12,23 @@
 
   <div class="ztn-grid kpi-row">
     <div class="ztn-card">
-      <div class="kpi__head"><ui-icon name="layers" [size]="16" /><span>Active PDU Sessions</span></div>
+      <div class="kpi__head">
+        <ui-icon name="layers" [size]="16" /><span>Active PDU Sessions</span>
+      </div>
       <div class="ztn-kpi__value">2</div>
       <div class="ztn-kpi__sub">1 establishing</div>
     </div>
     <div class="ztn-card">
-      <div class="kpi__head"><ui-icon name="activity" [size]="16" /><span>Avg Setup Latency</span></div>
+      <div class="kpi__head">
+        <ui-icon name="activity" [size]="16" /><span>Avg Setup Latency</span>
+      </div>
       <div class="ztn-kpi__value">145<span class="kpi-split"> ms</span></div>
       <div class="ztn-kpi__sub">p95 188ms · target ≤500ms</div>
     </div>
     <div class="ztn-card">
-      <div class="kpi__head"><ui-icon name="bar-chart" [size]="16" /><span>GTP-U Throughput</span></div>
+      <div class="kpi__head">
+        <ui-icon name="bar-chart" [size]="16" /><span>GTP-U Throughput</span>
+      </div>
       <div class="ztn-kpi__value">14<span class="kpi-split"> Gbps</span></div>
       <ui-sparkline [points]="throughputTrend" [height]="34" color="var(--brand-warning)" />
     </div>
@@ -62,7 +68,8 @@
                   [class.ztn-badge--success]="s.state === 'active'"
                   [class.ztn-badge--warning]="s.state === 'establishing'"
                   [class.ztn-badge--neutral]="s.state === 'released'"
-                >{{ s.state }}</span>
+                  >{{ s.state }}</span
+                >
               </td>
             </tr>
           }
@@ -74,11 +81,26 @@
   <div class="ztn-card">
     <h2 class="ztn-card__title"><ui-icon name="activity" [size]="14" /> PFCP Control Trace (N4)</h2>
     <div class="ztn-terminal">
-      <div><span class="t-time">14:02:11.201</span> <span class="t-smf">[SMF]</span> PFCP Session Establishment Request → UPF-Node-01 (seid 0x9a8)</div>
-      <div><span class="t-time">14:02:11.215</span> <span class="t-upf">[UPF]</span> PFCP Session Establishment Response — GTP-U TEID 0x9a8f allocated</div>
-      <div><span class="t-time">14:02:11.244</span> <span class="t-smf">[SMF]</span> PDR / FAR / QER rules installed (5QI 9, gate OPEN)</div>
-      <div><span class="t-time">14:02:11.260</span> <span class="t-upf">[UPF]</span> Heartbeat echo OK (peer 10.10.2.31)</div>
-      <div><span class="t-time">14:02:15.030</span> <span class="t-smf">[SMF]</span> PFCP Session Modification Request (URLLC 5QI 5)</div>
+      <div>
+        <span class="t-time">14:02:11.201</span> <span class="t-smf">[SMF]</span> PFCP Session
+        Establishment Request → UPF-Node-01 (seid 0x9a8)
+      </div>
+      <div>
+        <span class="t-time">14:02:11.215</span> <span class="t-upf">[UPF]</span> PFCP Session
+        Establishment Response — GTP-U TEID 0x9a8f allocated
+      </div>
+      <div>
+        <span class="t-time">14:02:11.244</span> <span class="t-smf">[SMF]</span> PDR / FAR / QER
+        rules installed (5QI 9, gate OPEN)
+      </div>
+      <div>
+        <span class="t-time">14:02:11.260</span> <span class="t-upf">[UPF]</span> Heartbeat echo OK
+        (peer 10.10.2.31)
+      </div>
+      <div>
+        <span class="t-time">14:02:15.030</span> <span class="t-smf">[SMF]</span> PFCP Session
+        Modification Request (URLLC 5QI 5)
+      </div>
     </div>
   </div>
 </section>
@@ -91,16 +113,26 @@
 >
   @if (selected(); as s) {
     <dl class="dl">
-      <dt>Session ID</dt><dd>{{ s.id }}</dd>
-      <dt>SUPI</dt><dd>{{ s.supi }}</dd>
-      <dt>DNN</dt><dd>{{ s.dnn }}</dd>
-      <dt>S-NSSAI</dt><dd>{{ s.snssai }}</dd>
-      <dt>PDU Type</dt><dd>{{ s.pduType }}</dd>
-      <dt>UPF</dt><dd>{{ s.upf }}</dd>
-      <dt>GTP-U TEID</dt><dd>{{ s.teid }}</dd>
-      <dt>5QI</dt><dd>{{ s.fiveQi }}</dd>
-      <dt>Uplink / Downlink</dt><dd>{{ s.ul }} / {{ s.dl }}</dd>
-      <dt>State</dt><dd>{{ s.state }}</dd>
+      <dt>Session ID</dt>
+      <dd>{{ s.id }}</dd>
+      <dt>SUPI</dt>
+      <dd>{{ s.supi }}</dd>
+      <dt>DNN</dt>
+      <dd>{{ s.dnn }}</dd>
+      <dt>S-NSSAI</dt>
+      <dd>{{ s.snssai }}</dd>
+      <dt>PDU Type</dt>
+      <dd>{{ s.pduType }}</dd>
+      <dt>UPF</dt>
+      <dd>{{ s.upf }}</dd>
+      <dt>GTP-U TEID</dt>
+      <dd>{{ s.teid }}</dd>
+      <dt>5QI</dt>
+      <dd>{{ s.fiveQi }}</dd>
+      <dt>Uplink / Downlink</dt>
+      <dd>{{ s.ul }} / {{ s.dl }}</dd>
+      <dt>State</dt>
+      <dd>{{ s.state }}</dd>
     </dl>
   }
   <div drawer-actions>

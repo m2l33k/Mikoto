@@ -113,7 +113,9 @@
   color: var(--text-muted);
   font-size: 13px;
   font-weight: 500;
-  transition: background 0.12s ease, color 0.12s ease;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease;
 }
 .nav-link ui-icon {
   color: var(--text-faint);

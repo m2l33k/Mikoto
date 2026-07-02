@@ -15,17 +15,23 @@
 
   <div class="ztn-grid kpi-row">
     <div class="ztn-card">
-      <div class="kpi__head"><ui-icon name="users" [size]="16" /><span>Provisioned Subscribers</span></div>
+      <div class="kpi__head">
+        <ui-icon name="users" [size]="16" /><span>Provisioned Subscribers</span>
+      </div>
       <div class="ztn-kpi__value">1,284</div>
       <div class="ztn-kpi__sub">2 registered · 2 idle now</div>
     </div>
     <div class="ztn-card">
-      <div class="kpi__head"><ui-icon name="lock" [size]="16" /><span>CSFLE Field Coverage</span></div>
+      <div class="kpi__head">
+        <ui-icon name="lock" [size]="16" /><span>CSFLE Field Coverage</span>
+      </div>
       <div class="ztn-kpi__value">100%</div>
       <div class="ztn-kpi__sub">K / OPc / SUPI encrypted at rest</div>
     </div>
     <div class="ztn-card">
-      <div class="kpi__head"><ui-icon name="database" [size]="16" /><span>Auth Vectors Issued</span></div>
+      <div class="kpi__head">
+        <ui-icon name="database" [size]="16" /><span>Auth Vectors Issued</span>
+      </div>
       <div class="ztn-kpi__value">3,910</div>
       <div class="ztn-kpi__sub">5G-AKA + EAP-AKA′</div>
     </div>
@@ -73,7 +79,8 @@
                   [class.ztn-badge--success]="s.status === 'registered'"
                   [class.ztn-badge--warning]="s.status === 'idle'"
                   [class.ztn-badge--neutral]="s.status === 'deregistered'"
-                >{{ s.status }}</span>
+                  >{{ s.status }}</span
+                >
               </td>
             </tr>
           }
@@ -83,11 +90,18 @@
   </div>
 
   <div class="ztn-card">
-    <h2 class="ztn-card__title"><ui-icon name="lock" [size]="14" /> CSFLE Encrypted Field Schema (subscriber_db.profiles)</h2>
+    <h2 class="ztn-card__title">
+      <ui-icon name="lock" [size]="14" /> CSFLE Encrypted Field Schema (subscriber_db.profiles)
+    </h2>
     <div class="ztn-table-wrap">
       <table class="ztn-table">
         <thead>
-          <tr><th>Field</th><th>Encryption Algorithm</th><th>Data Key ID</th><th>State</th></tr>
+          <tr>
+            <th>Field</th>
+            <th>Encryption Algorithm</th>
+            <th>Data Key ID</th>
+            <th>State</th>
+          </tr>
         </thead>
         <tbody>
           @for (f of encryptedFields; track f.field) {
@@ -102,8 +116,8 @@
       </table>
     </div>
     <p class="note">
-      Data keys are wrapped by the Customer Master Key stored in HashiCorp Vault Transit;
-      MongoDB never receives plaintext key material.
+      Data keys are wrapped by the Customer Master Key stored in HashiCorp Vault Transit; MongoDB
+      never receives plaintext key material.
     </p>
   </div>
 </section>
@@ -117,19 +131,28 @@
 >
   @if (selected(); as s) {
     <dl class="dl">
-      <dt>SUPI</dt><dd>{{ s.supi }}</dd>
-      <dt>MSISDN</dt><dd>{{ s.msisdn }}</dd>
-      <dt>Slice</dt><dd>{{ s.slice }}</dd>
-      <dt>Serving AMF</dt><dd>{{ s.servingAmf }}</dd>
-      <dt>Auth Method</dt><dd>{{ s.authMethod }}</dd>
-      <dt>Status</dt><dd>{{ s.status }}</dd>
+      <dt>SUPI</dt>
+      <dd>{{ s.supi }}</dd>
+      <dt>MSISDN</dt>
+      <dd>{{ s.msisdn }}</dd>
+      <dt>Slice</dt>
+      <dd>{{ s.slice }}</dd>
+      <dt>Serving AMF</dt>
+      <dd>{{ s.servingAmf }}</dd>
+      <dt>Auth Method</dt>
+      <dd>{{ s.authMethod }}</dd>
+      <dt>Status</dt>
+      <dd>{{ s.status }}</dd>
     </dl>
     <div class="drawer-section">
       <h4 class="drawer-section__title">Encrypted Credentials (CSFLE)</h4>
       <dl class="dl">
-        <dt>K</dt><dd><span class="enc-tag">•••• sealed</span></dd>
-        <dt>OPc</dt><dd><span class="enc-tag">•••• sealed</span></dd>
-        <dt>SQN</dt><dd><span class="enc-tag">•••• sealed</span></dd>
+        <dt>K</dt>
+        <dd><span class="enc-tag">•••• sealed</span></dd>
+        <dt>OPc</dt>
+        <dd><span class="enc-tag">•••• sealed</span></dd>
+        <dt>SQN</dt>
+        <dd><span class="enc-tag">•••• sealed</span></dd>
       </dl>
     </div>
   }
@@ -177,7 +200,9 @@
   </div>
   <p class="note">K and OPc are generated server-side and sealed with CSFLE before write.</p>
   <div drawer-actions>
-    <button class="ztn-btn ztn-btn--ghost" type="button" (click)="addOpen.set(false)">Cancel</button>
+    <button class="ztn-btn ztn-btn--ghost" type="button" (click)="addOpen.set(false)">
+      Cancel
+    </button>
     <button class="ztn-btn ztn-btn--primary" type="button" (click)="addSubscriber()">
       Provision
     </button>

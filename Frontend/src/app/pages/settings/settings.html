@@ -29,7 +29,9 @@
 
     <!-- Appearance -->
     <div class="ztn-card">
-      <h2 class="ztn-card__title"><ui-icon name="bar-chart" [size]="14" /> Appearance &amp; Scope</h2>
+      <h2 class="ztn-card__title">
+        <ui-icon name="bar-chart" [size]="14" /> Appearance &amp; Scope
+      </h2>
       <div class="ztn-field">
         <label class="ztn-label">Theme</label>
         <div class="seg">
@@ -38,18 +40,26 @@
             [class.seg__btn--on]="prefs.theme() === 'dark'"
             type="button"
             (click)="setTheme('dark')"
-          >Dark</button>
+          >
+            Dark
+          </button>
           <button
             class="seg__btn"
             [class.seg__btn--on]="prefs.theme() === 'light'"
             type="button"
             (click)="setTheme('light')"
-          >Light</button>
+          >
+            Light
+          </button>
         </div>
       </div>
       <div class="ztn-field">
         <label class="ztn-label">Default Target Environment</label>
-        <select class="ztn-select" [value]="prefs.environment()" (change)="setEnv($any($event.target).value)">
+        <select
+          class="ztn-select"
+          [value]="prefs.environment()"
+          (change)="setEnv($any($event.target).value)"
+        >
           @for (e of environments; track e) {
             <option [value]="e">{{ e }}</option>
           }
@@ -59,27 +69,49 @@
 
     <!-- Notifications & security -->
     <div class="ztn-card">
-      <h2 class="ztn-card__title"><ui-icon name="bell" [size]="14" /> Notifications &amp; Security</h2>
+      <h2 class="ztn-card__title">
+        <ui-icon name="bell" [size]="14" /> Notifications &amp; Security
+      </h2>
       <label class="toggle-row">
         <span>Critical security alerts</span>
-        <input type="checkbox" [checked]="notifyCritical()" (change)="notifyCritical.set($any($event.target).checked)" />
+        <input
+          type="checkbox"
+          [checked]="notifyCritical()"
+          (change)="notifyCritical.set($any($event.target).checked)"
+        />
       </label>
       <label class="toggle-row">
         <span>Warning-level events</span>
-        <input type="checkbox" [checked]="notifyWarning()" (change)="notifyWarning.set($any($event.target).checked)" />
+        <input
+          type="checkbox"
+          [checked]="notifyWarning()"
+          (change)="notifyWarning.set($any($event.target).checked)"
+        />
       </label>
       <label class="toggle-row">
         <span>Informational events</span>
-        <input type="checkbox" [checked]="notifyInfo()" (change)="notifyInfo.set($any($event.target).checked)" />
+        <input
+          type="checkbox"
+          [checked]="notifyInfo()"
+          (change)="notifyInfo.set($any($event.target).checked)"
+        />
       </label>
       <div class="toggle-divider"></div>
       <label class="toggle-row">
         <span>Automatic certificate rotation</span>
-        <input type="checkbox" [checked]="autoRotate()" (change)="autoRotate.set($any($event.target).checked)" />
+        <input
+          type="checkbox"
+          [checked]="autoRotate()"
+          (change)="autoRotate.set($any($event.target).checked)"
+        />
       </label>
       <label class="toggle-row">
         <span>Enforce mTLS on all SBI calls</span>
-        <input type="checkbox" [checked]="enforceMtls()" (change)="enforceMtls.set($any($event.target).checked)" />
+        <input
+          type="checkbox"
+          [checked]="enforceMtls()"
+          (change)="enforceMtls.set($any($event.target).checked)"
+        />
       </label>
       <button class="ztn-btn ztn-btn--primary mt" type="button" (click)="savePreferences()">
         Save Preferences
@@ -90,10 +122,14 @@
     <div class="ztn-card">
       <h2 class="ztn-card__title"><ui-icon name="lock" [size]="14" /> Active Session</h2>
       <dl class="dl">
-        <dt>Identity</dt><dd>{{ identity }}</dd>
-        <dt>Environment</dt><dd>{{ prefs.environment() }}</dd>
-        <dt>Established</dt><dd>{{ sessionSince }}</dd>
-        <dt>mTLS</dt><dd>Strict-Enforce</dd>
+        <dt>Identity</dt>
+        <dd>{{ identity }}</dd>
+        <dt>Environment</dt>
+        <dd>{{ prefs.environment() }}</dd>
+        <dt>Established</dt>
+        <dd>{{ sessionSince }}</dd>
+        <dt>mTLS</dt>
+        <dd>Strict-Enforce</dd>
       </dl>
       <div class="danger-zone">
         <div>

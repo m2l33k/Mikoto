@@ -73,7 +73,12 @@
       <div class="ztn-table-wrap">
         <table class="ztn-table">
           <thead>
-            <tr><th>Source</th><th>Target</th><th>Reference Point</th><th>State</th></tr>
+            <tr>
+              <th>Source</th>
+              <th>Target</th>
+              <th>Reference Point</th>
+              <th>State</th>
+            </tr>
           </thead>
           <tbody>
             @for (e of sbiEdges; track e.a + e.b) {
@@ -99,15 +104,25 @@
 >
   @if (selected(); as n) {
     <dl class="dl">
-      <dt>NF</dt><dd>{{ n.label }}</dd>
-      <dt>Role</dt><dd>{{ n.sub }}</dd>
-      <dt>Plane</dt><dd>{{ n.plane }}</dd>
-      <dt>Interfaces</dt><dd>{{ nodeEdges().length }}</dd>
+      <dt>NF</dt>
+      <dd>{{ n.label }}</dd>
+      <dt>Role</dt>
+      <dd>{{ n.sub }}</dd>
+      <dt>Plane</dt>
+      <dd>{{ n.plane }}</dd>
+      <dt>Interfaces</dt>
+      <dd>{{ nodeEdges().length }}</dd>
     </dl>
     <div class="drawer-section">
       <h4 class="drawer-section__title">Connected Interfaces</h4>
       <table class="ztn-table">
-        <thead><tr><th>Peer</th><th>Reference</th><th>Secured</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Peer</th>
+            <th>Reference</th>
+            <th>Secured</th>
+          </tr>
+        </thead>
         <tbody>
           @for (e of nodeEdges(); track e.a + e.b) {
             <tr>

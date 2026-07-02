@@ -28,16 +28,57 @@ export class Reports {
   private readonly toast = inject(ToastService);
 
   protected readonly templates: Template[] = [
-    { id: 'compliance', name: 'Zero-Trust Compliance', standard: '3GPP TS 33.501', description: 'mTLS coverage, token audit, CSFLE posture' },
-    { id: 'conformance', name: 'Conformance Results', standard: '3GPP TS 23.502', description: 'TC-01…PERF-02 pass/fail with pcap refs' },
-    { id: 'security', name: 'Security Posture', standard: 'Internal', description: 'Certs, policies, anomalies, vault status' },
-    { id: 'sla', name: 'SLA & Availability', standard: 'Operational', description: 'Per-slice latency, uptime, KPI breaches' },
+    {
+      id: 'compliance',
+      name: 'Zero-Trust Compliance',
+      standard: '3GPP TS 33.501',
+      description: 'mTLS coverage, token audit, CSFLE posture',
+    },
+    {
+      id: 'conformance',
+      name: 'Conformance Results',
+      standard: '3GPP TS 23.502',
+      description: 'TC-01…PERF-02 pass/fail with pcap refs',
+    },
+    {
+      id: 'security',
+      name: 'Security Posture',
+      standard: 'Internal',
+      description: 'Certs, policies, anomalies, vault status',
+    },
+    {
+      id: 'sla',
+      name: 'SLA & Availability',
+      standard: 'Operational',
+      description: 'Per-slice latency, uptime, KPI breaches',
+    },
   ];
 
   protected readonly reports = signal<Report[]>([
-    { name: 'TS33501-compliance-2026-06-29', type: 'Compliance', period: '2026-06-29', format: 'PDF', size: '1.8 MB', status: 'ready' },
-    { name: 'TS23502-conformance-w26', type: 'Conformance', period: 'Week 26', format: 'PDF', size: '2.4 MB', status: 'ready' },
-    { name: 'security-posture-2026-06-28', type: 'Security', period: '2026-06-28', format: 'CSV', size: '312 KB', status: 'ready' },
+    {
+      name: 'TS33501-compliance-2026-06-29',
+      type: 'Compliance',
+      period: '2026-06-29',
+      format: 'PDF',
+      size: '1.8 MB',
+      status: 'ready',
+    },
+    {
+      name: 'TS23502-conformance-w26',
+      type: 'Conformance',
+      period: 'Week 26',
+      format: 'PDF',
+      size: '2.4 MB',
+      status: 'ready',
+    },
+    {
+      name: 'security-posture-2026-06-28',
+      type: 'Security',
+      period: '2026-06-28',
+      format: 'CSV',
+      size: '312 KB',
+      status: 'ready',
+    },
   ]);
 
   protected generate(t: Template, format: 'PDF' | 'CSV'): void {
@@ -50,7 +91,9 @@ export class Reports {
     setTimeout(() => {
       this.reports.update((list) =>
         list.map((r) =>
-          r.name === name ? { ...r, status: 'ready', size: format === 'PDF' ? '1.9 MB' : '288 KB' } : r,
+          r.name === name
+            ? { ...r, status: 'ready', size: format === 'PDF' ? '1.9 MB' : '288 KB' }
+            : r,
         ),
       );
       this.toast.success('Report ready', `${name}.${format.toLowerCase()}`);

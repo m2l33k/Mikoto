@@ -64,12 +64,60 @@ export class Policies {
   }
 
   protected readonly policies = signal<Policy[]>([
-    { name: 'allow-amf-to-smf', source: 'AMF', dest: 'SMF', l7: 'HTTP/2 :path /nsmf-pdusession/*', ports: 'TCP/8443', action: 'allow', hits: '1.2M' },
-    { name: 'allow-amf-to-ausf', source: 'AMF', dest: 'AUSF', l7: 'HTTP/2 :path /nausf-auth/*', ports: 'TCP/8443', action: 'allow', hits: '418K' },
-    { name: 'allow-smf-to-upf', source: 'SMF', dest: 'UPF', l7: 'PFCP', ports: 'UDP/8805', action: 'allow', hits: '96K' },
-    { name: 'allow-nf-to-nrf', source: '*', dest: 'NRF', l7: 'HTTP/2 :path /nnrf-disc/*', ports: 'TCP/8443', action: 'allow', hits: '2.0M' },
-    { name: 'deny-amf-to-upf', source: 'AMF', dest: 'UPF', l7: 'any', ports: 'any', action: 'deny', hits: '14' },
-    { name: 'default-deny-all', source: '*', dest: '*', l7: 'any', ports: 'any', action: 'deny', hits: '231' },
+    {
+      name: 'allow-amf-to-smf',
+      source: 'AMF',
+      dest: 'SMF',
+      l7: 'HTTP/2 :path /nsmf-pdusession/*',
+      ports: 'TCP/8443',
+      action: 'allow',
+      hits: '1.2M',
+    },
+    {
+      name: 'allow-amf-to-ausf',
+      source: 'AMF',
+      dest: 'AUSF',
+      l7: 'HTTP/2 :path /nausf-auth/*',
+      ports: 'TCP/8443',
+      action: 'allow',
+      hits: '418K',
+    },
+    {
+      name: 'allow-smf-to-upf',
+      source: 'SMF',
+      dest: 'UPF',
+      l7: 'PFCP',
+      ports: 'UDP/8805',
+      action: 'allow',
+      hits: '96K',
+    },
+    {
+      name: 'allow-nf-to-nrf',
+      source: '*',
+      dest: 'NRF',
+      l7: 'HTTP/2 :path /nnrf-disc/*',
+      ports: 'TCP/8443',
+      action: 'allow',
+      hits: '2.0M',
+    },
+    {
+      name: 'deny-amf-to-upf',
+      source: 'AMF',
+      dest: 'UPF',
+      l7: 'any',
+      ports: 'any',
+      action: 'deny',
+      hits: '14',
+    },
+    {
+      name: 'default-deny-all',
+      source: '*',
+      dest: '*',
+      l7: 'any',
+      ports: 'any',
+      action: 'deny',
+      hits: '231',
+    },
   ]);
 
   protected async toggle(p: Policy): Promise<void> {
@@ -88,8 +136,23 @@ export class Policies {
   }
 
   protected readonly denied: DeniedFlow[] = [
-    { time: '14:02:09', source: 'AMF-Node-01', dest: 'UPF-Node-01:2152', verdict: 'DROPPED (policy deny-amf-to-upf)' },
-    { time: '13:55:41', source: '10.10.9.4 (unknown)', dest: 'NRF-Node-01:8443', verdict: 'DROPPED (default-deny-all)' },
-    { time: '13:40:12', source: 'SMF-Node-02', dest: 'UDM-Node-01:8443', verdict: 'DROPPED (mTLS handshake failed)' },
+    {
+      time: '14:02:09',
+      source: 'AMF-Node-01',
+      dest: 'UPF-Node-01:2152',
+      verdict: 'DROPPED (policy deny-amf-to-upf)',
+    },
+    {
+      time: '13:55:41',
+      source: '10.10.9.4 (unknown)',
+      dest: 'NRF-Node-01:8443',
+      verdict: 'DROPPED (default-deny-all)',
+    },
+    {
+      time: '13:40:12',
+      source: 'SMF-Node-02',
+      dest: 'UDM-Node-01:8443',
+      verdict: 'DROPPED (mTLS handshake failed)',
+    },
   ];
 }

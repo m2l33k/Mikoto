@@ -2,9 +2,7 @@
   <div class="err-card">
     <span class="ztn-badge ztn-badge--danger err-banner">Critical Outage</span>
     <h1 class="display-title">SBA Cluster Degradation Detected</h1>
-    <p class="err-lead">
-      An unexpected internal exception has disrupted the service mesh core.
-    </p>
+    <p class="err-lead">An unexpected internal exception has disrupted the service mesh core.</p>
 
     <span class="metatag err-loglabel">Panic Log Dump (SBI-PROD-AMF-NODE-01)</span>
     <div class="ztn-terminal">
@@ -17,7 +15,12 @@
       <button class="ztn-btn ztn-btn--success" type="button" (click)="downloadPcap()">
         Download Diagnostic PCAP
       </button>
-      <button class="ztn-btn ztn-btn--danger" type="button" [disabled]="rebooting()" (click)="reboot()">
+      <button
+        class="ztn-btn ztn-btn--danger"
+        type="button"
+        [disabled]="rebooting()"
+        (click)="reboot()"
+      >
         {{ rebooting() ? 'Rebooting…' : 'Force Pod Container Reboot' }}
       </button>
     </div>

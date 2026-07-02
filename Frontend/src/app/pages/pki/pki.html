@@ -12,17 +12,23 @@
 
   <div class="ztn-grid kpi-row">
     <div class="ztn-card">
-      <div class="kpi__head"><ui-icon name="lock" [size]="16" /><span>Issued Certificates</span></div>
+      <div class="kpi__head">
+        <ui-icon name="lock" [size]="16" /><span>Issued Certificates</span>
+      </div>
       <div class="ztn-kpi__value">12<span class="kpi-split"> / 0</span></div>
       <div class="ztn-kpi__sub">active / revoked</div>
     </div>
     <div class="ztn-card">
-      <div class="kpi__head"><ui-icon name="refresh" [size]="16" /><span>Rotation Policy</span></div>
+      <div class="kpi__head">
+        <ui-icon name="refresh" [size]="16" /><span>Rotation Policy</span>
+      </div>
       <div class="ztn-kpi__value">168<span class="kpi-split"> h</span></div>
       <div class="ztn-kpi__sub">auto-rotate · 7-day TTL</div>
     </div>
     <div class="ztn-card">
-      <div class="kpi__head"><ui-icon name="shield-check" [size]="16" /><span>Chain Validation</span></div>
+      <div class="kpi__head">
+        <ui-icon name="shield-check" [size]="16" /><span>Chain Validation</span>
+      </div>
       <div class="ztn-kpi__value">Valid</div>
       <div class="ztn-kpi__sub">Root → Intermediate → leaf</div>
     </div>
@@ -30,7 +36,9 @@
 
   <!-- CA chain -->
   <div class="ztn-card">
-    <h2 class="ztn-card__title"><ui-icon name="shield" [size]="14" /> Certificate Authority Chain</h2>
+    <h2 class="ztn-card__title">
+      <ui-icon name="shield" [size]="14" /> Certificate Authority Chain
+    </h2>
     <div class="ca-chain">
       <div class="ca-node">
         <span class="ca-node__role">Root CA</span>
@@ -103,11 +111,21 @@
                   [class.ztn-badge--warning]="severity(c.daysLeft) === 'warning'"
                   [class.ztn-badge--success]="severity(c.daysLeft) === 'success'"
                 >
-                  {{ severity(c.daysLeft) === 'danger' ? 'Renew now' : severity(c.daysLeft) === 'warning' ? 'Expiring' : 'Valid' }}
+                  {{
+                    severity(c.daysLeft) === 'danger'
+                      ? 'Renew now'
+                      : severity(c.daysLeft) === 'warning'
+                        ? 'Expiring'
+                        : 'Valid'
+                  }}
                 </span>
               </td>
               <td>
-                <button class="ztn-btn ztn-btn--ghost btn-sm" type="button" (click)="rotate(c); $event.stopPropagation()">
+                <button
+                  class="ztn-btn ztn-btn--ghost btn-sm"
+                  type="button"
+                  (click)="rotate(c); $event.stopPropagation()"
+                >
                   Rotate
                 </button>
               </td>
@@ -127,20 +145,30 @@
 >
   @if (selected(); as c) {
     <dl class="dl">
-      <dt>Network Function</dt><dd>{{ c.nf }}</dd>
-      <dt>Subject CN</dt><dd>{{ c.cn }}</dd>
-      <dt>Serial</dt><dd>{{ c.serial }}</dd>
-      <dt>Key Algorithm</dt><dd>{{ c.algo }}</dd>
-      <dt>Issued</dt><dd>{{ c.issued }}</dd>
-      <dt>Expires</dt><dd>{{ c.expires }}</dd>
-      <dt>Remaining</dt><dd>{{ c.daysLeft }} days</dd>
-      <dt>Issuer</dt><dd>5GC-SBI-Issuer</dd>
+      <dt>Network Function</dt>
+      <dd>{{ c.nf }}</dd>
+      <dt>Subject CN</dt>
+      <dd>{{ c.cn }}</dd>
+      <dt>Serial</dt>
+      <dd>{{ c.serial }}</dd>
+      <dt>Key Algorithm</dt>
+      <dd>{{ c.algo }}</dd>
+      <dt>Issued</dt>
+      <dd>{{ c.issued }}</dd>
+      <dt>Expires</dt>
+      <dd>{{ c.expires }}</dd>
+      <dt>Remaining</dt>
+      <dd>{{ c.daysLeft }} days</dd>
+      <dt>Issuer</dt>
+      <dd>5GC-SBI-Issuer</dd>
     </dl>
   }
   <div drawer-actions>
     @if (selected(); as c) {
       <button class="ztn-btn ztn-btn--ghost" type="button" (click)="close()">Close</button>
-      <button class="ztn-btn ztn-btn--primary" type="button" (click)="rotate(c)">Rotate Certificate</button>
+      <button class="ztn-btn ztn-btn--primary" type="button" (click)="rotate(c)">
+        Rotate Certificate
+      </button>
     }
   </div>
 </app-drawer>

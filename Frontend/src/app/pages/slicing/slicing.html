@@ -41,7 +41,9 @@
   <!-- Charts -->
   <div class="slice-charts">
     <div class="ztn-card">
-      <h2 class="ztn-card__title"><ui-icon name="grid" [size]="14" /> Traffic Share by Slice (last 4h)</h2>
+      <h2 class="ztn-card__title">
+        <ui-icon name="grid" [size]="14" /> Traffic Share by Slice (last 4h)
+      </h2>
       <ui-stacked-bar [categories]="times" [series]="trafficSeries" unit="%" />
     </div>
     <div class="ztn-card">
@@ -93,7 +95,8 @@
                   [class.ztn-badge--success]="s.status === 'active'"
                   [class.ztn-badge--warning]="s.status === 'degraded'"
                   [class.ztn-badge--neutral]="s.status === 'disabled'"
-                >{{ s.status }}</span>
+                  >{{ s.status }}</span
+                >
               </td>
               <td>
                 <button class="ztn-btn ztn-btn--ghost btn-sm" type="button" (click)="toggle(s)">

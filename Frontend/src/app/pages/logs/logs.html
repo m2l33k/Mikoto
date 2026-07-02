@@ -11,7 +11,8 @@
         class="ztn-badge"
         [class.ztn-badge--success]="live()"
         [class.ztn-badge--neutral]="!live()"
-      >{{ live() ? 'Live' : 'Paused' }}</span>
+        >{{ live() ? 'Live' : 'Paused' }}</span
+      >
     </div>
   </div>
 
@@ -20,7 +21,11 @@
     <div class="filterbar">
       <div class="filterbar__field">
         <label class="ztn-label">Network Function</label>
-        <select class="ztn-select" [value]="nfFilter()" (change)="nfFilter.set($any($event.target).value)">
+        <select
+          class="ztn-select"
+          [value]="nfFilter()"
+          (change)="nfFilter.set($any($event.target).value)"
+        >
           <option value="ALL">All NFs</option>
           @for (nf of nfs; track nf) {
             <option [value]="nf">{{ nf }}</option>
@@ -29,7 +34,11 @@
       </div>
       <div class="filterbar__field">
         <label class="ztn-label">Severity</label>
-        <select class="ztn-select" [value]="sevFilter()" (change)="sevFilter.set($any($event.target).value)">
+        <select
+          class="ztn-select"
+          [value]="sevFilter()"
+          (change)="sevFilter.set($any($event.target).value)"
+        >
           <option value="ALL">All levels</option>
           <option value="error">error</option>
           <option value="warn">warn</option>
@@ -72,7 +81,8 @@
             [class.sev--warn]="l.sev === 'warn'"
             [class.sev--info]="l.sev === 'info'"
             [class.sev--debug]="l.sev === 'debug'"
-          >{{ l.sev }}</span>
+            >{{ l.sev }}</span
+          >
           <span class="logline__nf">[{{ l.nf }}]</span>
           <span class="logline__msg">{{ l.msg }}</span>
         </div>

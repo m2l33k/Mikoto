@@ -12,12 +12,16 @@
 
   <div class="ztn-grid kpi-row">
     <div class="ztn-card">
-      <div class="kpi__head"><ui-icon name="server" [size]="16" /><span>Registered NF Instances</span></div>
+      <div class="kpi__head">
+        <ui-icon name="server" [size]="16" /><span>Registered NF Instances</span>
+      </div>
       <div class="ztn-kpi__value">8</div>
       <div class="ztn-kpi__sub">7 active · 1 suspended</div>
     </div>
     <div class="ztn-card">
-      <div class="kpi__head"><ui-icon name="activity" [size]="16" /><span>Exposed Services</span></div>
+      <div class="kpi__head">
+        <ui-icon name="activity" [size]="16" /><span>Exposed Services</span>
+      </div>
       <div class="ztn-kpi__value">11</div>
       <div class="ztn-kpi__sub">discoverable via Nnrf</div>
     </div>
@@ -60,7 +64,9 @@
         <tbody>
           @for (nf of filtered(); track nf.instanceId) {
             <tr class="row-click" (click)="open(nf)">
-              <td><span class="nf-type mono">{{ nf.type }}</span></td>
+              <td>
+                <span class="nf-type mono">{{ nf.type }}</span>
+              </td>
               <td class="mono dim">{{ nf.instanceId }}</td>
               <td class="mono">{{ nf.fqdn }}</td>
               <td class="mono">{{ nf.endpoint }}</td>
@@ -91,7 +97,8 @@
                   [class.ztn-badge--success]="nf.status === 'registered'"
                   [class.ztn-badge--warning]="nf.status === 'suspended'"
                   [class.ztn-badge--danger]="nf.status === 'deregistered'"
-                >{{ nf.status }}</span>
+                  >{{ nf.status }}</span
+                >
               </td>
             </tr>
           }
@@ -109,21 +116,32 @@
 >
   @if (selected(); as nf) {
     <dl class="dl">
-      <dt>NF Type</dt><dd>{{ nf.type }}</dd>
-      <dt>Instance ID</dt><dd>{{ nf.instanceId }}</dd>
-      <dt>FQDN</dt><dd>{{ nf.fqdn }}</dd>
-      <dt>SBI Endpoint</dt><dd>{{ nf.endpoint }}</dd>
-      <dt>Services</dt><dd>{{ nf.services }}</dd>
-      <dt>Heartbeat</dt><dd>{{ nf.heartbeat }}</dd>
-      <dt>Current Load</dt><dd>{{ nf.load }}%</dd>
-      <dt>Transport</dt><dd>{{ nf.tls ? 'mTLS (TLS 1.3)' : 'plaintext' }}</dd>
-      <dt>Status</dt><dd>{{ nf.status }}</dd>
+      <dt>NF Type</dt>
+      <dd>{{ nf.type }}</dd>
+      <dt>Instance ID</dt>
+      <dd>{{ nf.instanceId }}</dd>
+      <dt>FQDN</dt>
+      <dd>{{ nf.fqdn }}</dd>
+      <dt>SBI Endpoint</dt>
+      <dd>{{ nf.endpoint }}</dd>
+      <dt>Services</dt>
+      <dd>{{ nf.services }}</dd>
+      <dt>Heartbeat</dt>
+      <dd>{{ nf.heartbeat }}</dd>
+      <dt>Current Load</dt>
+      <dd>{{ nf.load }}%</dd>
+      <dt>Transport</dt>
+      <dd>{{ nf.tls ? 'mTLS (TLS 1.3)' : 'plaintext' }}</dd>
+      <dt>Status</dt>
+      <dd>{{ nf.status }}</dd>
     </dl>
 
     <div class="drawer-section">
       <h4 class="drawer-section__title">Discovery</h4>
       <div class="ztn-terminal">
-        <div><span class="t-time">GET</span> /nnrf-disc/v1/nf-instances?target-nf-type={{ nf.type }}</div>
+        <div>
+          <span class="t-time">GET</span> /nnrf-disc/v1/nf-instances?target-nf-type={{ nf.type }}
+        </div>
         <div><span class="t-smf">200 OK</span> · 1 instance · ttl 30s</div>
       </div>
     </div>

@@ -15,12 +15,16 @@
 
   <div class="ztn-grid kpi-row">
     <div class="ztn-card">
-      <div class="kpi__head"><ui-icon name="shield-check" [size]="16" /><span>Active Policies</span></div>
+      <div class="kpi__head">
+        <ui-icon name="shield-check" [size]="16" /><span>Active Policies</span>
+      </div>
       <div class="ztn-kpi__value">6</div>
       <div class="ztn-kpi__sub">4 allow · 2 deny</div>
     </div>
     <div class="ztn-card">
-      <div class="kpi__head"><ui-icon name="alert" [size]="16" /><span>Denied Flows (24h)</span></div>
+      <div class="kpi__head">
+        <ui-icon name="alert" [size]="16" /><span>Denied Flows (24h)</span>
+      </div>
       <div class="ztn-kpi__value">245</div>
       <div class="ztn-kpi__sub">blocked lateral movement</div>
     </div>
@@ -32,7 +36,9 @@
   </div>
 
   <div class="ztn-card">
-    <h2 class="ztn-card__title"><ui-icon name="shield-check" [size]="14" /> CiliumNetworkPolicy Ruleset</h2>
+    <h2 class="ztn-card__title">
+      <ui-icon name="shield-check" [size]="14" /> CiliumNetworkPolicy Ruleset
+    </h2>
     <div class="ztn-table-wrap">
       <table class="ztn-table">
         <thead>
@@ -61,7 +67,8 @@
                   class="ztn-badge"
                   [class.ztn-badge--success]="p.action === 'allow'"
                   [class.ztn-badge--danger]="p.action === 'deny'"
-                >{{ p.action }}</span>
+                  >{{ p.action }}</span
+                >
               </td>
               <td>
                 <button class="ztn-btn ztn-btn--ghost btn-sm" type="button" (click)="toggle(p)">
@@ -76,7 +83,9 @@
   </div>
 
   <div class="ztn-card">
-    <h2 class="ztn-card__title"><ui-icon name="alert" [size]="14" /> Recent Denied Flows (Hubble)</h2>
+    <h2 class="ztn-card__title">
+      <ui-icon name="alert" [size]="14" /> Recent Denied Flows (Hubble)
+    </h2>
     <div class="ztn-terminal">
       @for (f of denied; track f.time) {
         <div>
@@ -90,7 +99,12 @@
   </div>
 </section>
 
-<app-drawer [open]="addOpen()" eyebrow="CiliumNetworkPolicy" title="Create Policy" (closed)="addOpen.set(false)">
+<app-drawer
+  [open]="addOpen()"
+  eyebrow="CiliumNetworkPolicy"
+  title="Create Policy"
+  (closed)="addOpen.set(false)"
+>
   <div class="ztn-field">
     <label class="ztn-label">Policy Name</label>
     <input class="ztn-input" [(ngModel)]="pName" name="pn" placeholder="allow-amf-to-udm" />
@@ -98,13 +112,17 @@
   <div class="ztn-field">
     <label class="ztn-label">Source NF</label>
     <select class="ztn-select" [(ngModel)]="pSource" name="ps">
-      @for (n of nfList; track n) { <option [value]="n">{{ n }}</option> }
+      @for (n of nfList; track n) {
+        <option [value]="n">{{ n }}</option>
+      }
     </select>
   </div>
   <div class="ztn-field">
     <label class="ztn-label">Destination NF</label>
     <select class="ztn-select" [(ngModel)]="pDest" name="pd">
-      @for (n of nfList; track n) { <option [value]="n">{{ n }}</option> }
+      @for (n of nfList; track n) {
+        <option [value]="n">{{ n }}</option>
+      }
     </select>
   </div>
   <div class="ztn-field">
@@ -120,7 +138,11 @@
   </div>
   <p class="note">Saving recompiles the Cilium eBPF program for the affected endpoints.</p>
   <div drawer-actions>
-    <button class="ztn-btn ztn-btn--ghost" type="button" (click)="addOpen.set(false)">Cancel</button>
-    <button class="ztn-btn ztn-btn--primary" type="button" (click)="createPolicy()">Create Policy</button>
+    <button class="ztn-btn ztn-btn--ghost" type="button" (click)="addOpen.set(false)">
+      Cancel
+    </button>
+    <button class="ztn-btn ztn-btn--primary" type="button" (click)="createPolicy()">
+      Create Policy
+    </button>
   </div>
 </app-drawer>

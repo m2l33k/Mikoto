@@ -20,7 +20,9 @@
       <div class="ztn-kpi__value">{{ counts().major }}</div>
     </div>
     <div class="ztn-card">
-      <div class="kpi__head"><ui-icon name="check-square" [size]="16" /><span>Cleared (24h)</span></div>
+      <div class="kpi__head">
+        <ui-icon name="check-square" [size]="16" /><span>Cleared (24h)</span>
+      </div>
       <div class="ztn-kpi__value">{{ counts().cleared }}</div>
     </div>
   </div>
@@ -39,14 +41,27 @@
   <div class="ztn-card">
     <h2 class="ztn-card__title">
       <ui-icon name="bell" [size]="14" /> Alarm List
-      <button class="ztn-btn ztn-btn--ghost btn-sm" style="margin-left:auto" type="button" (click)="exportCsv()">
+      <button
+        class="ztn-btn ztn-btn--ghost btn-sm"
+        style="margin-left: auto"
+        type="button"
+        (click)="exportCsv()"
+      >
         <ui-icon name="download" [size]="14" /> CSV
       </button>
     </h2>
     <div class="ztn-table-wrap">
       <table class="ztn-table">
         <thead>
-          <tr><th>ID</th><th>Time</th><th>Severity</th><th>Source</th><th>Summary</th><th>State</th><th></th></tr>
+          <tr>
+            <th>ID</th>
+            <th>Time</th>
+            <th>Severity</th>
+            <th>Source</th>
+            <th>Summary</th>
+            <th>State</th>
+            <th></th>
+          </tr>
         </thead>
         <tbody>
           @for (a of alarms(); track a.id) {
@@ -59,7 +74,8 @@
                   [class.ztn-badge--danger]="a.severity === 'critical'"
                   [class.ztn-badge--warning]="a.severity === 'major'"
                   [class.ztn-badge--primary]="a.severity === 'minor'"
-                >{{ a.severity }}</span>
+                  >{{ a.severity }}</span
+                >
               </td>
               <td class="mono">{{ a.source }}</td>
               <td>{{ a.summary }}</td>
@@ -69,15 +85,20 @@
                   [class.ztn-badge--danger]="a.state === 'active'"
                   [class.ztn-badge--neutral]="a.state === 'acked'"
                   [class.ztn-badge--success]="a.state === 'cleared'"
-                >{{ a.state }}</span>
+                  >{{ a.state }}</span
+                >
               </td>
               <td>
                 <div class="row-actions">
                   @if (a.state === 'active') {
-                    <button class="ztn-btn ztn-btn--ghost btn-sm" type="button" (click)="ack(a)">Ack</button>
+                    <button class="ztn-btn ztn-btn--ghost btn-sm" type="button" (click)="ack(a)">
+                      Ack
+                    </button>
                   }
                   @if (a.state !== 'cleared') {
-                    <button class="ztn-btn ztn-btn--ghost btn-sm" type="button" (click)="clear(a)">Clear</button>
+                    <button class="ztn-btn ztn-btn--ghost btn-sm" type="button" (click)="clear(a)">
+                      Clear
+                    </button>
                   }
                 </div>
               </td>

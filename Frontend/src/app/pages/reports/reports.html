@@ -19,7 +19,11 @@
           <p class="report-card__desc">{{ t.description }}</p>
         </div>
         <div class="report-card__actions">
-          <button class="ztn-btn ztn-btn--primary btn-sm" type="button" (click)="generate(t, 'PDF')">
+          <button
+            class="ztn-btn ztn-btn--primary btn-sm"
+            type="button"
+            (click)="generate(t, 'PDF')"
+          >
             Generate PDF
           </button>
           <button class="ztn-btn ztn-btn--ghost btn-sm" type="button" (click)="generate(t, 'CSV')">
@@ -36,7 +40,15 @@
     <div class="ztn-table-wrap">
       <table class="ztn-table">
         <thead>
-          <tr><th>Report</th><th>Type</th><th>Period</th><th>Format</th><th>Size</th><th>Status</th><th></th></tr>
+          <tr>
+            <th>Report</th>
+            <th>Type</th>
+            <th>Period</th>
+            <th>Format</th>
+            <th>Size</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
         </thead>
         <tbody>
           @for (r of reports(); track r.name) {
@@ -51,7 +63,8 @@
                   class="ztn-badge"
                   [class.ztn-badge--success]="r.status === 'ready'"
                   [class.ztn-badge--warning]="r.status === 'generating'"
-                >{{ r.status }}</span>
+                  >{{ r.status }}</span
+                >
               </td>
               <td>
                 @if (r.status === 'ready') {

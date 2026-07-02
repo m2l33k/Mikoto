@@ -68,8 +68,16 @@ export class Observability {
     const p50 = genSeries(n, 44, 14);
     this.latency.set([
       { name: 'p50', color: 'var(--brand-success)', data: p50 },
-      { name: 'p95', color: 'var(--brand-warning)', data: p50.map((v) => Math.round(v * 2.4 + Math.random() * 12)) },
-      { name: 'p99', color: 'var(--brand-danger)', data: p50.map((v) => Math.round(v * 4.6 + Math.random() * 26)) },
+      {
+        name: 'p95',
+        color: 'var(--brand-warning)',
+        data: p50.map((v) => Math.round(v * 2.4 + Math.random() * 12)),
+      },
+      {
+        name: 'p99',
+        color: 'var(--brand-danger)',
+        data: p50.map((v) => Math.round(v * 4.6 + Math.random() * 26)),
+      },
     ]);
 
     this.errBars.set(genSeries(n, 1.4, 4).map((v) => Math.max(0, Math.round(v))));

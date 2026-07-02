@@ -43,12 +43,8 @@ export class Heatmap {
   readonly color = input('var(--brand-primary)');
   readonly unit = input('');
 
-  protected readonly cols = computed(
-    () => `72px repeat(${this.columns().length}, 1fr)`,
-  );
-  private readonly max = computed(() =>
-    Math.max(1, ...this.rows().flatMap((r) => r.values)),
-  );
+  protected readonly cols = computed(() => `72px repeat(${this.columns().length}, 1fr)`);
+  private readonly max = computed(() => Math.max(1, ...this.rows().flatMap((r) => r.values)));
 
   protected fill(v: number): string {
     const pct = Math.round((v / this.max()) * 100);
@@ -141,7 +137,5 @@ export interface HBarItem {
 })
 export class HBar {
   readonly items = input<HBarItem[]>([]);
-  protected readonly max = computed(() =>
-    Math.max(1, ...this.items().map((i) => i.value)),
-  );
+  protected readonly max = computed(() => Math.max(1, ...this.items().map((i) => i.value)));
 }

@@ -23,7 +23,10 @@
 
 .nf--click {
   cursor: pointer;
-  transition: border-color 0.13s ease, box-shadow 0.13s ease, transform 0.13s ease;
+  transition:
+    border-color 0.13s ease,
+    box-shadow 0.13s ease,
+    transform 0.13s ease;
 }
 .nf--click:hover {
   border-color: var(--brand-accent);

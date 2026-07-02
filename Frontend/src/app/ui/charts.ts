@@ -42,11 +42,7 @@ function niceNumber(v: number): string {
 @Component({
   selector: 'ui-area-chart',
   template: `
-    <div
-      class="chart"
-      (mousemove)="onMove($event)"
-      (mouseleave)="hover.set(-1)"
-    >
+    <div class="chart" (mousemove)="onMove($event)" (mouseleave)="hover.set(-1)">
       <svg
         [attr.width]="width()"
         [attr.height]="height()"
@@ -119,9 +115,7 @@ function niceNumber(v: number): string {
           <div class="chart__tip-label">{{ tipLabel() }}</div>
           @for (m of hoverMarkers(); track m.name) {
             <div class="chart__tip-row">
-              <span class="chart__tip-key">
-                <i [style.background]="m.color"></i>{{ m.name }}
-              </span>
+              <span class="chart__tip-key"> <i [style.background]="m.color"></i>{{ m.name }} </span>
               <span class="chart__tip-val">{{ m.value }}{{ unit() }}</span>
             </div>
           }
@@ -131,9 +125,7 @@ function niceNumber(v: number): string {
       @if (series().length > 1) {
         <div class="legend">
           @for (s of series(); track s.name) {
-            <span class="legend__item">
-              <i [style.background]="s.color"></i>{{ s.name }}
-            </span>
+            <span class="legend__item"> <i [style.background]="s.color"></i>{{ s.name }} </span>
           }
         </div>
       }
@@ -210,9 +202,9 @@ export class AreaChart {
     const series = this.series().map((s) => {
       const pts = s.data.map((v, i) => `${xAt(i).toFixed(1)},${yAt(v).toFixed(1)}`);
       const areaPath = pts.length
-        ? `M ${xAt(0).toFixed(1)},${baseY} L ${pts.join(' L ')} L ${xAt(
-            s.data.length - 1,
-          ).toFixed(1)},${baseY} Z`
+        ? `M ${xAt(0).toFixed(1)},${baseY} L ${pts.join(' L ')} L ${xAt(s.data.length - 1).toFixed(
+            1,
+          )},${baseY} Z`
         : '';
       return {
         name: s.name,
@@ -240,9 +232,7 @@ export class AreaChart {
   }
 
   protected readonly hoverX = computed(() => this.geo().xAt(this.hover()));
-  protected readonly tipLabel = computed(
-    () => this.labels()[this.hover()] ?? `t-${this.hover()}`,
-  );
+  protected readonly tipLabel = computed(() => this.labels()[this.hover()] ?? `t-${this.hover()}`);
   protected readonly hoverMarkers = computed(() => {
     const i = this.hover();
     const g = this.geo();
@@ -373,7 +363,7 @@ export class BarChart {
         y: baseY - bh,
         w: bw,
         h: Math.max(1, bh),
-        label: i % everyLabel === 0 ? labels[i] ?? '' : '',
+        label: i % everyLabel === 0 ? (labels[i] ?? '') : '',
       };
     });
 
@@ -397,7 +387,14 @@ export interface Slice {
   template: `
     <div class="donut">
       <svg [attr.width]="size()" [attr.height]="size()" viewBox="0 0 42 42">
-        <circle cx="21" cy="21" r="15.5" fill="none" stroke="var(--border-default)" stroke-width="5" />
+        <circle
+          cx="21"
+          cy="21"
+          r="15.5"
+          fill="none"
+          stroke="var(--border-default)"
+          stroke-width="5"
+        />
         @for (a of arcs(); track a.name) {
           <circle
             cx="21"
@@ -503,8 +500,7 @@ export class Sparkline {
     const step = w / (p.length - 1);
     const pad = 3;
     return p.map(
-      (v, i) =>
-        [i * step, h - pad - ((v - min) / span) * (h - pad * 2)] as [number, number],
+      (v, i) => [i * step, h - pad - ((v - min) / span) * (h - pad * 2)] as [number, number],
     );
   });
 
@@ -529,7 +525,14 @@ export class Sparkline {
   selector: 'ui-gauge',
   template: `
     <svg [attr.width]="size()" [attr.height]="size()" viewBox="0 0 42 42" class="gauge">
-      <circle cx="21" cy="21" r="15.5" fill="none" stroke="var(--border-default)" stroke-width="4" />
+      <circle
+        cx="21"
+        cy="21"
+        r="15.5"
+        fill="none"
+        stroke="var(--border-default)"
+        stroke-width="4"
+      />
       <circle
         cx="21"
         cy="21"

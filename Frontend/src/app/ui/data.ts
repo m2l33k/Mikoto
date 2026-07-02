@@ -20,12 +20,7 @@ export function rangeBuckets(range: TimeRange): { n: number; step: number } {
 }
 
 /** Noisy series generator (fresh values each call → visible on refresh). */
-export function genSeries(
-  n: number,
-  base: number,
-  volatility: number,
-  trend = 0,
-): number[] {
+export function genSeries(n: number, base: number, volatility: number, trend = 0): number[] {
   const out: number[] = [];
   let v = base + (Math.random() - 0.5) * volatility;
   for (let i = 0; i < n; i++) {

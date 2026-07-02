@@ -14,7 +14,9 @@
 
   <div class="ztn-grid kpi-strip">
     <div class="ztn-card kpi">
-      <div class="kpi__head"><ui-icon name="activity" [size]="16" /><span>SBI Request Rate</span></div>
+      <div class="kpi__head">
+        <ui-icon name="activity" [size]="16" /><span>SBI Request Rate</span>
+      </div>
       <div class="ztn-kpi__value">2,318<span class="kpi-split"> /s</span></div>
     </div>
     <div class="ztn-card kpi">
@@ -49,7 +51,13 @@
         <ui-icon name="bar-chart" [size]="14" /> Request Latency Percentiles
         <span class="card-link">ms</span>
       </h2>
-      <ui-area-chart [series]="latency()" [labels]="times()" [height]="200" unit="ms" [area]="false" />
+      <ui-area-chart
+        [series]="latency()"
+        [labels]="times()"
+        [height]="200"
+        unit="ms"
+        [area]="false"
+      />
     </div>
   </div>
 
@@ -67,7 +75,9 @@
       />
     </div>
     <div class="ztn-card">
-      <h2 class="ztn-card__title"><ui-icon name="check-square" [size]="14" /> Response Code Mix (24h)</h2>
+      <h2 class="ztn-card__title">
+        <ui-icon name="check-square" [size]="14" /> Response Code Mix (24h)
+      </h2>
       <ui-donut [data]="statusMix" [size]="128" centerLabel="requests" />
     </div>
   </div>
@@ -83,7 +93,11 @@
             <div class="nf-load__bar">
               <span class="metatag">CPU</span>
               <div class="ztn-meter">
-                <div class="ztn-meter__fill" [class.ztn-meter__fill--warning]="n.cpu >= 70" [style.width.%]="n.cpu"></div>
+                <div
+                  class="ztn-meter__fill"
+                  [class.ztn-meter__fill--warning]="n.cpu >= 70"
+                  [style.width.%]="n.cpu"
+                ></div>
               </div>
               <span class="mono">{{ n.cpu }}%</span>
             </div>
@@ -106,7 +120,12 @@
     <div class="ztn-table-wrap">
       <table class="ztn-table">
         <thead>
-          <tr><th>Job</th><th>Instance</th><th>Last Scrape</th><th>State</th></tr>
+          <tr>
+            <th>Job</th>
+            <th>Instance</th>
+            <th>Last Scrape</th>
+            <th>State</th>
+          </tr>
         </thead>
         <tbody>
           @for (t of targets; track t.instance) {
@@ -119,7 +138,8 @@
                   class="ztn-badge"
                   [class.ztn-badge--success]="t.up"
                   [class.ztn-badge--danger]="!t.up"
-                >{{ t.up ? 'UP' : 'DOWN' }}</span>
+                  >{{ t.up ? 'UP' : 'DOWN' }}</span
+                >
               </td>
             </tr>
           }

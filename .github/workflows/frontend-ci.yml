@@ -1,0 +1,157 @@
+name: Frontend CI
+
+# Powerful CI pipeline for the mikoto 5G desktop frontend (Angular 22 + Vitest).
+# Stages: install → format/type check → unit tests → production build (budget gate).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Frontend/**"
+      - ".github/workflows/frontend-ci.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "Frontend/**"
+      - ".github/workflows/frontend-ci.yml"
+  workflow_dispatch: {}
+
+# Cancel superseded runs on the same ref to save CI minutes.
+concurrency:
+  group: frontend-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: Frontend
+
+env:
+  # Fail the whole pipeline on the first deprecation/uncaught rejection.
+  NODE_OPTIONS: --unhandled-rejections=strict
+  CI: "true"
+
+jobs:
+  # ── 1. Install once, share node_modules with every downstream job ──────────────
+  install:
+    name: Install & cache deps
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: Frontend/package-lock.json
+
+      - name: Install dependencies (clean, reproducible)
+        run: npm ci --no-audit --no-fund
+
+      - name: Cache node_modules for downstream jobs
+        uses: actions/cache/save@v4
+        with:
+          path: Frontend/node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('Frontend/package-lock.json') }}
+
+  # ── 2. Static quality gate: formatting + strict type check ─────────────────────
+  quality:
+    name: Format & type check
+    runs-on: ubuntu-latest
+    needs: install
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: Frontend/package-lock.json
+
+      - name: Restore node_modules
+        uses: actions/cache/restore@v4
+        with:
+          path: Frontend/node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('Frontend/package-lock.json') }}
+
+      - name: Install if cache missed
+        run: '[ -d node_modules ] || npm ci --no-audit --no-fund'
+
+      - name: Prettier format check
+        run: npx prettier --check "src/**/*.{ts,html,css,json}"
+
+      - name: TypeScript strict type check (no emit)
+        run: npx tsc -p tsconfig.app.json --noEmit
+
+  # ── 3. Unit tests across supported Node versions ───────────────────────────────
+  test:
+    name: Unit tests (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    needs: install
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+          cache-dependency-path: Frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Run Vitest unit tests (headless jsdom)
+        run: npm test -- --no-watch
+
+  # ── 4. Production build with Angular budget enforcement ────────────────────────
+  build:
+    name: Production build
+    runs-on: ubuntu-latest
+    needs: [quality, test]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: Frontend/package-lock.json
+
+      - name: Restore node_modules
+        uses: actions/cache/restore@v4
+        with:
+          path: Frontend/node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('Frontend/package-lock.json') }}
+
+      - name: Install if cache missed
+        run: '[ -d node_modules ] || npm ci --no-audit --no-fund'
+
+      - name: Build (production, enforces bundle budgets)
+        run: npm run build -- --configuration production
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-dist
+          path: Frontend/dist/
+          retention-days: 7
+          if-no-files-found: error
+
+  # ── 5. Single required status check to gate merges ─────────────────────────────
+  ci-success:
+    name: Frontend CI passed
+    runs-on: ubuntu-latest
+    needs: [quality, test, build]
+    if: always()
+    steps:
+      - name: Verify all jobs succeeded
+        run: |
+          if [ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" = "true" ]; then
+            echo "One or more CI jobs failed."
+            exit 1
+          fi
+          echo "All frontend CI jobs passed."

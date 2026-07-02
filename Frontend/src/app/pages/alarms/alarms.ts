@@ -39,12 +39,54 @@ export class Alarms {
   ];
 
   protected readonly alarms = signal<Alarm[]>([
-    { id: 'ALM-4471', time: '14:02:11', severity: 'critical', source: 'ML-Engine', summary: 'IMSI Catcher signature detected (192.168.12.9)', state: 'active' },
-    { id: 'ALM-4468', time: '13:58:40', severity: 'major', source: 'UPF-Node-01', summary: 'CPU saturation 76% sustained > 5m', state: 'active' },
-    { id: 'ALM-4465', time: '13:47:02', severity: 'major', source: 'PKI', summary: 'AMF certificate expires in 48h', state: 'acked' },
-    { id: 'ALM-4460', time: '13:31:55', severity: 'minor', source: 'NSSF-Node-01', summary: 'NF heartbeat late (38s)', state: 'active' },
-    { id: 'ALM-4452', time: '12:55:09', severity: 'major', source: 'Cilium', summary: 'Spike in dropped flows (default-deny)', state: 'cleared' },
-    { id: 'ALM-4441', time: '12:10:33', severity: 'minor', source: 'Prometheus', summary: 'Scrape target nssf down', state: 'active' },
+    {
+      id: 'ALM-4471',
+      time: '14:02:11',
+      severity: 'critical',
+      source: 'ML-Engine',
+      summary: 'IMSI Catcher signature detected (192.168.12.9)',
+      state: 'active',
+    },
+    {
+      id: 'ALM-4468',
+      time: '13:58:40',
+      severity: 'major',
+      source: 'UPF-Node-01',
+      summary: 'CPU saturation 76% sustained > 5m',
+      state: 'active',
+    },
+    {
+      id: 'ALM-4465',
+      time: '13:47:02',
+      severity: 'major',
+      source: 'PKI',
+      summary: 'AMF certificate expires in 48h',
+      state: 'acked',
+    },
+    {
+      id: 'ALM-4460',
+      time: '13:31:55',
+      severity: 'minor',
+      source: 'NSSF-Node-01',
+      summary: 'NF heartbeat late (38s)',
+      state: 'active',
+    },
+    {
+      id: 'ALM-4452',
+      time: '12:55:09',
+      severity: 'major',
+      source: 'Cilium',
+      summary: 'Spike in dropped flows (default-deny)',
+      state: 'cleared',
+    },
+    {
+      id: 'ALM-4441',
+      time: '12:10:33',
+      severity: 'minor',
+      source: 'Prometheus',
+      summary: 'Scrape target nssf down',
+      state: 'active',
+    },
   ]);
 
   protected readonly severityMix = computed<Slice[]>(() => {
@@ -77,9 +119,7 @@ export class Alarms {
   }
 
   protected ack(a: Alarm): void {
-    this.alarms.update((list) =>
-      list.map((x) => (x.id === a.id ? { ...x, state: 'acked' } : x)),
-    );
+    this.alarms.update((list) => list.map((x) => (x.id === a.id ? { ...x, state: 'acked' } : x)));
     this.toast.info('Alarm acknowledged', `${a.id} · ${a.source}`);
   }
 
@@ -90,9 +130,7 @@ export class Alarms {
       confirmLabel: 'Clear alarm',
     });
     if (!ok) return;
-    this.alarms.update((list) =>
-      list.map((x) => (x.id === a.id ? { ...x, state: 'cleared' } : x)),
-    );
+    this.alarms.update((list) => list.map((x) => (x.id === a.id ? { ...x, state: 'cleared' } : x)));
     this.toast.success('Alarm cleared', a.id);
   }
 }

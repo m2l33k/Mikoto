@@ -31,14 +31,48 @@ export class Sessions {
   private readonly confirm = inject(ConfirmService);
   protected readonly selected = signal<PduSession | null>(null);
 
-  protected readonly throughputTrend = [
-    9, 11, 10, 13, 12, 14, 13, 15, 14, 16, 15, 14, 16, 14,
-  ];
+  protected readonly throughputTrend = [9, 11, 10, 13, 12, 14, 13, 15, 14, 16, 15, 14, 16, 14];
 
   protected readonly sessions = signal<PduSession[]>([
-    { id: 'pdu-0x9a8', supi: 'imsi-208950000000001', dnn: 'internet', snssai: '01-000001', pduType: 'IPv4', upf: 'UPF-Node-01', teid: '0x0000 9a8f', fiveQi: 9, ul: '48 Mbps', dl: '210 Mbps', state: 'active' },
-    { id: 'pdu-0x9b2', supi: 'imsi-208950000000002', dnn: 'ims', snssai: '02-000002', pduType: 'IPv4v6', upf: 'UPF-Node-01', teid: '0x0000 9b21', fiveQi: 5, ul: '12 Mbps', dl: '36 Mbps', state: 'active' },
-    { id: 'pdu-0x9c7', supi: 'imsi-208950000000003', dnn: 'internet', snssai: '01-000001', pduType: 'IPv4', upf: 'UPF-Node-01', teid: '0x0000 9c7e', fiveQi: 9, ul: '—', dl: '—', state: 'establishing' },
+    {
+      id: 'pdu-0x9a8',
+      supi: 'imsi-208950000000001',
+      dnn: 'internet',
+      snssai: '01-000001',
+      pduType: 'IPv4',
+      upf: 'UPF-Node-01',
+      teid: '0x0000 9a8f',
+      fiveQi: 9,
+      ul: '48 Mbps',
+      dl: '210 Mbps',
+      state: 'active',
+    },
+    {
+      id: 'pdu-0x9b2',
+      supi: 'imsi-208950000000002',
+      dnn: 'ims',
+      snssai: '02-000002',
+      pduType: 'IPv4v6',
+      upf: 'UPF-Node-01',
+      teid: '0x0000 9b21',
+      fiveQi: 5,
+      ul: '12 Mbps',
+      dl: '36 Mbps',
+      state: 'active',
+    },
+    {
+      id: 'pdu-0x9c7',
+      supi: 'imsi-208950000000003',
+      dnn: 'internet',
+      snssai: '01-000001',
+      pduType: 'IPv4',
+      upf: 'UPF-Node-01',
+      teid: '0x0000 9c7e',
+      fiveQi: 9,
+      ul: '—',
+      dl: '—',
+      state: 'establishing',
+    },
   ]);
 
   protected open(s: PduSession): void {

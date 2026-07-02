@@ -33,9 +33,7 @@
       <div class="ztn-card__title">Vault Audit</div>
       <div class="ztn-kpi__value">48</div>
       <div class="ztn-kpi__label">Keys Protected · Auto-Rotation Enforced</div>
-      <span class="ztn-badge ztn-badge--success" style="margin-top: 10px"
-        >Storage Encrypted</span
-      >
+      <span class="ztn-badge ztn-badge--success" style="margin-top: 10px">Storage Encrypted</span>
     </div>
   </div>
 
@@ -88,9 +86,7 @@
         >
           <div class="alert__info">
             <div class="alert__type">{{ a.type }}</div>
-            <div class="ztn-kpi__sub">
-              {{ a.time }} · src {{ a.sourceIp }}
-            </div>
+            <div class="ztn-kpi__sub">{{ a.time }} · src {{ a.sourceIp }}</div>
           </div>
           <button class="ztn-btn ztn-btn--danger" type="button" (click)="mitigate(a)">
             Mitigate Attack Stream

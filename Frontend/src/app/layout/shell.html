@@ -60,7 +60,12 @@
   <div class="main">
     <header class="topbar">
       <div class="topbar__group">
-        <button class="topbar__icon expand-btn" type="button" (click)="toggleSidebar()" title="Toggle sidebar">
+        <button
+          class="topbar__icon expand-btn"
+          type="button"
+          (click)="toggleSidebar()"
+          title="Toggle sidebar"
+        >
           ☰
         </button>
         <ui-icon name="globe" [size]="15" />
@@ -142,9 +147,14 @@
                 <ui-icon name="cpu" [size]="15" /> Settings
               </a>
               <button class="dropdown__item" type="button" (click)="toggleTheme()">
-                <ui-icon name="globe" [size]="15" /> Switch to {{ theme() === 'dark' ? 'light' : 'dark' }} theme
+                <ui-icon name="globe" [size]="15" /> Switch to
+                {{ theme() === 'dark' ? 'light' : 'dark' }} theme
               </button>
-              <button class="dropdown__item dropdown__item--danger" type="button" (click)="logout()">
+              <button
+                class="dropdown__item dropdown__item--danger"
+                type="button"
+                (click)="logout()"
+              >
                 <ui-icon name="lock" [size]="15" /> Sign out
               </button>
             </div>
