@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, HostListener, input, output } from '@angular/core';
 
 /** Reusable right-side slide-over panel. Content is projected. */
 @Component({
@@ -6,7 +6,13 @@ import { Component, input, output } from '@angular/core';
   template: `
     @if (open()) {
       <div class="drawer-overlay" (click)="closed.emit()">
-        <aside class="drawer" (click)="$event.stopPropagation()">
+        <aside
+          class="drawer"
+          role="dialog"
+          aria-modal="true"
+          [attr.aria-label]="title() || 'Detail panel'"
+          (click)="$event.stopPropagation()"
+        >
           <header class="drawer__head">
             <div>
               <div class="drawer__eyebrow">{{ eyebrow() }}</div>
@@ -33,4 +39,9 @@ export class Drawer {
   readonly title = input('');
   readonly eyebrow = input('');
   readonly closed = output<void>();
+
+  @HostListener('document:keydown.escape')
+  protected onEscape(): void {
+    if (this.open()) this.closed.emit();
+  }
 }

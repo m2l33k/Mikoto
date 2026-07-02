@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, HostListener, inject } from '@angular/core';
 import { ToastService } from '../core/toast.service';
 import { ConfirmService } from '../core/confirm.service';
 
@@ -7,7 +7,7 @@ import { ConfirmService } from '../core/confirm.service';
   selector: 'app-overlays',
   template: `
     <!-- Toasts -->
-    <div class="toast-stack">
+    <div class="toast-stack" role="status" aria-live="polite">
       @for (t of toast.toasts(); track t.id) {
         <div class="toast toast--{{ t.kind }}" (click)="toast.dismiss(t.id)">
           <span class="toast__bar"></span>
@@ -25,7 +25,13 @@ import { ConfirmService } from '../core/confirm.service';
     <!-- Confirm dialog -->
     @if (confirm.current(); as c) {
       <div class="modal-overlay" (click)="confirm.answer(false)">
-        <div class="modal" (click)="$event.stopPropagation()">
+        <div
+          class="modal"
+          role="alertdialog"
+          aria-modal="true"
+          [attr.aria-label]="c.title"
+          (click)="$event.stopPropagation()"
+        >
           <h3 class="modal__title">{{ c.title }}</h3>
           <p class="modal__msg">{{ c.message }}</p>
           <div class="modal__actions">
@@ -51,4 +57,9 @@ import { ConfirmService } from '../core/confirm.service';
 export class Overlays {
   protected readonly toast = inject(ToastService);
   protected readonly confirm = inject(ConfirmService);
+
+  @HostListener('document:keydown.escape')
+  protected onEscape(): void {
+    if (this.confirm.current()) this.confirm.answer(false);
+  }
 }

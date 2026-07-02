@@ -1,6 +1,12 @@
 @if (open()) {
   <div class="cmdk-overlay" (click)="close()">
-    <div class="cmdk" (click)="$event.stopPropagation()">
+    <div
+      class="cmdk"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Command palette"
+      (click)="$event.stopPropagation()"
+    >
       <div class="cmdk__search">
         <ui-icon name="search" [size]="16" />
         <input
@@ -10,14 +16,20 @@
           [value]="query()"
           (input)="onInput($event)"
           placeholder="Jump to a page or run a command…"
+          role="combobox"
+          aria-expanded="true"
+          aria-controls="cmdk-listbox"
+          aria-label="Search commands"
         />
         <kbd class="cmdk__kbd">esc</kbd>
       </div>
-      <div class="cmdk__list">
+      <div class="cmdk__list" id="cmdk-listbox" role="listbox" aria-label="Commands">
         @for (c of filtered(); track c.label; let i = $index) {
           <button
             class="cmdk__item"
             [class.cmdk__item--active]="i === active()"
+            role="option"
+            [attr.aria-selected]="i === active()"
             (mouseenter)="active.set(i)"
             (click)="run(c)"
           >

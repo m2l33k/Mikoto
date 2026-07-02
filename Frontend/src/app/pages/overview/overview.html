@@ -44,66 +44,89 @@
   </div>
 
   <!-- KPI strip -->
-  <div class="ztn-grid kpi-strip">
-    <div class="ztn-card kpi">
-      <div class="kpi__head"><ui-icon name="server" [size]="16" /><span>NFs Online</span></div>
-      <div class="ztn-kpi__value">8<span class="kpi-split">/8</span></div>
-      <div class="ztn-kpi__sub">All registered with NRF</div>
+  @if (loading()) {
+    <div class="ztn-grid kpi-strip" aria-hidden="true">
+      @for (i of [1, 2, 3, 4, 5]; track i) {
+        <div class="ztn-card kpi">
+          <div class="ztn-skeleton ztn-skeleton--text" style="width: 55%"></div>
+          <div class="ztn-skeleton ztn-skeleton--kpi" style="margin: 8px 0 6px"></div>
+          <div class="ztn-skeleton ztn-skeleton--text" style="width: 70%"></div>
+        </div>
+      }
     </div>
-    <div class="ztn-card kpi">
-      <div class="kpi__head">
-        <ui-icon name="users" [size]="16" /><span>Active Subscribers</span>
+    <div class="ztn-grid charts-row" aria-hidden="true">
+      @for (i of [1, 2, 3]; track i) {
+        <div class="ztn-card">
+          <div
+            class="ztn-skeleton ztn-skeleton--text"
+            style="width: 40%; margin-bottom: 14px"
+          ></div>
+          <div class="ztn-skeleton ztn-skeleton--chart"></div>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="ztn-grid kpi-strip">
+      <div class="ztn-card kpi">
+        <div class="kpi__head"><ui-icon name="server" [size]="16" /><span>NFs Online</span></div>
+        <div class="ztn-kpi__value">8<span class="kpi-split">/8</span></div>
+        <div class="ztn-kpi__sub">All registered with NRF</div>
       </div>
-      <div class="ztn-kpi__value">1,284</div>
-      <div class="ztn-kpi__sub">2 UEs registered now</div>
-    </div>
-    <div class="ztn-card kpi">
-      <div class="kpi__head"><ui-icon name="layers" [size]="16" /><span>PDU Sessions</span></div>
-      <div class="ztn-kpi__value">2</div>
-      <div class="ztn-kpi__sub">GTP-U 14 Gbps</div>
-    </div>
-    <div class="ztn-card kpi">
-      <div class="kpi__head"><ui-icon name="lock" [size]="16" /><span>mTLS Coverage</span></div>
-      <div class="ztn-kpi__value">100%</div>
-      <div class="ztn-kpi__sub">12 NF identities</div>
-    </div>
-    <div class="ztn-card kpi kpi--alert">
-      <div class="kpi__head"><ui-icon name="alert" [size]="16" /><span>Open Anomalies</span></div>
-      <div class="ztn-kpi__value">1</div>
-      <div class="ztn-kpi__sub">1 critical · 0 warning</div>
-    </div>
-  </div>
-
-  <ui-toolbar (refresh)="load($event)" />
-
-  <!-- Charts row -->
-  <div class="ztn-grid charts-row">
-    <div class="ztn-card">
-      <h2 class="ztn-card__title"><ui-icon name="activity" [size]="14" /> SBI Signalling Rate</h2>
-      <ui-area-chart [series]="signalSeries()" [labels]="times()" [height]="180" unit=" req/s" />
+      <div class="ztn-card kpi">
+        <div class="kpi__head">
+          <ui-icon name="users" [size]="16" /><span>Active Subscribers</span>
+        </div>
+        <div class="ztn-kpi__value">1,284</div>
+        <div class="ztn-kpi__sub">2 UEs registered now</div>
+      </div>
+      <div class="ztn-card kpi">
+        <div class="kpi__head"><ui-icon name="layers" [size]="16" /><span>PDU Sessions</span></div>
+        <div class="ztn-kpi__value">2</div>
+        <div class="ztn-kpi__sub">GTP-U 14 Gbps</div>
+      </div>
+      <div class="ztn-card kpi">
+        <div class="kpi__head"><ui-icon name="lock" [size]="16" /><span>mTLS Coverage</span></div>
+        <div class="ztn-kpi__value">100%</div>
+        <div class="ztn-kpi__sub">12 NF identities</div>
+      </div>
+      <div class="ztn-card kpi kpi--alert">
+        <div class="kpi__head"><ui-icon name="alert" [size]="16" /><span>Open Anomalies</span></div>
+        <div class="ztn-kpi__value">1</div>
+        <div class="ztn-kpi__sub">1 critical · 0 warning</div>
+      </div>
     </div>
 
-    <div class="ztn-card chart-center">
-      <h2 class="ztn-card__title"><ui-icon name="check-square" [size]="14" /> Conformance</h2>
-      <ui-gauge [percent]="83" [size]="120" color="var(--brand-warning)" />
-      <div class="ztn-kpi__sub">TS 23.502 · 10/12 passing</div>
-    </div>
+    <ui-toolbar (refresh)="load($event)" />
 
-    <div class="ztn-card">
-      <h2 class="ztn-card__title">
-        <ui-icon name="bar-chart" [size]="14" /> GTP-U Throughput
-        <span class="card-link">Gbps</span>
-      </h2>
-      <ui-bar-chart
-        [values]="throughputBars()"
-        [labels]="times()"
-        [height]="180"
-        color="var(--brand-warning)"
-        name="GTP-U"
-        unit=" Gbps"
-      />
+    <!-- Charts row -->
+    <div class="ztn-grid charts-row">
+      <div class="ztn-card">
+        <h2 class="ztn-card__title"><ui-icon name="activity" [size]="14" /> SBI Signalling Rate</h2>
+        <ui-area-chart [series]="signalSeries()" [labels]="times()" [height]="180" unit=" req/s" />
+      </div>
+
+      <div class="ztn-card chart-center">
+        <h2 class="ztn-card__title"><ui-icon name="check-square" [size]="14" /> Conformance</h2>
+        <ui-gauge [percent]="83" [size]="120" color="var(--brand-warning)" />
+        <div class="ztn-kpi__sub">TS 23.502 · 10/12 passing</div>
+      </div>
+
+      <div class="ztn-card">
+        <h2 class="ztn-card__title">
+          <ui-icon name="bar-chart" [size]="14" /> GTP-U Throughput
+          <span class="card-link">Gbps</span>
+        </h2>
+        <ui-bar-chart
+          [values]="throughputBars()"
+          [labels]="times()"
+          [height]="180"
+          color="var(--brand-warning)"
+          name="GTP-U"
+          unit=" Gbps"
+        />
+      </div>
     </div>
-  </div>
+  }
 
   <!-- NF health grid -->
   <div class="ztn-card">

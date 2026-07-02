@@ -897,6 +897,199 @@ a:hover {
   }
 }
 
+/* ---- Field validation feedback ------------------------------------ */
+.ztn-field__error {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 5px;
+  font-size: 11.5px;
+  color: var(--brand-danger);
+}
+.ztn-field__error::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 1px;
+  background: var(--brand-danger);
+}
+.ztn-field__hint {
+  margin-top: 5px;
+  font-size: 11.5px;
+  color: var(--text-faint);
+}
+
+/* ---- Skeleton loaders ---------------------------------------------- */
+.ztn-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-surface-hover);
+  border-radius: var(--radius-sm);
+  min-height: 12px;
+}
+.ztn-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--bg-surface) 65%, transparent),
+    transparent
+  );
+  animation: ztn-shimmer 1.4s ease-in-out infinite;
+}
+@keyframes ztn-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+.ztn-skeleton--text {
+  height: 12px;
+}
+.ztn-skeleton--title {
+  height: 22px;
+  width: 60%;
+}
+.ztn-skeleton--kpi {
+  height: 30px;
+  width: 45%;
+}
+.ztn-skeleton--chart {
+  height: 180px;
+}
+.ztn-skeleton--row {
+  height: 34px;
+  margin-bottom: 6px;
+}
+
+/* ---- Sortable table headers ---------------------------------------- */
+.ztn-table thead th.th-sort {
+  padding: 0;
+}
+.th-sort__btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  font: inherit;
+  color: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.th-sort__btn:hover {
+  color: var(--text-primary);
+}
+.th-sort__btn:focus-visible {
+  outline: 2px solid var(--brand-accent);
+  outline-offset: -2px;
+}
+.th-sort__arrow {
+  font-size: 8px;
+  line-height: 1;
+  opacity: 0.35;
+}
+[aria-sort='ascending'] .th-sort__arrow,
+[aria-sort='descending'] .th-sort__arrow {
+  opacity: 1;
+  color: var(--brand-accent);
+}
+
+/* ---- Pagination ----------------------------------------------------- */
+.ztn-pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding-top: 12px;
+  margin-top: 4px;
+  border-top: 1px solid var(--border-default);
+}
+.ztn-pager__info {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+}
+.ztn-pager__nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.ztn-pager__btn {
+  display: inline-grid;
+  place-items: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 7px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-default);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  cursor: pointer;
+  transition:
+    background 0.12s ease,
+    color 0.12s ease,
+    border-color 0.12s ease;
+}
+.ztn-pager__btn:hover:not(:disabled) {
+  background: var(--bg-surface-hover);
+  color: var(--text-primary);
+  border-color: var(--border-strong);
+}
+.ztn-pager__btn:focus-visible {
+  outline: 2px solid var(--brand-accent);
+  outline-offset: 1px;
+}
+.ztn-pager__btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.ztn-pager__btn--current {
+  background: var(--brand-primary);
+  border-color: var(--brand-primary);
+  color: var(--on-brand);
+  pointer-events: none;
+}
+.ztn-pager__gap {
+  color: var(--text-faint);
+  font-size: 11px;
+  padding: 0 2px;
+}
+.ztn-pager__size {
+  width: auto;
+  padding: 4px 26px 4px 8px;
+  font-size: 11.5px;
+}
+
+/* ---- Empty state ----------------------------------------------------- */
+.ztn-empty {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--text-faint);
+  font-size: 12.5px;
+}
+
+/* ---- Reduced motion -------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* Centered standalone (auth / error) viewport */
 .ztn-stage {
   min-height: 100vh;

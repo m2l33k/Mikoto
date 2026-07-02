@@ -43,50 +43,95 @@
       <input
         class="ztn-input table-search"
         type="search"
-        placeholder="Filter by SUPI or MSISDN…"
-        [value]="query()"
-        (input)="query.set($any($event.target).value)"
+        placeholder="Filter by SUPI, MSISDN or slice…"
+        aria-label="Filter subscribers"
+        [value]="table.query()"
+        (input)="table.search($any($event.target).value)"
       />
       <button class="ztn-btn ztn-btn--ghost btn-sm" type="button" (click)="exportCsv()">
         <ui-icon name="download" [size]="14" /> CSV
       </button>
     </h2>
-    <div class="ztn-table-wrap">
-      <table class="ztn-table">
-        <thead>
-          <tr>
-            <th>SUPI (IMSI)</th>
-            <th>MSISDN</th>
-            <th>S-NSSAI (Slice)</th>
-            <th>Serving AMF</th>
-            <th>Auth Method</th>
-            <th>Credentials</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (s of filtered(); track s.supi) {
-            <tr class="row-click" (click)="open(s)">
-              <td class="mono">{{ s.supi }}</td>
-              <td class="mono dim">{{ s.msisdn }}</td>
-              <td class="mono">{{ s.slice }}</td>
-              <td class="mono dim">{{ s.servingAmf }}</td>
-              <td class="mono">{{ s.authMethod }}</td>
-              <td><span class="enc-tag">AES-256 sealed</span></td>
-              <td>
-                <span
-                  class="ztn-badge"
-                  [class.ztn-badge--success]="s.status === 'registered'"
-                  [class.ztn-badge--warning]="s.status === 'idle'"
-                  [class.ztn-badge--neutral]="s.status === 'deregistered'"
-                  >{{ s.status }}</span
-                >
-              </td>
+
+    @if (loading()) {
+      <!-- Skeleton state while the UDM directory loads -->
+      <div aria-hidden="true">
+        @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+          <div class="ztn-skeleton ztn-skeleton--row"></div>
+        }
+      </div>
+    } @else {
+      <div class="ztn-table-wrap">
+        <table class="ztn-table">
+          <thead>
+            <tr>
+              <th ui-sort [dir]="table.ariaSort('supi')" (toggled)="table.sortBy('supi')">
+                SUPI (IMSI)
+              </th>
+              <th ui-sort [dir]="table.ariaSort('msisdn')" (toggled)="table.sortBy('msisdn')">
+                MSISDN
+              </th>
+              <th ui-sort [dir]="table.ariaSort('slice')" (toggled)="table.sortBy('slice')">
+                S-NSSAI (Slice)
+              </th>
+              <th
+                ui-sort
+                [dir]="table.ariaSort('servingAmf')"
+                (toggled)="table.sortBy('servingAmf')"
+              >
+                Serving AMF
+              </th>
+              <th
+                ui-sort
+                [dir]="table.ariaSort('authMethod')"
+                (toggled)="table.sortBy('authMethod')"
+              >
+                Auth Method
+              </th>
+              <th>Credentials</th>
+              <th ui-sort [dir]="table.ariaSort('status')" (toggled)="table.sortBy('status')">
+                Status
+              </th>
             </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            @for (s of table.view(); track s.supi) {
+              <tr class="row-click" (click)="open(s)">
+                <td class="mono">{{ s.supi }}</td>
+                <td class="mono dim">{{ s.msisdn }}</td>
+                <td class="mono">{{ s.slice }}</td>
+                <td class="mono dim">{{ s.servingAmf }}</td>
+                <td class="mono">{{ s.authMethod }}</td>
+                <td><span class="enc-tag">AES-256 sealed</span></td>
+                <td>
+                  <span
+                    class="ztn-badge"
+                    [class.ztn-badge--success]="s.status === 'registered'"
+                    [class.ztn-badge--warning]="s.status === 'idle'"
+                    [class.ztn-badge--neutral]="s.status === 'deregistered'"
+                    >{{ s.status }}</span
+                  >
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7">
+                  <div class="ztn-empty">No subscribers match “{{ table.query() }}”.</div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      <ui-pagination
+        [page]="table.page()"
+        [pageCount]="table.pageCount()"
+        [total]="table.total()"
+        [pageSize]="table.pageSize()"
+        (pageChange)="table.setPage($event)"
+        (sizeChange)="table.setPageSize($event)"
+      />
+    }
   </div>
 
   <div class="ztn-card">
@@ -176,8 +221,23 @@
   (closed)="addOpen.set(false)"
 >
   <div class="ztn-field">
-    <label class="ztn-label">IMSI</label>
-    <input class="ztn-input" [(ngModel)]="newImsi" name="imsi" />
+    <label class="ztn-label" for="new-imsi">IMSI</label>
+    <input
+      id="new-imsi"
+      class="ztn-input"
+      [class.ztn-input--error]="imsiError()"
+      [(ngModel)]="newImsi"
+      name="imsi"
+      inputmode="numeric"
+      maxlength="15"
+      [attr.aria-invalid]="imsiError() ? true : null"
+      [attr.aria-describedby]="imsiError() ? 'new-imsi-error' : null"
+    />
+    @if (imsiError()) {
+      <p class="ztn-field__error" id="new-imsi-error">{{ imsiError() }}</p>
+    } @else {
+      <p class="ztn-field__hint">15 digits: MCC (208) + MNC (95) + MSIN.</p>
+    }
   </div>
   <div class="ztn-field">
     <label class="ztn-label">MSISDN</label>

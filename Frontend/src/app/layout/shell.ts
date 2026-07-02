@@ -1,6 +1,9 @@
-import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
-import { Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, computed, inject, OnDestroy, signal, HostListener } from '@angular/core';
+import { NavigationEnd, Router, RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { filter } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Icon } from '../ui/icon';
+import { Brand } from '../ui/brand';
 import { CommandPalette } from '../ui/command-palette';
 import { AuthService } from '../core/auth.service';
 import { PrefsService } from '../core/prefs.service';
@@ -24,7 +27,7 @@ interface Notice {
 /** Persistent three-tier layout with interactive header (design.txt §1.3). */
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon, CommandPalette],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon, Brand, CommandPalette],
   templateUrl: './shell.html',
   styleUrl: './shell.css',
 })
@@ -51,6 +54,8 @@ export class Shell implements OnDestroy {
 
   protected readonly clock = signal(this.now());
 
+  /** Off-canvas sidebar state — mobile viewports only (≤900px). */
+  protected readonly mobileOpen = signal(false);
   protected readonly notifyOpen = signal(false);
   protected readonly userMenuOpen = signal(false);
   protected readonly notices: Notice[] = [
@@ -116,14 +121,56 @@ export class Shell implements OnDestroy {
     },
   ];
 
+  /** Current URL, tracked for the breadcrumb trail. */
+  private readonly currentUrl = signal(this.router.url);
+
+  /** Breadcrumb trail derived from the nav model: group → page. */
+  protected readonly crumbs = computed(() => {
+    const url = this.currentUrl().split('?')[0];
+    for (const group of this.groups) {
+      const item = group.items.find((i) => url.startsWith(i.path));
+      if (item) return [group.title, item.label];
+    }
+    return [];
+  });
+
   private readonly timer = setInterval(() => this.clock.set(this.now()), 1000);
+
+  constructor() {
+    // Track navigation for breadcrumbs; close transient panels on route change.
+    this.router.events
+      .pipe(
+        filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+        takeUntilDestroyed(),
+      )
+      .subscribe((e) => {
+        this.currentUrl.set(e.urlAfterRedirects);
+        this.mobileOpen.set(false);
+        this.closeMenus();
+      });
+  }
 
   private now(): string {
     return new Date().toLocaleTimeString('en-GB', { hour12: false }) + ' UTC';
   }
 
+  @HostListener('document:keydown.escape')
+  protected onEscape(): void {
+    this.closeMenus();
+    this.mobileOpen.set(false);
+  }
+
   protected toggleTheme(): void {
     this.prefs.toggleTheme();
+  }
+
+  /** Hamburger: off-canvas drawer on mobile, collapse on desktop. */
+  protected toggleNav(): void {
+    if (window.matchMedia('(max-width: 900px)').matches) {
+      this.mobileOpen.update((v) => !v);
+    } else {
+      this.prefs.toggleSidebar();
+    }
   }
   protected toggleSidebar(): void {
     this.prefs.toggleSidebar();

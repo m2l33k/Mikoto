@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { Icon } from '../../ui/icon';
 import { Donut, Slice } from '../../ui/charts';
 import { Heatmap, HeatRow } from '../../ui/charts-extra';
+import { TableController, SortHeader } from '../../ui/table';
 import { timeLabels } from '../../ui/data';
 import { ToastService } from '../../core/toast.service';
 import { ConfirmService } from '../../core/confirm.service';
@@ -22,7 +23,7 @@ interface Alarm {
 /** Alarms Center — consolidated fault management with ack/clear. */
 @Component({
   selector: 'app-alarms',
-  imports: [Icon, Donut, Heatmap],
+  imports: [Icon, Donut, Heatmap, SortHeader],
   templateUrl: './alarms.html',
   styleUrl: './alarms.css',
 })
@@ -88,6 +89,9 @@ export class Alarms {
       state: 'active',
     },
   ]);
+
+  /** Sortable fault list (severity/state triage is the primary workflow). */
+  protected readonly table = new TableController(this.alarms, ['id', 'source', 'summary']);
 
   protected readonly severityMix = computed<Slice[]>(() => {
     const a = this.alarms().filter((x) => x.state !== 'cleared');

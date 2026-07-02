@@ -39,8 +39,9 @@
         class="ztn-input table-search"
         type="search"
         placeholder="Filter by type, FQDN, service…"
-        [value]="query()"
-        (input)="query.set($any($event.target).value)"
+        aria-label="Filter network functions"
+        [value]="table.query()"
+        (input)="table.search($any($event.target).value)"
       />
       <button class="ztn-btn ztn-btn--ghost btn-sm" type="button" (click)="exportCsv()">
         <ui-icon name="download" [size]="14" /> CSV
@@ -50,19 +51,21 @@
       <table class="ztn-table">
         <thead>
           <tr>
-            <th>NF Type</th>
+            <th ui-sort [dir]="table.ariaSort('type')" (toggled)="table.sortBy('type')">NF Type</th>
             <th>Instance ID</th>
-            <th>FQDN</th>
+            <th ui-sort [dir]="table.ariaSort('fqdn')" (toggled)="table.sortBy('fqdn')">FQDN</th>
             <th>SBI Endpoint</th>
             <th>Services</th>
-            <th>Load</th>
+            <th ui-sort [dir]="table.ariaSort('load')" (toggled)="table.sortBy('load')">Load</th>
             <th>Heartbeat</th>
             <th>TLS</th>
-            <th>Status</th>
+            <th ui-sort [dir]="table.ariaSort('status')" (toggled)="table.sortBy('status')">
+              Status
+            </th>
           </tr>
         </thead>
         <tbody>
-          @for (nf of filtered(); track nf.instanceId) {
+          @for (nf of table.view(); track nf.instanceId) {
             <tr class="row-click" (click)="open(nf)">
               <td>
                 <span class="nf-type mono">{{ nf.type }}</span>

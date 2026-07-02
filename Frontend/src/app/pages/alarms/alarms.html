@@ -54,17 +54,21 @@
       <table class="ztn-table">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Time</th>
-            <th>Severity</th>
-            <th>Source</th>
+            <th ui-sort [dir]="table.ariaSort('id')" (toggled)="table.sortBy('id')">ID</th>
+            <th ui-sort [dir]="table.ariaSort('time')" (toggled)="table.sortBy('time')">Time</th>
+            <th ui-sort [dir]="table.ariaSort('severity')" (toggled)="table.sortBy('severity')">
+              Severity
+            </th>
+            <th ui-sort [dir]="table.ariaSort('source')" (toggled)="table.sortBy('source')">
+              Source
+            </th>
             <th>Summary</th>
-            <th>State</th>
+            <th ui-sort [dir]="table.ariaSort('state')" (toggled)="table.sortBy('state')">State</th>
             <th></th>
           </tr>
         </thead>
         <tbody>
-          @for (a of alarms(); track a.id) {
+          @for (a of table.view(); track a.id) {
             <tr>
               <td class="mono">{{ a.id }}</td>
               <td class="mono dim">{{ a.time }}</td>

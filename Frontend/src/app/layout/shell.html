@@ -1,20 +1,35 @@
-<div class="shell" [class.shell--collapsed]="collapsed()">
+<div class="shell" [class.shell--collapsed]="collapsed()" [class.shell--mobile-open]="mobileOpen()">
+  <!-- Mobile off-canvas backdrop -->
+  @if (mobileOpen()) {
+    <div class="mobile-backdrop" (click)="mobileOpen.set(false)" aria-hidden="true"></div>
+  }
+
   <!-- ===== Sidebar ===== -->
-  <aside class="sidebar">
+  <aside class="sidebar" aria-label="Primary navigation">
     <div class="sidebar__brand">
-      <span class="logo">ZT</span>
-      <div class="brand-text">
-        <strong>Zero-Trust 5GC</strong>
-        <span class="metatag">Secure Control Plane</span>
-      </div>
-      <button class="collapse-btn" type="button" (click)="toggleSidebar()" title="Collapse sidebar">
+      @if (collapsed()) {
+        <ui-brand variant="compact" [markSize]="16" />
+      } @else {
+        <div class="brand-block">
+          <ui-brand variant="full" [markSize]="18" />
+          <span class="metatag brand-block__sub">Zero-Trust 5G Core · Control Plane</span>
+        </div>
+      }
+      <button
+        class="collapse-btn"
+        type="button"
+        (click)="toggleSidebar()"
+        title="Collapse sidebar"
+        aria-label="Collapse sidebar"
+      >
         ‹
       </button>
     </div>
 
     <div class="sidebar__selector">
-      <label class="ztn-label">Target Network</label>
+      <label class="ztn-label" for="env-select">Target Network</label>
       <select
+        id="env-select"
         class="ztn-select"
         [value]="targetEnv()"
         (change)="onEnvChange($any($event.target).value)"
@@ -63,8 +78,9 @@
         <button
           class="topbar__icon expand-btn"
           type="button"
-          (click)="toggleSidebar()"
-          title="Toggle sidebar"
+          (click)="toggleNav()"
+          title="Toggle navigation"
+          aria-label="Toggle navigation"
         >
           ☰
         </button>
@@ -94,20 +110,29 @@
           type="button"
           (click)="toggleTheme()"
           [title]="theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
+          [attr.aria-label]="theme() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
         >
           <ui-icon [name]="theme() === 'dark' ? 'sun' : 'moon'" [size]="16" />
         </button>
 
         <!-- Notifications -->
         <div class="menu-wrap">
-          <button class="topbar__icon" type="button" (click)="toggleNotify()" title="Alerts">
+          <button
+            class="topbar__icon"
+            type="button"
+            (click)="toggleNotify()"
+            title="Alerts"
+            aria-label="Notifications"
+            aria-haspopup="menu"
+            [attr.aria-expanded]="notifyOpen()"
+          >
             <ui-icon name="bell" [size]="17" />
             @if (unread) {
               <span class="topbar__count">{{ unread }}</span>
             }
           </button>
           @if (notifyOpen()) {
-            <div class="dropdown dropdown--wide">
+            <div class="dropdown dropdown--wide" role="menu" aria-label="Notifications">
               <div class="dropdown__head">
                 <span>Notifications</span>
                 <span class="metatag">{{ unread }} new</span>
@@ -133,12 +158,19 @@
 
         <!-- User menu -->
         <div class="menu-wrap">
-          <button class="topbar__user" type="button" (click)="toggleUserMenu()">
+          <button
+            class="topbar__user"
+            type="button"
+            (click)="toggleUserMenu()"
+            aria-label="User menu"
+            aria-haspopup="menu"
+            [attr.aria-expanded]="userMenuOpen()"
+          >
             <span class="session__avatar session__avatar--sm">{{ initials() }}</span>
             <span class="topbar__chev">▾</span>
           </button>
           @if (userMenuOpen()) {
-            <div class="dropdown">
+            <div class="dropdown" role="menu" aria-label="User menu">
               <div class="dropdown__user">
                 <div class="mono">{{ user() }}</div>
                 <div class="metatag">SecOps Administrator</div>
@@ -163,9 +195,39 @@
       </div>
     </header>
 
+    <!-- Breadcrumb trail -->
+    @if (crumbs().length) {
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a class="crumbs__link" routerLink="/overview">Console</a>
+        @for (c of crumbs(); track $index; let last = $last) {
+          <span class="crumbs__sep" aria-hidden="true">/</span>
+          @if (last) {
+            <span class="crumbs__current" aria-current="page">{{ c }}</span>
+          } @else {
+            <span class="crumbs__group">{{ c }}</span>
+          }
+        }
+      </nav>
+    }
+
     <main class="workspace" (click)="closeMenus()">
       <router-outlet />
     </main>
+
+    <!-- Enterprise footer -->
+    <footer class="foot">
+      <div class="foot__brand">
+        <ui-brand variant="full" [markSize]="14" />
+        <span class="foot__sep"></span>
+        <span class="metatag">Zero-Trust 5G Core · Joint Innovation Lab</span>
+      </div>
+      <div class="foot__links">
+        <span class="mono foot__version">v0.9.0-lab</span>
+        <a routerLink="/conformance">3GPP TS 23.502</a>
+        <a routerLink="/audit">Compliance</a>
+        <a routerLink="/settings">Support</a>
+      </div>
+    </footer>
   </div>
 
   <app-command-palette #cmdk />

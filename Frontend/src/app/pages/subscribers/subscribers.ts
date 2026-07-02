@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Icon } from '../../ui/icon';
 import { Drawer } from '../../ui/drawer';
+import { TableController, SortHeader, Pagination } from '../../ui/table';
 import { ToastService } from '../../core/toast.service';
 import { ConfirmService } from '../../core/confirm.service';
 import { downloadCsv } from '../../core/csv';
@@ -15,10 +16,33 @@ interface Subscriber {
   authMethod: string;
 }
 
+const SLICES = ['01-000001 (eMBB)', '02-000002 (URLLC)', '03-000003 (mMTC)'];
+const STATUSES: Subscriber['status'][] = ['registered', 'idle', 'deregistered'];
+
+/** Deterministic mock directory — realistic volume so pagination is exercised. */
+function seedSubscribers(count: number): Subscriber[] {
+  const out: Subscriber[] = [];
+  for (let i = 1; i <= count; i++) {
+    const n = String(i).padStart(3, '0');
+    // Cycle through states so the distribution looks like a live UDM:
+    // most registered, some idle, a few deregistered.
+    const status = STATUSES[i % 7 === 0 ? 2 : i % 3 === 0 ? 1 : 0];
+    out.push({
+      supi: `imsi-208950000000${n}`,
+      msisdn: `+216 20 000 ${n}`,
+      status,
+      slice: SLICES[i % SLICES.length],
+      servingAmf: status === 'deregistered' ? '—' : `AMF-Node-0${(i % 2) + 1}`,
+      authMethod: i % 4 === 0 ? 'EAP-AKA′' : '5G-AKA',
+    });
+  }
+  return out;
+}
+
 /** Subscribers (UDM) — provisioning with MongoDB CSFLE on sensitive fields. */
 @Component({
   selector: 'app-subscribers',
-  imports: [Icon, Drawer, FormsModule],
+  imports: [Icon, Drawer, FormsModule, SortHeader, Pagination],
   templateUrl: './subscribers.html',
   styleUrl: './subscribers.css',
 })
@@ -27,57 +51,26 @@ export class Subscribers {
   private readonly confirm = inject(ConfirmService);
 
   protected readonly selected = signal<Subscriber | null>(null);
-  protected readonly query = signal('');
   protected readonly addOpen = signal(false);
+  /** Simulated first fetch — drives the skeleton state. */
+  protected readonly loading = signal(true);
 
-  // New-subscriber form model
-  protected newImsi = '208950000000006';
-  protected newMsisdn = '+216 20 000 006';
+  // New-subscriber form model + validation
+  protected newImsi = '208950000000099';
+  protected newMsisdn = '+216 20 000 099';
   protected newSlice = '01-000001 (eMBB)';
   protected newAuth = '5G-AKA';
+  protected readonly imsiError = signal('');
 
-  protected readonly subscribers = signal<Subscriber[]>([
-    {
-      supi: 'imsi-208950000000001',
-      msisdn: '+216 20 000 001',
-      status: 'registered',
-      slice: '01-000001 (eMBB)',
-      servingAmf: 'AMF-Node-01',
-      authMethod: '5G-AKA',
-    },
-    {
-      supi: 'imsi-208950000000002',
-      msisdn: '+216 20 000 002',
-      status: 'registered',
-      slice: '01-000001 (eMBB)',
-      servingAmf: 'AMF-Node-01',
-      authMethod: '5G-AKA',
-    },
-    {
-      supi: 'imsi-208950000000003',
-      msisdn: '+216 20 000 003',
-      status: 'idle',
-      slice: '02-000002 (URLLC)',
-      servingAmf: 'AMF-Node-01',
-      authMethod: 'EAP-AKA′',
-    },
-    {
-      supi: 'imsi-208950000000004',
-      msisdn: '+216 20 000 004',
-      status: 'idle',
-      slice: '01-000001 (eMBB)',
-      servingAmf: 'AMF-Node-01',
-      authMethod: '5G-AKA',
-    },
-    {
-      supi: 'imsi-208950000000005',
-      msisdn: '+216 20 000 005',
-      status: 'deregistered',
-      slice: '03-000003 (mMTC)',
-      servingAmf: '—',
-      authMethod: '5G-AKA',
-    },
-  ]);
+  protected readonly subscribers = signal<Subscriber[]>(seedSubscribers(48));
+
+  /** Sort / filter / paginate pipeline shared with every data table. */
+  protected readonly table = new TableController(this.subscribers, ['supi', 'msisdn', 'slice']);
+
+  constructor() {
+    // Simulated UDM query latency so the skeleton state is visible.
+    setTimeout(() => this.loading.set(false), 600);
+  }
 
   protected readonly encryptedFields = [
     { field: 'permanentKey (K)', algo: 'AEAD_AES_256_CBC_HMAC_SHA_512', key: 'key-id-077c-b' },
@@ -86,27 +79,13 @@ export class Subscribers {
     { field: 'sequenceNumber (SQN)', algo: 'AEAD_AES_256_RANDOM', key: 'key-id-091a-f' },
   ];
 
-  protected readonly filtered = () => {
-    const q = this.query().toLowerCase().trim();
-    const all = this.subscribers();
-    if (!q) return all;
-    return all.filter(
-      (s) => s.supi.toLowerCase().includes(q) || s.msisdn.toLowerCase().includes(q),
-    );
-  };
-
   protected exportCsv(): void {
     downloadCsv(
       'subscribers',
       ['SUPI', 'MSISDN', 'Slice', 'Serving AMF', 'Auth Method', 'Status'],
-      this.subscribers().map((s) => [
-        s.supi,
-        s.msisdn,
-        s.slice,
-        s.servingAmf,
-        s.authMethod,
-        s.status,
-      ]),
+      this.table
+        .filtered()
+        .map((s) => [s.supi, s.msisdn, s.slice, s.servingAmf, s.authMethod, s.status]),
     );
     this.toast.success('Export ready', 'subscribers.csv downloaded.');
   }
@@ -119,9 +98,14 @@ export class Subscribers {
   }
 
   protected addSubscriber(): void {
+    this.imsiError.set('');
+    if (!/^\d{15}$/.test(this.newImsi)) {
+      this.imsiError.set('IMSI must be exactly 15 digits (MCC+MNC+MSIN).');
+      return;
+    }
     const supi = `imsi-${this.newImsi}`;
     if (this.subscribers().some((s) => s.supi === supi)) {
-      this.toast.danger('Duplicate SUPI', `${supi} already provisioned.`);
+      this.imsiError.set(`${supi} is already provisioned.`);
       return;
     }
     this.subscribers.update((list) => [

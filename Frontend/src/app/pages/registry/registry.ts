@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Icon } from '../../ui/icon';
 import { Drawer } from '../../ui/drawer';
+import { TableController, SortHeader } from '../../ui/table';
 import { ToastService } from '../../core/toast.service';
 import { ConfirmService } from '../../core/confirm.service';
 import { downloadCsv } from '../../core/csv';
@@ -20,7 +21,7 @@ interface NfInstance {
 /** NF Registry (NRF) — service registration & discovery. */
 @Component({
   selector: 'app-registry',
-  imports: [Icon, Drawer],
+  imports: [Icon, Drawer, SortHeader],
   templateUrl: './registry.html',
   styleUrl: './registry.css',
 })
@@ -29,7 +30,6 @@ export class Registry {
   private readonly confirm = inject(ConfirmService);
 
   protected readonly selected = signal<NfInstance | null>(null);
-  protected readonly query = signal('');
 
   protected readonly instances = signal<NfInstance[]>([
     {
@@ -122,17 +122,8 @@ export class Registry {
     },
   ]);
 
-  protected readonly filtered = () => {
-    const q = this.query().toLowerCase().trim();
-    const all = this.instances();
-    if (!q) return all;
-    return all.filter(
-      (n) =>
-        n.type.toLowerCase().includes(q) ||
-        n.fqdn.toLowerCase().includes(q) ||
-        n.services.toLowerCase().includes(q),
-    );
-  };
+  /** Sort + filter pipeline (8 fixed NFs — no pagination needed). */
+  protected readonly table = new TableController(this.instances, ['type', 'fqdn', 'services']);
 
   protected exportCsv(): void {
     downloadCsv(

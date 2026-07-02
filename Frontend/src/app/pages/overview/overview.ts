@@ -38,9 +38,12 @@ export class Overview {
   protected readonly signalSeries = signal<Series[]>([]);
   protected readonly throughputBars = signal<number[]>([]);
   protected readonly liveView = signal(false);
+  /** Simulated first telemetry poll — drives the skeleton state. */
+  protected readonly loading = signal(true);
 
   constructor() {
     this.load('1h');
+    setTimeout(() => this.loading.set(false), 500);
   }
 
   protected refreshAll(): void {
