@@ -149,6 +149,7 @@ jobs:
     if: always()
     steps:
       - name: Verify all jobs succeeded
+        working-directory: ${{ github.workspace }}
         run: |
           if [ "${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}" = "true" ]; then
             echo "One or more CI jobs failed."
