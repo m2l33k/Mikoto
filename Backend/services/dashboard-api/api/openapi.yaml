@@ -1,0 +1,990 @@
+openapi: "3.0.3"
+info:
+  title: Zero-Trust 5G Core — Dashboard API
+  description: >
+    BFF for the Angular control-plane console. Contract derived from
+    workflowbackend.md (card-by-card frontend analysis). All /api/v1 routes
+    require a Casdoor OIDC bearer token; mutating routes additionally require
+    the RBAC role noted per operation.
+  version: 0.9.0
+servers:
+  - url: /
+    description: dashboard-api (default :8093)
+
+security:
+  - bearerAuth: []
+
+tags:
+  - { name: auth, description: Login, session, recovery (public) }
+  - { name: shell, description: Global shell — status, environments, notifications }
+  - { name: dashboard, description: Overview KPIs, NF health, events }
+  - { name: topology, description: SBA mesh }
+  - { name: nrf, description: NF registry & discovery }
+  - { name: udm, description: Subscribers & CSFLE }
+  - { name: smf, description: PDU sessions }
+  - { name: nssf, description: Network slicing }
+  - { name: ran, description: gNB cells & UEs }
+  - { name: security, description: SecOps, anomaly detection, policies }
+  - { name: pki, description: Certificates & key rotation }
+  - { name: vault, description: Secrets engines & leases }
+  - { name: conformance, description: TS 23.502 test framework }
+  - { name: observability, description: Metrics, logs, alarms }
+  - { name: compliance, description: Audit & reports }
+  - { name: iam, description: Operators, roles, profile }
+
+paths:
+  # ───────────────────────── auth (public) ─────────────────────────
+  /auth/login:
+    post:
+      tags: [auth]
+      security: []
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [identity, passphrase, environment]
+              properties:
+                identity: { type: string, format: email }
+                passphrase: { type: string, minLength: 6 }
+                environment: { type: string }
+                enforceMtls: { type: boolean, default: true }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token: { type: string }
+                  expiresAt: { type: string, format: date-time }
+                  session: { $ref: "#/components/schemas/Session" }
+          description: Secure context established.
+        "401": { $ref: "#/components/responses/Error" }
+  /auth/session:
+    get:
+      tags: [auth]
+      operationId: getSession
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Session" }
+          description: Current session.
+        "401": { $ref: "#/components/responses/Error" }
+  /auth/logout:
+    post:
+      tags: [auth]
+      operationId: logout
+      responses: { "204": { description: Token revoked. } }
+  /auth/recover:
+    post:
+      tags: [auth]
+      security: []
+      operationId: recover
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [identity, pgpSignature]
+              properties:
+                identity: { type: string }
+                pgpSignature: { type: string, description: Detached PGP signature }
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: { recoveryToken: { type: string } }
+          description: Signature verified, recovery token issued.
+        "400": { $ref: "#/components/responses/Error" }
+
+  # ───────────────────────── shell ─────────────────────────
+  /api/v1/environments:
+    get:
+      tags: [shell]
+      operationId: listEnvironments
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { type: array, items: { type: string } }
+          description: Selectable target networks.
+  /api/v1/me/environment:
+    put:
+      tags: [shell]
+      operationId: switchEnvironment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [environment]
+              properties: { environment: { type: string } }
+      responses: { "204": { description: Environment switched. } }
+  /api/v1/system/status:
+    get:
+      tags: [shell]
+      operationId: systemStatus
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SystemStatus" }
+          description: Topbar / head-badge status.
+  /api/v1/notifications:
+    get:
+      tags: [shell]
+      operationId: listNotifications
+      parameters: [{ $ref: "#/components/parameters/limit" }]
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: "#/components/schemas/Notice" }
+                  unread: { type: integer }
+          description: Notification feed.
+  /api/v1/notifications/read:
+    post:
+      tags: [shell]
+      operationId: markNotificationsRead
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids: { type: array, items: { type: string }, description: Empty = all }
+      responses: { "204": { description: Marked read. } }
+
+  # ───────────────────────── dashboard / overview ─────────────────────────
+  /api/v1/dashboard/kpis:
+    get:
+      tags: [dashboard]
+      operationId: dashboardKpis
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/DashboardKpis" }
+          description: Overview KPI strip.
+  /api/v1/nf/health:
+    get:
+      tags: [dashboard]
+      operationId: nfHealth
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/NfHealth" }
+          description: Per-NF health grid.
+  /api/v1/events:
+    get:
+      tags: [dashboard]
+      operationId: listEvents
+      parameters: [{ $ref: "#/components/parameters/limit" }]
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/SystemEvent" }
+          description: Recent system events.
+  /api/v1/dashboard/export:
+    get:
+      tags: [dashboard]
+      operationId: exportDashboard
+      responses:
+        "200":
+          content: { text/csv: { schema: { type: string } } }
+          description: CSV snapshot.
+  /api/v1/alerts/ack-all:
+    post:
+      tags: [dashboard]
+      operationId: ackAllAlerts
+      responses: { "204": { description: All open alerts acknowledged. } }
+  /api/v1/diagnostics/run:
+    post:
+      tags: [dashboard]
+      operationId: runDiagnostics
+      responses:
+        "202":
+          content:
+            application/json:
+              schema: { type: object, properties: { jobId: { type: string } } }
+          description: Diagnostics job queued; result via SSE `events`.
+
+  # ───────────────────────── topology ─────────────────────────
+  /api/v1/topology:
+    get:
+      tags: [topology]
+      operationId: topology
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Topology" }
+          description: SBA nodes + reference-point edges.
+
+  # ───────────────────────── nrf ─────────────────────────
+  /api/v1/nrf/summary:
+    get:
+      tags: [nrf]
+      operationId: nrfSummary
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/NrfSummary" }
+          description: Registry KPI row.
+  /api/v1/nrf/instances:
+    get:
+      tags: [nrf]
+      operationId: listNfInstances
+      parameters:
+        - { $ref: "#/components/parameters/q" }
+        - { $ref: "#/components/parameters/sort" }
+        - { $ref: "#/components/parameters/dir" }
+        - { $ref: "#/components/parameters/page" }
+        - { $ref: "#/components/parameters/pageSize" }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { $ref: "#/components/schemas/ListEnvelope" }
+                  - type: object
+                    properties:
+                      items:
+                        type: array
+                        items: { $ref: "#/components/schemas/NfInstance" }
+          description: Registered NF instances.
+  /api/v1/nrf/instances/{instanceId}/status:
+    post:
+      tags: [nrf]
+      operationId: setNfStatus
+      description: Suspend / resume an NF. Role secops-admin.
+      parameters:
+        - { name: instanceId, in: path, required: true, schema: { type: string } }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [registered, suspended] }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/NfInstance" }
+          description: Updated instance.
+        "403": { $ref: "#/components/responses/Error" }
+
+  # ───────────────────────── udm ─────────────────────────
+  /api/v1/udm/summary:
+    get:
+      tags: [udm]
+      operationId: udmSummary
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/UdmSummary" }
+          description: Subscriber KPI row.
+  /api/v1/udm/subscribers:
+    get:
+      tags: [udm]
+      operationId: listSubscribers
+      parameters:
+        - { $ref: "#/components/parameters/q" }
+        - { $ref: "#/components/parameters/sort" }
+        - { $ref: "#/components/parameters/dir" }
+        - { $ref: "#/components/parameters/page" }
+        - { $ref: "#/components/parameters/pageSize" }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { $ref: "#/components/schemas/ListEnvelope" }
+                  - type: object
+                    properties:
+                      items:
+                        type: array
+                        items: { $ref: "#/components/schemas/Subscriber" }
+          description: Subscriber directory page.
+    post:
+      tags: [udm]
+      operationId: provisionSubscriber
+      description: >
+        Provision a subscriber. K/OPc are generated server-side and sealed via
+        CSFLE before write — plaintext never crosses this API. Role secops-admin.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [imsi, msisdn, slice, authMethod]
+              properties:
+                imsi: { type: string, pattern: "^\\d{15}$" }
+                msisdn: { type: string }
+                slice: { type: string }
+                authMethod: { type: string, enum: ["5G-AKA", "EAP-AKA'"] }
+      responses:
+        "201":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Subscriber" }
+          description: Provisioned.
+        "400": { $ref: "#/components/responses/Error" }
+        "409": { $ref: "#/components/responses/Error" }
+  /api/v1/udm/subscribers/{supi}/deregister:
+    post:
+      tags: [udm]
+      operationId: deregisterSubscriber
+      parameters:
+        - { name: supi, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Subscriber" }
+          description: Sessions released, AMF context cleared.
+  /api/v1/udm/csfle-schema:
+    get:
+      tags: [udm]
+      operationId: csfleSchema
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/CsfleField" }
+          description: Encrypted-field schema.
+
+  # ───────────────────────── smf ─────────────────────────
+  /api/v1/smf/sessions:
+    get:
+      tags: [smf]
+      operationId: listSessions
+      parameters:
+        - { $ref: "#/components/parameters/q" }
+        - { $ref: "#/components/parameters/page" }
+        - { $ref: "#/components/parameters/pageSize" }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { $ref: "#/components/schemas/ListEnvelope" }
+                  - type: object
+                    properties:
+                      items:
+                        type: array
+                        items: { $ref: "#/components/schemas/PduSession" }
+          description: PDU sessions.
+  /api/v1/smf/sessions/{id}:
+    delete:
+      tags: [smf]
+      operationId: releaseSession
+      description: PFCP Session Deletion; frees TEID. Role netops-engineer+.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/PduSession" }
+          description: Released.
+
+  # ───────────────────────── security ─────────────────────────
+  /api/v1/anomaly/alerts:
+    get:
+      tags: [security]
+      operationId: listAnomalyAlerts
+      parameters:
+        - { $ref: "#/components/parameters/page" }
+        - { $ref: "#/components/parameters/pageSize" }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { $ref: "#/components/schemas/ListEnvelope" }
+                  - type: object
+                    properties:
+                      items:
+                        type: array
+                        items: { $ref: "#/components/schemas/AnomalyAlert" }
+          description: Detection alerts.
+  /api/v1/anomaly/alerts/{id}/mitigate:
+    post:
+      tags: [security]
+      operationId: mitigateAlert
+      description: Push Cilium drop policy, quarantine source. Role secops-admin.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AnomalyAlert" }
+          description: Mitigated.
+  /api/v1/policies:
+    get:
+      tags: [security]
+      operationId: listPolicies
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/NetworkPolicy" }
+          description: Cilium L7 policies.
+    post:
+      tags: [security]
+      operationId: createPolicy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, source, dest, action]
+              properties:
+                name: { type: string }
+                source: { type: string }
+                dest: { type: string }
+                ports: { type: string }
+                action: { type: string, enum: [allow, deny] }
+      responses:
+        "201":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/NetworkPolicy" }
+          description: Created (eBPF recompiled).
+
+  # ───────────────────────── pki / vault ─────────────────────────
+  /api/v1/certs:
+    get:
+      tags: [pki]
+      operationId: listCerts
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Cert" }
+          description: NF certificate inventory.
+  /api/v1/pki/certificates/{serial}/rotate:
+    post:
+      tags: [pki]
+      operationId: rotateCert
+      description: Issue fresh leaf from 5GC-SBI-Issuer, hot-swap. Role secops-admin.
+      parameters:
+        - { name: serial, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Cert" }
+          description: Rotated.
+  /api/v1/vault/status:
+    get:
+      tags: [vault]
+      operationId: vaultStatus
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sealed: { type: boolean }
+                  version: { type: string }
+                  clusterName: { type: string }
+          description: Seal status.
+
+  # ───────────────────────── conformance ─────────────────────────
+  /api/v1/conformance/summary:
+    get:
+      tags: [conformance]
+      operationId: conformanceSummary
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  passRatePct: { type: number }
+                  passed: { type: integer }
+                  failed: { type: integer }
+                  skipped: { type: integer }
+                  standard: { type: string }
+          description: Gauge data.
+  /api/v1/conformance/tests:
+    get:
+      tags: [conformance]
+      operationId: listConformanceTests
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/TestCase" }
+          description: TC/SEC/PERF cases.
+  /api/v1/conformance/run:
+    post:
+      tags: [conformance]
+      operationId: runConformanceSuite
+      description: Bring up core + UERANSIM, run scenarios. Role netops-engineer+.
+      responses:
+        "202":
+          content:
+            application/json:
+              schema: { type: object, properties: { runId: { type: string } } }
+          description: Suite queued; progress via SSE `events`.
+
+  # ───────────────────────── observability ─────────────────────────
+  /api/v1/metrics/series:
+    get:
+      tags: [observability]
+      operationId: metricSeries
+      parameters:
+        - name: metric
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [sbi_rate, sbi_latency, sbi_errors, gtpu_throughput]
+        - name: range
+          in: query
+          schema: { type: string, enum: [15m, 1h, 6h, 24h], default: 1h }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SeriesResponse" }
+          description: Chart series.
+  /api/v1/logs:
+    get:
+      tags: [observability]
+      operationId: queryLogs
+      parameters:
+        - { name: nf, in: query, schema: { type: string } }
+        - { name: sev, in: query, schema: { type: string, enum: [info, warn, error, debug] } }
+        - { $ref: "#/components/parameters/q" }
+        - { $ref: "#/components/parameters/limit" }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items: { $ref: "#/components/schemas/LogLine" }
+                  counts:
+                    type: object
+                    properties:
+                      error: { type: integer }
+                      warn: { type: integer }
+          description: Log query result.
+  /api/v1/alarms:
+    get:
+      tags: [observability]
+      operationId: listAlarms
+      parameters:
+        - { $ref: "#/components/parameters/q" }
+        - { $ref: "#/components/parameters/sort" }
+        - { $ref: "#/components/parameters/dir" }
+        - { $ref: "#/components/parameters/page" }
+        - { $ref: "#/components/parameters/pageSize" }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - { $ref: "#/components/schemas/ListEnvelope" }
+                  - type: object
+                    properties:
+                      items:
+                        type: array
+                        items: { $ref: "#/components/schemas/Alarm" }
+          description: Fault list.
+  /api/v1/alarms/{id}/ack:
+    post:
+      tags: [observability]
+      operationId: ackAlarm
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string } }
+      responses:
+        "200":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Alarm" }
+          description: Acknowledged.
+  /api/v1/stream:
+    get:
+      tags: [observability]
+      operationId: eventStream
+      description: >
+        SSE/WebSocket multiplexed stream. Subscribe with
+        ?topics=logs,events,alarms,notifications,metrics,anomalies,flows.
+      parameters:
+        - { name: topics, in: query, schema: { type: string } }
+      responses:
+        "200":
+          content:
+            text/event-stream:
+              schema: { $ref: "#/components/schemas/StreamFrame" }
+          description: Typed event frames.
+
+  # ───────────────────────── iam ─────────────────────────
+  /api/v1/iam/operators:
+    get:
+      tags: [iam]
+      operationId: listOperators
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Operator" }
+          description: Console operators.
+    post:
+      tags: [iam]
+      operationId: addOperator
+      description: Role secops-admin.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, identity, role]
+              properties:
+                name: { type: string }
+                identity: { type: string }
+                role: { type: string }
+      responses:
+        "201":
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Operator" }
+          description: Added.
+
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }
+
+  parameters:
+    q: { name: q, in: query, schema: { type: string } }
+    sort: { name: sort, in: query, schema: { type: string } }
+    dir: { name: dir, in: query, schema: { type: string, enum: [asc, desc] } }
+    page: { name: page, in: query, schema: { type: integer, minimum: 1, default: 1 } }
+    pageSize: { name: pageSize, in: query, schema: { type: integer, enum: [10, 25, 50], default: 10 } }
+    limit: { name: limit, in: query, schema: { type: integer, default: 20 } }
+
+  responses:
+    Error:
+      description: Error envelope.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  code: { type: string, example: DUPLICATE_SUPI }
+                  message: { type: string }
+
+  schemas:
+    ListEnvelope:
+      type: object
+      properties:
+        total: { type: integer }
+        page: { type: integer }
+        pageSize: { type: integer }
+
+    Session:
+      type: object
+      properties:
+        identity: { type: string, example: admin-secops@telecom.node }
+        environment: { type: string, example: 5G-LAB-PROD-SOUTH }
+        mtls: { type: boolean }
+        since: { type: integer, format: int64 }
+        role: { type: string, example: secops-admin }
+        displayName: { type: string }
+
+    SystemStatus:
+      type: object
+      properties:
+        nfRegistered: { type: integer, example: 8 }
+        nfExpected: { type: integer, example: 8 }
+        mtlsMode: { type: string, example: strict-enforce }
+        coreState: { type: string, enum: [running, degraded, down] }
+        vaultSealed: { type: boolean }
+
+    Notice:
+      type: object
+      properties:
+        id: { type: string }
+        kind: { type: string, enum: [danger, warning, info] }
+        title: { type: string }
+        time: { type: string, example: 2m }
+
+    DashboardKpis:
+      type: object
+      properties:
+        nfsOnline:
+          type: object
+          properties: { up: { type: integer }, total: { type: integer } }
+        subscribers:
+          type: object
+          properties:
+            provisioned: { type: integer }
+            registeredNow: { type: integer }
+        pduSessions:
+          type: object
+          properties:
+            active: { type: integer }
+            gtpuGbps: { type: number }
+        mtls:
+          type: object
+          properties:
+            coveragePct: { type: number }
+            identities: { type: integer }
+        anomalies:
+          type: object
+          properties:
+            open: { type: integer }
+            critical: { type: integer }
+            warning: { type: integer }
+
+    NfHealth:
+      type: object
+      properties:
+        nf: { type: string, example: AMF }
+        role: { type: string, example: Access & Mobility }
+        status: { type: string, enum: [healthy, degraded, down] }
+        cpu: { type: integer }
+        mem: { type: integer }
+        trend: { type: array, items: { type: number } }
+
+    SystemEvent:
+      type: object
+      properties:
+        time: { type: string }
+        severity: { type: string, enum: [critical, warning, info] }
+        source: { type: string }
+        message: { type: string }
+
+    Topology:
+      type: object
+      properties:
+        nodes:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string }
+              label: { type: string }
+              sub: { type: string }
+              plane: { type: string, enum: [control, user, access] }
+        edges:
+          type: array
+          items:
+            type: object
+            properties:
+              a: { type: string }
+              b: { type: string }
+              ref: { type: string, example: N11 / Nsmf }
+              kind: { type: string, enum: [sbi, radio, data] }
+              mtls: { type: boolean }
+
+    NrfSummary:
+      type: object
+      properties:
+        instances: { type: integer }
+        active: { type: integer }
+        suspended: { type: integer }
+        services: { type: integer }
+        heartbeatSlaPct: { type: number }
+        timeoutSec: { type: integer }
+        intervalSec: { type: integer }
+
+    NfInstance:
+      type: object
+      properties:
+        type: { type: string, example: AMF }
+        instanceId: { type: string }
+        fqdn: { type: string }
+        endpoint: { type: string }
+        status: { type: string, enum: [registered, suspended, deregistered] }
+        heartbeat: { type: string }
+        load: { type: integer }
+        services: { type: string }
+        tls: { type: boolean }
+
+    UdmSummary:
+      type: object
+      properties:
+        provisioned: { type: integer }
+        registeredNow: { type: integer }
+        idleNow: { type: integer }
+        csfleCoveragePct: { type: number }
+        authVectorsIssued: { type: integer }
+
+    Subscriber:
+      type: object
+      properties:
+        supi: { type: string, example: imsi-208950000000001 }
+        msisdn: { type: string }
+        status: { type: string, enum: [registered, idle, deregistered] }
+        slice: { type: string }
+        servingAmf: { type: string }
+        authMethod: { type: string }
+
+    CsfleField:
+      type: object
+      properties:
+        field: { type: string, example: permanentKey (K) }
+        algo: { type: string, example: AEAD_AES_256_CBC_HMAC_SHA_512 }
+        keyId: { type: string }
+        state: { type: string, example: encrypted }
+
+    PduSession:
+      type: object
+      properties:
+        id: { type: string, example: pdu-0x9a8 }
+        supi: { type: string }
+        dnn: { type: string }
+        snssai: { type: string }
+        pduType: { type: string }
+        upf: { type: string }
+        teid: { type: string }
+        fiveQi: { type: integer }
+        ul: { type: string }
+        dl: { type: string }
+        state: { type: string, enum: [active, establishing, released] }
+
+    AnomalyAlert:
+      type: object
+      properties:
+        id: { type: string }
+        time: { type: string }
+        threat: { type: string }
+        source: { type: string }
+        score: { type: string, example: z=6.4 }
+        severity: { type: string, enum: [critical, warning, info] }
+        state: { type: string, enum: [open, mitigated] }
+
+    NetworkPolicy:
+      type: object
+      properties:
+        name: { type: string }
+        source: { type: string }
+        dest: { type: string }
+        l7: { type: string }
+        ports: { type: string }
+        action: { type: string, enum: [allow, deny] }
+        hits: { type: string }
+
+    Cert:
+      type: object
+      properties:
+        nf: { type: string }
+        cn: { type: string }
+        serial: { type: string }
+        algo: { type: string }
+        issued: { type: string, format: date }
+        expires: { type: string, format: date }
+        daysLeft: { type: integer }
+
+    TestCase:
+      type: object
+      properties:
+        id: { type: string, example: TC-01 }
+        name: { type: string }
+        procedure: { type: string, example: TS 23.502 §4.2.2.2 }
+        criterion: { type: string }
+        latency: { type: string }
+        status: { type: string, enum: [pass, fail, skip] }
+        pcapUrl: { type: string }
+
+    SeriesResponse:
+      type: object
+      properties:
+        labels: { type: array, items: { type: string } }
+        series:
+          type: array
+          items:
+            type: object
+            properties:
+              name: { type: string }
+              dashed: { type: boolean }
+              data: { type: array, items: { type: number } }
+
+    LogLine:
+      type: object
+      properties:
+        ts: { type: string, example: 14:02:11.201 }
+        nf: { type: string }
+        sev: { type: string, enum: [info, warn, error, debug] }
+        msg: { type: string }
+
+    Alarm:
+      type: object
+      properties:
+        id: { type: string, example: ALM-4471 }
+        time: { type: string }
+        severity: { type: string, enum: [critical, major, minor] }
+        source: { type: string }
+        summary: { type: string }
+        state: { type: string, enum: [active, acked, cleared] }
+
+    Operator:
+      type: object
+      properties:
+        name: { type: string }
+        identity: { type: string }
+        role: { type: string }
+        lastActive: { type: string }
+        status: { type: string, enum: [active, disabled] }
+
+    StreamFrame:
+      type: object
+      properties:
+        topic: { type: string, example: alarms }
+        ts: { type: string, format: date-time }
+        data: { type: object }

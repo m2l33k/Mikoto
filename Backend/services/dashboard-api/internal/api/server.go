@@ -31,8 +31,29 @@ func New(mw *auth.Middleware, deps Deps) *Server {
 func (s *Server) routes() {
 	// Public
 	s.mux.HandleFunc("GET /auth/callback", s.authCallback)
+	s.mux.HandleFunc("POST /auth/login", s.login)
+	s.mux.HandleFunc("POST /auth/recover", s.recoverKeys)
 
-	// Protected (management plane)
+	// Session (token required)
+	s.mux.Handle("GET /auth/session", s.mw.Require(http.HandlerFunc(s.getSession)))
+	s.mux.Handle("POST /auth/logout", s.mw.Require(http.HandlerFunc(s.logout)))
+
+	// Shell (workflowbackend.md §3)
+	s.mux.Handle("GET /api/v1/environments", s.mw.Require(http.HandlerFunc(s.listEnvironments)))
+	s.mux.Handle("PUT /api/v1/me/environment", s.mw.Require(http.HandlerFunc(s.switchEnvironment)))
+	s.mux.Handle("GET /api/v1/system/status", s.mw.Require(http.HandlerFunc(s.systemStatus)))
+	s.mux.Handle("GET /api/v1/notifications", s.mw.Require(http.HandlerFunc(s.listNotifications)))
+	s.mux.Handle("POST /api/v1/notifications/read", s.mw.Require(http.HandlerFunc(s.markNotificationsRead)))
+
+	// Overview dashboard (workflowbackend.md §4)
+	s.mux.Handle("GET /api/v1/dashboard/kpis", s.mw.Require(http.HandlerFunc(s.dashboardKpis)))
+	s.mux.Handle("GET /api/v1/nf/health", s.mw.Require(http.HandlerFunc(s.nfHealth)))
+	s.mux.Handle("GET /api/v1/events", s.mw.Require(http.HandlerFunc(s.listEvents)))
+	s.mux.Handle("GET /api/v1/dashboard/export", s.mw.Require(http.HandlerFunc(s.exportDashboard)))
+	s.mux.Handle("POST /api/v1/alerts/ack-all", s.mw.Require(http.HandlerFunc(s.ackAllAlerts)))
+	s.mux.Handle("POST /api/v1/diagnostics/run", s.mw.Require(http.HandlerFunc(s.runDiagnostics)))
+
+	// Protected (management plane — existing proxies)
 	s.mux.Handle("GET /api/v1/alerts", s.mw.Require(s.deps.AlertsProxy))
 	s.mux.Handle("GET /api/v1/metrics", s.mw.Require(s.deps.MetricsProxy))
 	s.mux.Handle("GET /api/v1/certs", s.mw.Require(http.HandlerFunc(s.certs)))
