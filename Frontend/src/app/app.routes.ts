@@ -2,6 +2,7 @@ import { inject } from '@angular/core';
 import { Routes } from '@angular/router';
 
 import { authGuard } from './core/auth.guard';
+import { roleGuard } from './core/role.guard';
 import { AuthService } from './core/auth.service';
 import { Shell } from './layout/shell';
 
@@ -28,6 +29,7 @@ export const routes: Routes = [
     path: '',
     component: Shell,
     canActivate: [authGuard],
+    canActivateChild: [roleGuard],
     children: [
       // Land each operator on their role's home dashboard.
       { path: '', pathMatch: 'full', redirectTo: () => inject(AuthService).home() },
